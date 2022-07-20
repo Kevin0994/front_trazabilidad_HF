@@ -21,4 +21,15 @@ export class ProviderService {
     });
   }
 
+  BuscarUsuario(email:any,password:any){
+    var api_url="http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/usuario/documents/"+email+"/"+password;
+    return new Promise(resolve => {
+      this.http.get(api_url).subscribe(data => {
+        resolve(data);
+      }, err => {
+        console.log(err);
+      });
+    });
+  }
+
 }

@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-label>Cosecha</ion-label>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+ 
+<ion-content>
+<br>
+  <div class="container">
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Codigo</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Stock</th>
+          <th scope="col">Peso</th>
+          <th scope="col">Lote</th>
+          <th scope="col">Responsable</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cosecha of cosechas">
+          <th scope="row">1</th>
+          <td>{{cosecha.nombre}}</td>
+          <td>{{cosecha.codProducto}}</td>
+          <td>{{cosecha.fecha_In}}</td>
+          <td>{{cosecha.peso_stock}}</td>
+          <td>{{cosecha.peso_h}}</td>
+          <td>{{cosecha.lote}}</td>
+          <td>{{cosecha.responsable}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ion-content>
