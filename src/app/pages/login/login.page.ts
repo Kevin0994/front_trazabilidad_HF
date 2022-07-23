@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
 import { AlertController, NavController  } from '@ionic/angular';
-
+import { MenuController } from '@ionic/angular';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -21,21 +21,24 @@ export class LoginPage implements OnInit {
   constructor(public proveedor: ProviderService,
     public fb: FormBuilder,
     public navCtrl:NavController,
-    public alertController: AlertController,) { 
-    this.formLogin = this.fb.group({
-      'email': new FormControl("",Validators.required),
-      'password': new FormControl("",Validators.required),
-    })
+    public alertController: AlertController,
+    private menu: MenuController) { 
+      this.menu.enable(false);
+      this.formLogin = this.fb.group({
+        'email': new FormControl("",Validators.required),
+        'password': new FormControl("",Validators.required),
+      })
   }
 
   ngOnInit() {
   }
 
   async ingresar(){
-    var form = this.formLogin.value;
 
     if(this.Usuario.length != 0){
       localStorage.setItem('ingresado','true');
+      localStorage.setItem('Usuario',this.Usuario[0].UserName);
+      localStorage.setItem('UserId',this.Usuario[0].id);
       this.navCtrl.navigateRoot('/home');
     }else{
       const alert = await this.alertController.create({
@@ -62,7 +65,7 @@ export class LoginPage implements OnInit {
       await alert.present();
       return;
     }else{
-      this.proveedor.BuscarUsuario(form.email,form.password).then(data => {
+      this.proveedor.ValidarUsuario(form.email,form.password).then(data => {
         this.Usuario=data;
         console.log(this.Usuario);
         this.ingresar();

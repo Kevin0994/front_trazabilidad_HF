@@ -22,12 +22,32 @@ const routes: Routes = [
   },
   {
     path: 'cosecha',
-    loadChildren: () => import('./pages/cosecha/cosecha.module').then( m => m.CosechaPageModule)
+    loadChildren: () => import('./pages/cosecha/cosecha.module').then( m => m.CosechaPageModule),
+    canActivate: [IngresadoGuard]
   },
   {
     path: 'actividades',
-    loadChildren: () => import('./pages/actividades/actividades.module').then( m => m.ActividadesPageModule)
+    loadChildren: () => import('./pages/actividades/actividades.module').then( m => m.ActividadesPageModule),
+    canActivate: [IngresadoGuard]
   },
+  {
+    path: 'modal-cosecha',
+    loadChildren: () => import('./modals/modal-cosecha/modal-cosecha.module').then( m => m.ModalCosechaPageModule),
+    canActivate: [IngresadoGuard]
+  },
+  {
+    path: 'usuario',
+    loadChildren: () => import('./pages/usuario/usuario.module').then( m => m.UsuarioPageModule),
+    canActivate: [IngresadoGuard]
+  },
+  {
+    path: 'modal-usuario',
+    loadChildren: () => import('./modals/modal-usuario/modal-usuario.module').then( m => m.ModalUsuarioPageModule),
+    canActivate: [IngresadoGuard]
+  },
+
+
+
 
 ];
 

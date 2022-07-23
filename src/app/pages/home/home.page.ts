@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
-
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -10,15 +10,20 @@ import { ProviderService } from '../../../provider/ApiRest/provider.service'
 })
 export class HomePage implements OnInit{
 
-  cosechas
+  cosechas:any;
 
   constructor(public proveedor: ProviderService,
     public alertController: AlertController,
-    public navCtrl:NavController) {
-
+    public navCtrl:NavController,
+    private menu: MenuController,
+  
+  ){
+    this.menu.enable(true);
+    this.ValidarRol();    
   }
 
   ngOnInit() {
+    
     this.ionViewDidLoad();
   }
 
@@ -31,8 +36,19 @@ export class HomePage implements OnInit{
     })
   }
 
+  ValidarRol(){
+    this.proveedor.BuscarRolUsuario(localStorage.getItem('UserId')).then(data => {
+      console.log(data);
+      if(data != true){
+        document.getElementById("admin").style.display = "none";
+      }
+    }).catch(data => {
+      console.log(data);
+    })
+  }
+
   async logout(){
-    console.log('Holi');
+    
     const alert = await this.alertController.create({
       header: 'Salir',
       message: '¿Seguro desea salir?',

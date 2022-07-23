@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home"></ion-back-button>
+      <ion-label>Usuarios</ion-label>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-button color="primary" (click)="openModal()">
+    Nuevo Registro
+  </ion-button>
+  <br>
+    <div class="container">
+      <table class="table table-dark">
+        <thead>
+          <tr>
+        
+            <th scope="col">Nombres</th>
+            <th scope="col">Apellidos</th>
+            <th scope="col">Email</th>
+            <th scope="col">UserName</th>
+            <th scope="col">Rol</th>
+            <th scope="col">Password</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuarios">
+            
+            <td>{{usuario.nombres}}</td>
+            <td>{{usuario.apellidos}}</td>
+            <td>{{usuario.email}}</td>
+            <td>{{usuario.userName}}</td>
+            <td>{{usuario.rol}}</td>
+            <td>{{usuario.password}}</td>
+            <td>
+              <input type="button" 
+                class="btn btn-warning btn-sm btn-edit"
+                value="Edit"
+                (click)="EditUsuario(usuario.id)"
+              />
+              <input type="button"
+                class="btn btn-danger btn-sm btn-del"
+                value="Delete"
+                (click)="DeleteUsuario(usuario.id)"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+</ion-content>

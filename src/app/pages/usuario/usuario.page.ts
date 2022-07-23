@@ -2,33 +2,33 @@ import { Component, OnInit } from '@angular/core';
 
 import { AlertController, NavController, ModalController } from '@ionic/angular';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
-import { ModalCosechaPage } from '../../modals/modal-cosecha/modal-cosecha.page'
+import { ModalUsuarioPage } from '../../modals/modal-usuario/modal-usuario.page'
 
 @Component({
-  selector: 'app-cosecha',
-  templateUrl: './cosecha.page.html',
-  styleUrls: ['./cosecha.page.scss'],
+  selector: 'app-usuario',
+  templateUrl: './usuario.page.html',
+  styleUrls: ['./usuario.page.scss'],
 })
-export class CosechaPage implements OnInit {
+export class UsuarioPage implements OnInit {
 
-  cosechas:any=[];
-  cosecha:any;
+  usuarios:any=[];
+  usuario:any;
 
   constructor(public proveedor: ProviderService,
     public alertController: AlertController,
     public navCtrl:NavController,
-    public modalController:ModalController,) {
-      
+    public modalController:ModalController,
+    ) { 
+
+
     }
 
   ngOnInit() {
-
   }
 
   ionViewWillEnter(){
-    this.proveedor.loadCosecha().then(data => {
-      this.cosechas=data;
-      console.log(this.cosechas)
+    this.proveedor.loadUsuarios().then(data => {
+      this.usuarios=data;
     }).catch(data => {
       console.log(data);
     })
@@ -36,26 +36,48 @@ export class CosechaPage implements OnInit {
 
   async openModal(){
     const modal = await this.modalController.create({
-      component: ModalCosechaPage,
-      cssClass: 'modalCosecha',
+      component: ModalUsuarioPage,
+      cssClass: 'modalUsuario',
       componentProps:{
         'type':'Nuevo Registro',
       }
     });
+
+    modal.onDidDismiss().then(data => {
+      this.ionViewWillEnter();
+    })
+
     return await modal.present();
   }
 
-  
-  async EditCosecha(id:any){
-    this.proveedor.BuscarCosecha(id).then(data => {
-      this.cosecha= data;
+  async EditUsuario(id:any){
+    this.proveedor.BuscarUsuario(id).then(data => {
+      this.usuario= data;
       this.ModelPresent(id);
     }).catch(data => {
       console.log(data);
     })
   }
 
-  async DeleteCosecha(id:any){
+  async ModelPresent(id:any){
+    const modal = await this.modalController.create({
+      component: ModalUsuarioPage,
+      cssClass: 'modalCosecha',
+      componentProps:{
+        'Usuario':this.usuario,
+        'type':'Editar Registro',
+        'id' : id
+      }
+    });
+
+    modal.onDidDismiss().then(data => {
+      this.ionViewWillEnter();
+    })
+
+    return await modal.present();
+  }
+
+  async DeleteUsuario(id:any){
     const alert = await this.alertController.create({
       header: 'Eliminar',
       message: '¿Seguro que desea elimar?',
@@ -67,8 +89,7 @@ export class CosechaPage implements OnInit {
         }, {
           text: 'Si',
           handler: () => {
-            this.proveedor.EliminarCosecha(id).subscribe(data => {
-              console.log(data);
+            this.proveedor.EliminarUsuario(id).subscribe(data => {
               this.ionViewWillEnter();
               if(this.proveedor.status){
                 this.ErrorMensajeServidor();
@@ -84,24 +105,6 @@ export class CosechaPage implements OnInit {
     await alert.present();
   }
 
-
-  async ModelPresent(id:any){
-    const modal = await this.modalController.create({
-      component: ModalCosechaPage,
-      cssClass: 'modalCosecha',
-      componentProps:{
-        'Cosecha':this.cosecha,
-        'type':'Editar Registro',
-        'id' : id
-      }
-    });
-
-    modal.onDidDismiss().then(data => {
-      this.ionViewWillEnter();
-    })
-
-    return await modal.present();
-  }
 
   async MensajeServidor(){
     const alert = await this.alertController.create({
@@ -124,4 +127,3 @@ export class CosechaPage implements OnInit {
   }
 
 }
-
