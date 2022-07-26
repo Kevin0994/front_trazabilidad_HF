@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
 import { MenuController } from '@ionic/angular';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +17,7 @@ export class HomePage implements OnInit{
     public alertController: AlertController,
     public navCtrl:NavController,
     private menu: MenuController,
-  
+    private cookieService: CookieService
   ){
     this.menu.enable(true);
     this.ValidarRol();    
@@ -30,17 +31,19 @@ export class HomePage implements OnInit{
   ionViewDidLoad(){
     this.proveedor.loadCosecha().then(data => {
       this.cosechas=data;
-      console.log(this.cosechas)
+      console.log(this.cosechas)//ctrol+alt+L
     }).catch(data => {
       console.log(data);
     })
   }
 
   ValidarRol(){
-    this.proveedor.BuscarRolUsuario(localStorage.getItem('UserId')).then(data => {
+    this.proveedor.BuscarRolUsuario(this.cookieService.get('idUsuario')).then(data => {
       console.log(data);
       if(data != true){
         document.getElementById("admin").style.display = "none";
+      }else{
+        document.getElementById("admin").style.display = "block";
       }
     }).catch(data => {
       console.log(data);
@@ -61,6 +64,7 @@ export class HomePage implements OnInit{
         }, {
           text: 'Si',
           handler: () => {
+            this.cookieService.delete('idUsuario');
             localStorage.clear();
             this.navCtrl.navigateRoot('login');
           }

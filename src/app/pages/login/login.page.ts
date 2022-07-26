@@ -8,6 +8,7 @@ import {
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
 import { AlertController, NavController  } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
+import { CookieService } from 'ngx-cookie-service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -22,7 +23,8 @@ export class LoginPage implements OnInit {
     public fb: FormBuilder,
     public navCtrl:NavController,
     public alertController: AlertController,
-    private menu: MenuController) { 
+    private menu: MenuController,
+    private cookieService: CookieService) { 
       this.menu.enable(false);
       this.formLogin = this.fb.group({
         'email': new FormControl("",Validators.required),
@@ -36,9 +38,8 @@ export class LoginPage implements OnInit {
   async ingresar(){
 
     if(this.Usuario.length != 0){
-      localStorage.setItem('ingresado','true');
+      this.cookieService.set('idUsuario',this.Usuario[0].id,5,'/');
       localStorage.setItem('Usuario',this.Usuario[0].UserName);
-      localStorage.setItem('UserId',this.Usuario[0].id);
       this.navCtrl.navigateRoot('/home');
     }else{
       const alert = await this.alertController.create({

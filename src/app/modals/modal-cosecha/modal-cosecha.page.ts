@@ -47,7 +47,6 @@ export class ModalCosechaPage implements OnInit {
       'nombre': new FormControl("",Validators.required),
       'codigo': new FormControl("",Validators.required),
       'fecha': new FormControl("",Validators.required),
-      'stock': new FormControl("",Validators.required),
       'peso': new FormControl("",Validators.required),
     })
   }
@@ -57,8 +56,7 @@ export class ModalCosechaPage implements OnInit {
       'nombre': new FormControl(this.Cosecha.nombre,Validators.required),
       'codigo': new FormControl(this.Cosecha.codigo,Validators.required),
       'fecha': new FormControl(this.Cosecha.fecha,Validators.required),
-      'stock': new FormControl(this.Cosecha.peso_stock,Validators.required),
-      'peso': new FormControl(this.Cosecha.peso_h,Validators.required),
+      'peso': new FormControl(this.Cosecha.peso_stock,Validators.required),
     })
   }
 
@@ -83,7 +81,6 @@ export class ModalCosechaPage implements OnInit {
         codigo: this.formulario.codigo,
         fecha: this.formulario.fecha,
         peso_stock: this.formulario.stock,
-        peso_h: this.formulario.peso,
         lote: date.getMonth() + 1,
         responsable: localStorage.getItem('Usuario'),
       }
@@ -107,7 +104,6 @@ export class ModalCosechaPage implements OnInit {
         codigo: this.formulario.codigo,
         fecha: this.formulario.fecha,
         peso_stock: this.formulario.stock,
-        peso_h: this.formulario.peso,
         lote: this.Cosecha.lote,
         responsable: this.Cosecha.responsable,
       }
