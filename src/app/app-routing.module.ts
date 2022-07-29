@@ -45,6 +45,12 @@ const routes: Routes = [
     loadChildren: () => import('./modals/modal-usuario/modal-usuario.module').then( m => m.ModalUsuarioPageModule),
     canActivate: [IngresadoGuard]
   },
+  {
+    path: 'cosecha-historial',
+    loadChildren: () => import('./pages/cosecha-historial/cosecha-historial.module').then( m => m.CosechaHistorialPageModule),
+    canActivate: [IngresadoGuard]
+  },
+
 
 
 

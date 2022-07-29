@@ -11,10 +11,12 @@
 
 <ion-content>
   <div class="container" >
-    <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="saveProfile()"  id="form">
+    <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="Registro()"  id="form">
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
-        <ion-input formControlName="nombre" ></ion-input>
+        <ion-select formControlName="nombre" >
+          <ion-select-option *ngFor="let cosecha of lista">{{cosecha.nombre}}</ion-select-option>
+        </ion-select>
       </ion-item>
       <br>
       <ion-item>
@@ -23,13 +25,12 @@
       </ion-item>
       <br>
       <ion-item>
-        <ion-label position="floating">Fecha</ion-label>
-        <ion-input formControlName="fecha" type="date"></ion-input>
+        <ion-input formControlName="fecha" type="date" ></ion-input>
       </ion-item>
       <br>
       <ion-item>
         <ion-label position="floating">Peso Stock</ion-label>
-        <ion-input formControlName="peso" ></ion-input>
+        <ion-input formControlName="peso" type="number"></ion-input>
       </ion-item>
       <br>
   

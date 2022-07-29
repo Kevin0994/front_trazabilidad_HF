@@ -14,8 +14,30 @@ export class ProviderService {
   }
 
 
-  loadCosecha(){
-    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosecha/documents";
+  loadHistorialCosecha(){
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechaHistorial/documents";
+    return new Promise(resolve => {
+      this.http.get(api_url).subscribe(data => {
+        resolve(data);
+      }, err => {
+        console.log(err);
+      });
+    });
+  }
+
+  loadCosechas(){
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechas/documents";
+    return new Promise(resolve => {
+      this.http.get(api_url).subscribe(data => {
+        resolve(data);
+      }, err => {
+        console.log(err);
+      });
+    });
+  }
+
+  loadListaCosecha(){
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/listaCosechas/documents";
     return new Promise(resolve => {
       this.http.get(api_url).subscribe(data => {
         resolve(data);
@@ -26,7 +48,18 @@ export class ProviderService {
   }
 
   BuscarCosecha(id:any){
-    var api_url="http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/cosecha/documents/"+id;
+    var api_url="http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/cosechaHistorial/documents/"+id;
+    return new Promise(resolve => {
+      this.http.get(api_url).subscribe(data => {
+        resolve(data);
+      }, err => {
+        console.log(err);
+      });
+    });
+  }
+
+  BuscarStockCosecha(nombre:any,lote:any){
+    var api_url="http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/cosechaStock/"+nombre+"/"+lote;
     return new Promise(resolve => {
       this.http.get(api_url).subscribe(data => {
         resolve(data);
@@ -37,7 +70,25 @@ export class ProviderService {
   }
 
   InsertarCosecha(form:any){
-    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosecha/post"
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechaHistorial/post"
+    return new Promise(resolve => {
+      this.http.post(api_url,form).subscribe(data => {
+        resolve(data);
+        return this.status=true;
+      }, err => {
+        this.status=false;
+        resolve(err);
+        if(err.status == 400){
+          return this.error=400
+        }else{
+          return this.error=0
+        }
+      }).closed;
+    });
+  }
+
+  InsertarCosechaStock(form:any){
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechas/post"
     return new Promise(resolve => {
       this.http.post(api_url,form).subscribe(data => {
         resolve(data);
@@ -55,7 +106,7 @@ export class ProviderService {
   }
 
   ActualizarCosecha(id:any,form:any){
-    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosecha/documents/"+id
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechaHistorial/documents/"+id
     return new Promise(resolve => {
       this.http.put(api_url,form).subscribe(data => {
         resolve(data);
@@ -72,8 +123,27 @@ export class ProviderService {
     });
   }
 
+  ActualizarCosechaStock(id:any,form:any){
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechas/documents/"+id
+    return new Promise(resolve => {
+      this.http.put(api_url,form).subscribe(data => {
+        resolve(data);
+        return this.status=true;
+      }, err => {
+        this.status=false;
+        resolve(err);
+        if(err.status == 400){
+          return this.error=400
+        }else{
+          return this.error=0
+        }
+      }).closed;
+    });
+  }
+
+
   EliminarCosecha(id:any):Observable<any>{
-    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosecha/documents/"+id;
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechaHistorial/documents/"+id;
     var Options = {
       headers: new HttpHeaders({
         'Accept': 'application/json',
@@ -82,6 +152,20 @@ export class ProviderService {
     }
     return this.http.delete<any>(api_url,Options)
   }
+
+  EliminarCosechaStock(id:any):Observable<any>{
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/cosechas/documents/"+id;
+    var Options = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+      }),
+      body: id,
+    }
+    return this.http.delete<any>(api_url,Options)
+  }
+
+
+  //
 
   ValidarUsuario(email:any,password:any){
     var api_url="http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/usuario/"+email+"/"+password;

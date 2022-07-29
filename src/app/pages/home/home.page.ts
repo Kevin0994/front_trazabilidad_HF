@@ -25,17 +25,9 @@ export class HomePage implements OnInit{
 
   ngOnInit() {
     
-    this.ionViewDidLoad();
   }
 
-  ionViewDidLoad(){
-    this.proveedor.loadCosecha().then(data => {
-      this.cosechas=data;
-      console.log(this.cosechas)//ctrol+alt+L
-    }).catch(data => {
-      console.log(data);
-    })
-  }
+
 
   ValidarRol(){
     this.proveedor.BuscarRolUsuario(this.cookieService.get('idUsuario')).then(data => {
