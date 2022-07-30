@@ -43,7 +43,7 @@ export class CosechaHistorialPage implements OnInit {
     })
   }
 
-  async DeleteCosecha(id:any,nombre:any,lote:any,peso:any){
+  async ValidarDelete(id:any,nombre:any,lote:any,peso:any){
     const alert = await this.alertController.create({
       header: 'Eliminar',
       message: '¿Seguro que desea elimar?',
@@ -55,16 +55,7 @@ export class CosechaHistorialPage implements OnInit {
         }, {
           text: 'Si',
           handler: () => {
-            this.proveedor.EliminarCosecha(id).subscribe(data => {
-              console.log(data);
-              if(this.proveedor.status){
-                this.SearchCosechaStock(nombre,lote,peso);
-                this.ionViewWillEnter();
-                this.MensajeServidor();             
-              }else{
-                this.ErrorMensajeServidor();
-              }
-            })
+            this.SearchCosechaStock(id,nombre,lote,peso);
           }
         }
       ]
@@ -73,9 +64,10 @@ export class CosechaHistorialPage implements OnInit {
     await alert.present();
   }
 
-  async SearchCosechaStock(nombre:any,lote:any,peso:any){
-    this.proveedor.BuscarStockCosecha(nombre, lote).then(data => {                 
-      if (this.proveedor.status) {
+  async SearchCosechaStock(id:any,nombre:any,lote:any,peso:any){
+    
+    this.proveedor.BuscarStockCosecha(nombre, lote).then(data => {              
+      
         var busquedaStock = data[0];
         var resultado = busquedaStock.stock - peso;
         this.cosechaStock = {
@@ -84,43 +76,43 @@ export class CosechaHistorialPage implements OnInit {
         if(resultado != 0){
           console.log("Actualizando CosechastockAnterior");
           this.UpdateCosechastock(busquedaStock.id, this.cosechaStock);
+          this.DeleteCosecha(id);
         }else{
           console.log("Eliminando CosechastockAnterior");
           this.DeleteCosechastock(busquedaStock.id);
+          this.DeleteCosecha(id);
         }  
-
-      } else {
-        this.ErrorMensajeServidor();
-        return;
-      }
+      
     }).catch(data => {
       console.log(data);
+      return this.ErrorMensajeServidor();
     });  
   }
 
   async UpdateCosechastock(id:any,cosechaStock:any){
     this.proveedor.ActualizarCosechaStock(id,cosechaStock).then(data => {
       console.log(data);
-      if (this.proveedor.status) {
-        this.MensajeServidor();
-      } else {
-        this.ErrorMensajeServidor();
-        return;
-      }
     }).catch(data => {
       console.log(data);
+      return this.ErrorMensajeServidor();
     }); 
+  }
+
+  async DeleteCosecha(id:any){
+    this.proveedor.EliminarCosecha(id).subscribe(data => {
+      console.log(data+" "+this.proveedor.status);
+      this.ionViewWillEnter();
+      if(this.proveedor.status){
+        this.MensajeServidor();       
+      }else{
+        this.ErrorMensajeServidor();
+      }
+    })
   }
 
   async DeleteCosechastock(id:any){
     this.proveedor.EliminarCosechaStock(id).subscribe(data => {
       console.log(data);
-      if (this.proveedor.status) {
-        this.MensajeServidor();
-      } else {
-        this.ErrorMensajeServidor();
-        return;
-      }
     });
   }
 
@@ -145,8 +137,8 @@ export class CosechaHistorialPage implements OnInit {
 
   async MensajeServidor(){
     const alert = await this.alertController.create({
-      header: 'Eliminar',
-      message: 'La eliminacion se completo con exito',
+      header: 'Accion',
+      message: 'La operacion se completo con exito',
       buttons: ['OK']
     });
 
