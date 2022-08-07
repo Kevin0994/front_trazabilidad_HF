@@ -124,7 +124,8 @@ export class CosechaHistorialPage implements OnInit {
       componentProps:{
         'Cosecha':this.cosecha,
         'type':'Editar Registro',
-        'id' : id
+        'id' : id,
+        'accion': true,
       }
     });
 

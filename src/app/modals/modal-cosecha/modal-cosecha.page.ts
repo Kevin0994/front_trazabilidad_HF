@@ -17,6 +17,7 @@ export class ModalCosechaPage implements OnInit {
   @Input() Cosecha: any = "init";
   @Input() type: any;
   @Input() id: any;
+  @Input() accion: any;
   formRegistro: FormGroup;
   public formulario: any;
   public cosecha: any;
@@ -29,14 +30,13 @@ export class ModalCosechaPage implements OnInit {
     public navCtrl: NavController,
     public alertController: AlertController,
     public modalController: ModalController,) {
-
+      
   }
 
   ngOnInit() {
     if (this.type == 'Nuevo Registro') {
       this.newForm();
     } else {
-      this.newForm();
       this.editForm();
     }
   }
@@ -59,7 +59,6 @@ export class ModalCosechaPage implements OnInit {
     this.formRegistro = this.fb.group({
       'nombre': new FormControl("", Validators.required),
       'codigo': new FormControl("", Validators.required),
-      'fecha': new FormControl("", Validators.required),
       'peso': new FormControl("", Validators.required),
     })
   }
@@ -100,7 +99,7 @@ export class ModalCosechaPage implements OnInit {
     this.cosecha = {
       nombre: this.formulario.nombre,
       codigo: this.formulario.codigo,
-      fecha: this.formulario.fecha,
+      fecha: date,
       peso_stock: this.formulario.peso,
       lote: date.getMonth() + 1,
       responsable: localStorage.getItem('Usuario'),
@@ -311,12 +310,18 @@ export class ModalCosechaPage implements OnInit {
       if (this.proveedor.status) {
         this.busquedaStock = data[0];
         var stock = this.busquedaStock.stock;
+        var resultado =  stock - this.Cosecha.peso_stock;
         this.cosechaStock = {
-          stock: stock - this.Cosecha.peso_stock
+          stock: stock - resultado
         }
-        console.log("Actualizando y eliminando CosechastockAnterior");
-        this.UpdateCosechastock(this.busquedaStock.id,this.cosechaStock);
 
+        if(resultado != 0){
+          console.log("Actualizando CosechastockAnterior");
+          this.UpdateCosechastock(this.busquedaStock.id, this.cosechaStock);
+        }else{
+          console.log("Eliminando CosechastockAnterior");
+          this.DeleteCosechastock(this.busquedaStock.id);
+        }  
       } else {
         this.ErrorMensajeServidor();
         return;

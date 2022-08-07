@@ -38,9 +38,10 @@ export class LoginPage implements OnInit {
   async ingresar(){
 
     if(this.Usuario.length != 0){
-      this.cookieService.set('idUsuario',this.Usuario[0].id,5,'/');
-      localStorage.setItem('Usuario',this.Usuario[0].UserName);
+      this.cookieService.set('idUsuario',this.Usuario.id,5,'/');
+      localStorage.setItem('Usuario',this.Usuario.UserName);
       this.navCtrl.navigateRoot('/home');
+      
     }else{
       const alert = await this.alertController.create({
         header: 'Datos incorrectos',
@@ -67,7 +68,7 @@ export class LoginPage implements OnInit {
       return;
     }else{
       this.proveedor.ValidarUsuario(form.email,form.password).then(data => {
-        this.Usuario=data;
+        this.Usuario=data[0];
         console.log(this.Usuario);
         this.ingresar();
       }).catch(data => {

@@ -6,21 +6,46 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <ion-menu-toggle>
+      <ion-menu-toggle id="bodega">
+        <ion-label>Bodega</ion-label>
         <ion-list class="menu-items" lines="none">
           <ion-item [routerLink]="['/cosecha']">
-            <ion-icon name="mail" slot="start"></ion-icon>
+            <ion-icon name="basket" slot="start"></ion-icon>
             <ion-label>Cosechas</ion-label>
           </ion-item>
           <ion-item [routerLink]="['/actividades']">
-            <ion-icon name="mail" slot="start"></ion-icon>
+            <ion-icon name="hand" slot="start"></ion-icon>
             <ion-label>Actividades</ion-label>
           </ion-item>
-          <ion-item id="admin" [routerLink]="['/usuario']">
-            <ion-icon name="mail" slot="start"></ion-icon>
-            <ion-label>Usuarios</ion-label>
+        </ion-list>
+      </ion-menu-toggle>
+      <ion-label>Bodega</ion-label>
+      <ion-menu-toggle id="fabrica">
+        <ion-list class="menu-items" lines="none">
+          <ion-item [routerLink]="['/inventario']">
+            <ion-icon name="cart" slot="start"></ion-icon>
+            <ion-label>Inventario</ion-label>
+          </ion-item>
+          <ion-item [routerLink]="['/fabricacion']">
+            <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+            <ion-label>Fabricacion</ion-label>
+          </ion-item>
+          <ion-item  [routerLink]="['/procesos']">
+            <ion-icon name="timer" slot="start"></ion-icon>
+            <ion-label>Procesos en curso</ion-label>
+          </ion-item>
+          <ion-item  [routerLink]="['/actividades-fabrica']">
+            <ion-icon name="hand" slot="start"></ion-icon>
+            <ion-label>Actividades</ion-label>
           </ion-item>
         </ion-list>
+      </ion-menu-toggle>
+      <ion-label id="labelAdmin">Administracion</ion-label>
+      <ion-menu-toggle id="admin" >
+        <ion-item [routerLink]="['/usuario']" >
+          <ion-icon name="contact" slot="start"></ion-icon>
+          <ion-label>Usuarios</ion-label>
+        </ion-item>
       </ion-menu-toggle>
     </ion-content>
   </ion-menu>

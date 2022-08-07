@@ -39,6 +39,7 @@ export class CosechaPage implements OnInit {
       cssClass: 'modalCosecha',
       componentProps:{
         'type':'Nuevo Registro',
+        'accion': false,
       }
     });
 

@@ -49,7 +49,23 @@ const routes: Routes = [
     path: 'cosecha-historial',
     loadChildren: () => import('./pages/cosecha-historial/cosecha-historial.module').then( m => m.CosechaHistorialPageModule),
     canActivate: [IngresadoGuard]
+  },  {
+    path: 'fabricacion',
+    loadChildren: () => import('./pages/fabricacion/fabricacion.module').then( m => m.FabricacionPageModule)
   },
+  {
+    path: 'procesos',
+    loadChildren: () => import('./pages/procesos/procesos.module').then( m => m.ProcesosPageModule)
+  },
+  {
+    path: 'actividades-fabrica',
+    loadChildren: () => import('./pages/actividades-fabrica/actividades-fabrica.module').then( m => m.ActividadesFabricaPageModule)
+  },
+  {
+    path: 'inventario',
+    loadChildren: () => import('./pages/inventario/inventario.module').then( m => m.InventarioPageModule)
+  },
+
 
 
 
