@@ -25,8 +25,16 @@ export class CosechaPage implements OnInit {
 
   }
 
+  // ionViewWillEnter(){
+  //   this.proveedor.loadCosechas().then(data => {
+  //     this.cosechas=data;
+  //   }).catch(data => {
+  //     console.log(data);
+  //   })
+  // }
+
   ionViewWillEnter(){
-    this.proveedor.loadCosechas().then(data => {
+    this.proveedor.obtenerDocumentos('cosechas/documents').then(data => {
       this.cosechas=data;
     }).catch(data => {
       console.log(data);

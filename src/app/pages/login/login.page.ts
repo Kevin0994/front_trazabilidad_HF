@@ -66,7 +66,7 @@ export class LoginPage implements OnInit {
       await alert.present();
       return;
     }else{
-      this.proveedor.ValidarUsuario(form.email,form.password).then(data => {
+      this.proveedor.validarUsuario('usuario',form.email,form.password).then(data => {
         this.Usuario=data;
         console.log(this.Usuario);
         this.ingresar();
