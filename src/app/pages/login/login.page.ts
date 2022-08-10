@@ -45,6 +45,7 @@ export class LoginPage implements OnInit {
       const alert = await this.alertController.create({
         header: 'Datos incorrectos',
         message: 'Los datos no son correctos',
+        cssClass: 'custom-alert',
         buttons: ['OK']
       });
 
@@ -59,6 +60,7 @@ export class LoginPage implements OnInit {
     if(this.formLogin.invalid){
       const alert = await this.alertController.create({
         header: 'Datos incompletos',
+        cssClass:'alert-danger',
         message: 'Tienes que llenar todos los datos',
         buttons: ['OK']
       });

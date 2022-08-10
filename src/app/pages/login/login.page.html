@@ -7,7 +7,7 @@
 <ion-content>
   <div class="login">
     <div class="content">
-      <ion-card>
+      <!-- <ion-card>
         <ion-card-header>
           <ion-card-title>Login</ion-card-title>
         </ion-card-header>
@@ -27,7 +27,23 @@
             Ingresar
           </ion-button>
         </ion-card-content>
-      </ion-card>
+      </ion-card> -->
+      <div class="content-form">
+        <form [formGroup]="formLogin">
+          <h3>Iniciar sesión</h3>
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input formControlName="email"></ion-input> 
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Password</ion-label>
+            <ion-input formControlName="password"></ion-input>
+          </ion-item>
+          <ion-button (click)="ValidarUsuario()" expand="block">
+            Ingresar
+          </ion-button>
+        </form>
+      </div>
     </div>
   </div>
 </ion-content>
