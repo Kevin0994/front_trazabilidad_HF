@@ -24,13 +24,27 @@ export class HomePage implements OnInit{
   }
 
   ngOnInit() {
-    
+    this.proveedor.obtenerDocumentos('cosechas/documents').then(cosecha => {
+      this.cosechas = cosecha;
+      console.log(cosecha);
+    });
   }
 
 
 
   ValidarRol(){
-    this.proveedor.BuscarRolUsuario(this.cookieService.get('idUsuario')).then(data => {
+    // this.proveedor.BuscarRolUsuario(this.cookieService.get('idUsuario')).then(data => {
+    //   console.log(data);
+    //   if(data != true){
+    //     document.getElementById("admin").style.display = "none";
+    //   }else{
+    //     document.getElementById("admin").style.display = "block";
+    //   }
+    // }).catch(data => {
+    //   console.log(data);
+    // })
+
+    this.proveedor.obtenerDocumentosPorId('usuario/documents/rol',this.cookieService.get('idUsuario')).then(data => {
       console.log(data);
       if(data != true){
         document.getElementById("admin").style.display = "none";

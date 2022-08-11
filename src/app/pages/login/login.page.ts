@@ -9,6 +9,8 @@ import { ProviderService } from '../../../provider/ApiRest/provider.service'
 import { AlertController, NavController  } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 import { CookieService } from 'ngx-cookie-service';
+import Swal from 'sweetalert2'
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -42,14 +44,15 @@ export class LoginPage implements OnInit {
       localStorage.setItem('Usuario',this.Usuario[0].UserName);
       this.navCtrl.navigateRoot('/home');
     }else{
-      const alert = await this.alertController.create({
-        header: 'Datos incorrectos',
-        message: 'Los datos no son correctos',
-        cssClass: 'custom-alert',
-        buttons: ['OK']
-      });
-
-      await alert.present();
+      Swal.fire({
+        icon: 'error',
+        title: 'Datos incorrectos',
+        text: 'Usuario o contraseña incorrecto',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#91bb35',
+        heightAuto: false
+        }
+      )
       return;
     }
     
@@ -58,14 +61,15 @@ export class LoginPage implements OnInit {
   async ValidarUsuario() {
     var form = this.formLogin.value;
     if(this.formLogin.invalid){
-      const alert = await this.alertController.create({
-        header: 'Datos incompletos',
-        cssClass:'alert-danger',
-        message: 'Tienes que llenar todos los datos',
-        buttons: ['OK']
-      });
-
-      await alert.present();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Datos incompletos',
+        text: 'Rellene los campos del formulario',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#91bb35',
+        heightAuto: false
+        }
+      )
       return;
     }else{
       this.proveedor.validarUsuario('usuario',form.email,form.password).then(data => {

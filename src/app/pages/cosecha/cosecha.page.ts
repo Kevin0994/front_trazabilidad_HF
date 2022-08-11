@@ -25,6 +25,7 @@ export class CosechaPage implements OnInit {
 
   }
 
+  // Función reemplazada por el método génetico de la API
   // ionViewWillEnter(){
   //   this.proveedor.loadCosechas().then(data => {
   //     this.cosechas=data;

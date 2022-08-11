@@ -42,7 +42,7 @@ export class ModalCosechaPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.proveedor.loadListaCosecha().then(data => {
+    this.proveedor.obtenerDocumentos('listaCosechas/documents').then(data => {
       this.lista = data;
     }).catch(data => {
       console.log(data);

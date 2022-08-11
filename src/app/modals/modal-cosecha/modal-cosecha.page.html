@@ -1,10 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>{{ type }}</ion-title>
-    <ion-buttons slot="primary" slot="start" >
+    <ion-buttons slot="start" >
       <ion-button (click)="closeModal()">
         <ion-icon name="arrow-back-circle-outline"></ion-icon>
       </ion-button>
+      Cerrar
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -12,35 +13,35 @@
 <ion-content>
   <div class="container" >
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="Registro()"  id="form">
-      <ion-item>
-        <ion-label position="floating">Nombre</ion-label>
-        <ion-select formControlName="nombre" >
+      <div>
+        <ion-select formControlName="nombre" placeholder="Seleccione un nombre">
           <ion-select-option *ngFor="let cosecha of lista">{{cosecha.nombre}}</ion-select-option>
         </ion-select>
-      </ion-item>
-      <br>
-      <ion-item>
-        <ion-label position="floating">Codigo</ion-label>
-        <ion-input formControlName="codigo" ></ion-input>
-      </ion-item>
-      <br>
-      <ion-item>
-        <ion-input formControlName="fecha" type="date" ></ion-input>
-      </ion-item>
-      <br>
-      <ion-item>
-        <ion-label position="floating">Peso Stock</ion-label>
-        <ion-input formControlName="peso" type="number"></ion-input>
-      </ion-item>
-      <br>
-  
-      <ion-button type="submit" expand="block" shape="round" >
+      </div>
+      <input 
+        type="number" 
+        formControlName="codigo" 
+        placeholder="Código" 
+        class="form-input"
+      >
+      <input 
+        type="date"
+        formControlName="fecha" 
+        class="form-input"
+      >
+      <input 
+        type="number"
+        formControlName="peso" 
+        class="form-input" 
+        placeholder="Peso stock"
+      >
+      <ion-button type="submit" expand="block" shape="round" class="button-submit">
         <ion-icon name="save"></ion-icon> Guardar
       </ion-button>
     </form>
-    <ion-button type="submit"  expand="block" shape="round"(click)="closeModal()">
+    <!-- <ion-button type="submit"  expand="block" shape="round"(click)="closeModal()">
       <ion-icon name="close"></ion-icon> Cancelar
-    </ion-button> 
+    </ion-button>  -->
   </div>
   
 </ion-content>

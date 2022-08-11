@@ -8,25 +8,27 @@
 </ion-header>
  
 <ion-content>
-<ion-button color="primary" (click)="openModal()">
-  Nuevo Registro
-</ion-button>
-<ion-button color="primary" [routerLink]="['/cosecha-historial']">
-  Historial
-</ion-button>
-<br>
-  <div class="container">
-    <table class="table table-dark">
-      <thead>
+  <div class="container mt-4">
+    <div class="d-flex flex-row-reverse mb-3">
+      <ion-button class="btn-add" (click)="openModal()">
+        <ion-icon name="add-outline"></ion-icon>
+        Nuevo Registro
+      </ion-button>
+      <ion-button class="btn-add" [routerLink]="['/cosecha-historial']">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Historial
+      </ion-button>
+    </div>
+    <table class="table table-white">
+      <thead class="table-header text-light">
         <tr>
-      
           <th scope="col">Nombre</th>
           <th scope="col">Codigo</th>
           <th scope="col">Peso</th>
           <th scope="col">Lote</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="bg-white">
         <tr *ngFor="let cosecha of cosechas">
           
           <td>{{cosecha.nombre}}</td>
