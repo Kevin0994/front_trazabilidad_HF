@@ -1,9 +1,19 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>fabricacion</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-label>Fabricacion</ion-label>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
+  <div>
+    <ion-button color="primary" (click)="openModal()">
+      Semifinal
+    </ion-button>
+    <ion-button color="primary" [routerLink]="['/cosecha-historial']">
+      Final
+    </ion-button>
+  </div>
 </ion-content>
