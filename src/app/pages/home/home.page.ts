@@ -28,15 +28,15 @@ export class HomePage implements OnInit{
   }
 
   ngAfterViewInit(){
-    
+
   }
 
   ValidarRol(){
     this.proveedor.BuscarRolUsuario(this.cookieService.get('idUsuario')).then(data => {
       console.log(data);
-      
+
       if(data != "Administrador"){
-        
+
         if(data == 'Empleado Bodega'){
           console.log("data");
           document.getElementById('bodega').style.display = "block";
@@ -44,13 +44,11 @@ export class HomePage implements OnInit{
           document.getElementById('admin').style.display = "none";
           document.getElementById('labelAdmin').style.display = "none";
         }else{
-          
           document.getElementById('bodega').style.display = "none";
           document.getElementById('fabrica').style.display = "block";
           document.getElementById('admin').style.display = "none";
           document.getElementById('labelAdmin').style.display = "none";
         }
-        
       }else{
         document.getElementById('bodega').style.display = "block";
         document.getElementById('fabrica').style.display = "block";

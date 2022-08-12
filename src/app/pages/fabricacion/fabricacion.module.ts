@@ -8,6 +8,7 @@ import { FabricacionPageRoutingModule } from './fabricacion-routing.module';
 
 import { FabricacionPage } from './fabricacion.page';
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +16,6 @@ import { FabricacionPage } from './fabricacion.page';
     IonicModule,
     FabricacionPageRoutingModule
   ],
-  declarations: [FabricacionPage]
+  declarations: [FabricacionPage,]
 })
 export class FabricacionPageModule {}

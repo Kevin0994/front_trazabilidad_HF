@@ -259,4 +259,15 @@ export class ProviderService {
     return this.http.delete<any>(api_url,Options)
   }
 
+  loadCategoriaProducto(){
+    var api_url="http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/categoriaProducto/documents";
+    return new Promise(resolve => {
+      this.http.get(api_url).subscribe(data => {
+        resolve(data);
+      }, err => {
+        console.log(err);
+      });
+    });
+  }
+
 }
