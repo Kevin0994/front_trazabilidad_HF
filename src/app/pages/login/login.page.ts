@@ -9,6 +9,8 @@ import { ProviderService } from '../../../provider/ApiRest/provider.service'
 import { AlertController, NavController  } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 import { CookieService } from 'ngx-cookie-service';
+import Swal from 'sweetalert2'
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -38,18 +40,19 @@ export class LoginPage implements OnInit {
   async ingresar(){
 
     if(this.Usuario.length != 0){
-      this.cookieService.set('idUsuario',this.Usuario.id,5,'/');
-      localStorage.setItem('Usuario',this.Usuario.UserName);
+      this.cookieService.set('idUsuario',this.Usuario[0].id,5,'/');
+      localStorage.setItem('Usuario',this.Usuario[0].UserName);
       this.navCtrl.navigateRoot('/home');
-      
     }else{
-      const alert = await this.alertController.create({
-        header: 'Datos incorrectos',
-        message: 'Los datos no son correctos',
-        buttons: ['OK']
-      });
-
-      await alert.present();
+      Swal.fire({
+        icon: 'error',
+        title: 'Datos incorrectos',
+        text: 'Usuario o contraseña incorrecto',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#91bb35',
+        heightAuto: false
+        }
+      )
       return;
     }
     
@@ -58,17 +61,19 @@ export class LoginPage implements OnInit {
   async ValidarUsuario() {
     var form = this.formLogin.value;
     if(this.formLogin.invalid){
-      const alert = await this.alertController.create({
-        header: 'Datos incompletos',
-        message: 'Tienes que llenar todos los datos',
-        buttons: ['OK']
-      });
-
-      await alert.present();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Datos incompletos',
+        text: 'Rellene los campos del formulario',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#91bb35',
+        heightAuto: false
+        }
+      )
       return;
     }else{
-      this.proveedor.ValidarUsuario(form.email,form.password).then(data => {
-        this.Usuario=data[0];
+      this.proveedor.validarUsuario('usuario',form.email,form.password).then(data => {
+        this.Usuario=data;
         console.log(this.Usuario);
         this.ingresar();
       }).catch(data => {

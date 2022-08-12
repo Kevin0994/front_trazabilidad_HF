@@ -11,6 +11,7 @@
 
 /* Core CSS required for Ionic components to work properly */
 @import "~@ionic/angular/css/core.css";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
 
 /* Basic CSS for apps built with Ionic */
 @import "~@ionic/angular/css/normalize.css";
@@ -25,6 +26,23 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-.modalCosecha {
-    background: #222;
-}
+// .modalCosecha {
+//     background: #222;
+// }
+  
+
+  ion-modal {
+    // --height: 100%;
+    --border-radius: 16px;
+    --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+  
+  ion-modal::part(backdrop) {
+    background: rgb(193, 196, 199);
+    opacity: 1;
+  }
+  
+  ion-modal ion-toolbar {
+    --background: #3D84B7;
+    --color: white;
+  }
