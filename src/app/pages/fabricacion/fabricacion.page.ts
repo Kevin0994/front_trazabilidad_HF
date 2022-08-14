@@ -39,7 +39,7 @@ productos:any=[];
   }
 
   LoadCategorias(){
-    this.proveedor.loadCategoriaProducto().then(data => {
+    this.proveedor.obtenerDocumentos('categoriaProducto/documents').then(data => {
       console.log(data);
       this.categorias=data;
     }).catch(data => {

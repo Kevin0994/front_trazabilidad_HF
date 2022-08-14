@@ -14,30 +14,36 @@ import { ProviderService } from '../../../provider/ApiRest/provider.service'
 })
 export class ModalCosechaPage implements OnInit {
 
-  @Input() Cosecha: any = "init";
+  @Input() Historial: any = "init";
   @Input() type: any;
   @Input() id: any;
   @Input() accion: any;
+
   formRegistro: FormGroup;
-  public formulario: any;
-  public cosecha: any;
+  private nombreCosecha: string;
+  private codigoCosecha: string;
+  public selectedItem:any=[];
+  private formulario: any;
+  private cosecha: any;
+  private historial: any=[];
   public lista: any;
-  public cosechaStock: any;
-  public busquedaStock: any;
+  private busquedaStock: any;
+  private fechaHis: any;
+
 
   constructor(public proveedor: ProviderService,
     public fb: FormBuilder,
     public navCtrl: NavController,
     public alertController: AlertController,
     public modalController: ModalController,) {
-      
+
   }
 
   ngOnInit() {
     if (this.type == 'Nuevo Registro') {
       this.newForm();
     } else {
-      this.editForm();
+     this.editForm();
     }
   }
 
@@ -64,13 +70,34 @@ export class ModalCosechaPage implements OnInit {
   }
 
   editForm() {
+    this.nombreCosecha = this.Historial.nombre;
+    this.codigoCosecha = this.Historial.codigo;
+    this.selectedItem = {
+      nombre:this.nombreCosecha,
+      codigo:this.codigoCosecha,
+    };
+    const fecha = new Date(this.Historial.fecha);
+    let day = fecha.getDate()
+    let month = fecha.getMonth() + 1
+    let year = fecha.getFullYear()
     this.formRegistro = this.fb.group({
-      'nombre': new FormControl(this.Cosecha.nombre, Validators.required),
-      'codigo': new FormControl(this.Cosecha.codigo, Validators.required),
-      'fecha': new FormControl(this.Cosecha.fecha, Validators.required),
-      'peso': new FormControl(this.Cosecha.peso_stock, Validators.required),
+      'nombre': new FormControl(this.selectedItem, Validators.required),
+      'codigo': new FormControl(this.Historial.codigo, Validators.required),
+      'fecha': new FormControl(`${year}-0${month}-${day}`, Validators.required),
+      'peso': new FormControl(this.Historial.ingreso, Validators.required),
     })
+    this.formRegistro.controls.codigo.disable();
   }
+
+  handleChange(ev) {
+    this.formulario = this.formRegistro.value;
+    this.nombreCosecha = ev.detail.value.nombre;
+    this.codigoCosecha = ev.detail.value.codigo;
+    this.formRegistro.controls.codigo.setValue(this.codigoCosecha);
+    this.formRegistro.controls.codigo.disable();
+    console.log(this.formRegistro);
+  }
+
 
   async Registro() {
     this.formulario = this.formRegistro.value;
@@ -94,269 +121,304 @@ export class ModalCosechaPage implements OnInit {
   async saveProfile() {
     this.formulario = this.formRegistro.value;
 
-    let date = new Date();
+    var idHistorial = Math.random().toString(36).substr(2, 9);
 
-    this.cosecha = {
-      nombre: this.formulario.nombre,
-      codigo: this.formulario.codigo,
-      fecha: date,
-      peso_stock: this.formulario.peso,
-      lote: date.getMonth() + 1,
+    let loteCalculado = new Date().getMonth() + 1;
+
+    const hist={
+      id: idHistorial,
+      ingreso: this.formulario.peso,
+      fecha: new Date().toString(),
       responsable: localStorage.getItem('Usuario'),
     }
 
-    this.proveedor.InsertarCosecha(this.cosecha).then(data => {
+    this.historial.push(hist);
 
-      if (this.proveedor.status) {
-        this.proveedor.BuscarStockCosecha(this.cosecha.nombre, this.cosecha.lote).then(data => {
-          if (Object.entries(data).length != 0) {
-            this.busquedaStock = data[0];
-            var peso = this.formulario.peso;
-            var stock = this.busquedaStock.stock
-            this.cosechaStock = {
-              stock: parseInt(peso) + stock
-            }
-            this.proveedor.ActualizarCosechaStock(this.busquedaStock.id, this.cosechaStock).then(data => {
-              console.log(data);
-              if (this.proveedor.status) {
-                this.MensajeServidor();
-              } else {
-                this.ErrorMensajeServidor();
-                return;
-              }
-            }).catch(data => {
-              console.log(data);
-            });
+    this.proveedor.BuscarStockCosecha('cosechaStock/',this.nombreCosecha, loteCalculado).then(data => {
+      if (Object.entries(data).length != 0) {
+        this.busquedaStock = data[0];
+        var peso = this.formulario.peso;
+        var stock = this.busquedaStock.stock
+        this.cosecha = {
+          stock: parseInt(peso) + stock,
+          idHis: idHistorial,
+          ingreso: this.formulario.peso,
+          fecha: new Date().toString(),
+          responsable: localStorage.getItem('Usuario'),
+        }
+
+        console.log(this.cosecha);
+        this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.busquedaStock.id, this.cosecha).then(data => {
+          console.log(data);
+          if (this.proveedor.status) {
+            this.MensajeServidor();
           } else {
-            this.cosechaStock = {
-              codigo: this.cosecha.codigo,
-              lote: this.cosecha.lote,
-              nombre: this.cosecha.nombre,
-              stock: this.cosecha.peso_stock
-            }
-            this.proveedor.InsertarCosechaStock(this.cosechaStock).then(data => {
-              if (this.proveedor.status) {
-                this.MensajeServidor();
-              } else {
-                this.ErrorMensajeServidor();
-                return;
-              }
-            }).catch(data => {
-              console.log(data);
-            });
+            this.ErrorMensajeServidor();
+            return;
           }
         }).catch(data => {
           console.log(data);
         });
       } else {
-        this.ErrorMensajeServidor();
-        return;
+        this.cosecha = {
+          nombre: this.nombreCosecha,
+          codigo: this.codigoCosecha,
+          lote: loteCalculado,
+          stock: this.formulario.peso,
+          historial: this.historial,
+        }
+        console.log(this.cosecha);
+        this.proveedor.InsertarDocumento('cosechas/post',this.cosecha).then(data => {
+          console.log(data);
+          if (this.proveedor.status) {
+            this.MensajeServidor();
+          } else {
+            this.ErrorMensajeServidor();
+            return;
+          }
+        }).catch(data => {
+          console.log(data);
+        });
       }
     }).catch(data => {
       console.log(data);
     });
   }
 
-  async editProfile() {
+ async editProfile() {
     this.formulario = this.formRegistro.value;
 
-    let date = new Date(this.formulario.fecha);
+    this.fechaHis = new Date(this.formulario.fecha);
+    let loteCalculado = new Date(this.formulario.fecha).getMonth() + 1;
 
-    this.cosecha = {
-      nombre: this.formulario.nombre,
-      codigo: this.formulario.codigo,
-      fecha: this.formulario.fecha,
-      peso_stock: this.formulario.peso,
-      lote: date.getMonth() + 1,
-      responsable: this.Cosecha.responsable,
+    const hist={
+      id: this.Historial.idHistorial,
+      ingreso: this.formulario.peso,
+      fecha: this.fechaHis,
+      responsable: localStorage.getItem('Usuario'),
     }
 
-    if (this.formulario.nombre != this.Cosecha.nombre || this.formulario.peso != this.Cosecha.peso_stock || this.cosecha.lote != this.Cosecha.lote) {
+    this.historial.push(hist);
 
-      this.proveedor.ActualizarCosecha(this.id, this.cosecha).then(data => {
+    if (this.nombreCosecha != this.Historial.nombre || this.formulario.peso != this.Historial.ingreso || loteCalculado != this.Historial.lote) {
 
-        if (this.proveedor.status) {
-          this.proveedor.BuscarStockCosecha(this.cosecha.nombre, this.cosecha.lote).then(data => {
+        this.proveedor.BuscarStockCosecha('cosechaStock/',this.nombreCosecha, loteCalculado).then(data => {
 
-            if (Object.entries(data).length != 0) {
+          if (Object.entries(data).length != 0) {
 
-              console.log("Cosecha Stock encontrado");
+            this.busquedaStock = data[0];
 
-              if(this.Cosecha.nombre != this.cosecha.nombre || this.cosecha.lote != this.Cosecha.lote){
+            console.log("Cosecha Stock encontrado");
 
-                console.log("Cosecha nombre o lote cambiado");
+            if(this.Historial.nombre != this.nombreCosecha || loteCalculado != this.Historial.lote){
 
-                this.busquedaStock = data[0];
-                var peso = this.formulario.peso;
-                var stock = this.busquedaStock.stock
-                this.cosechaStock = {
-                  stock: parseInt(peso) + stock
+              console.log("Cosecha nombre o lote cambiado");
+
+              this.cosecha = {
+                stock: this.Historial.stock - this.formulario.peso,
+                idHis: this.Historial.idHistorial,
+                ingreso: this.Historial.ingreso,
+                fecha: this.Historial.fecha,
+                responsable: this.Historial.responsable,
+              }
+              console.log(this.cosecha);
+
+              console.log("Eliminando Historial");
+
+              this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
+                console.log(data);
+                if (this.proveedor.status) {
+
+                  var peso = this.formulario.peso;
+                  var stock = this.busquedaStock.stock
+                  this.cosecha = {
+                    stock: parseInt(peso) + stock,
+                    idHis: this.Historial.idHistorial,
+                    ingreso: this.formulario.peso,
+                    fecha: this.fechaHis,
+                    responsable: localStorage.getItem('Usuario'),
+                  }
+                  console.log("Actualizando Cosechas stock");
+
+                  console.log(this.cosecha);
+                  this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.busquedaStock.id, this.cosecha).then(data => {
+                    console.log(data);
+                    if (this.proveedor.status) {
+                      this.MensajeServidor();
+                    } else {
+                      this.ErrorMensajeServidor();
+                      return;
+                    }
+                  }).catch(data => {
+                    console.log(data);
+                  });
+
+                } else {
+                  this.ErrorMensajeServidor();
+                  return;
                 }
-                
-                console.log("Actualizando Cosechas stock");
+              }).catch(data => {
+                console.log(data);
+              });
 
-                this.proveedor.ActualizarCosechaStock(this.busquedaStock.id, this.cosechaStock).then(data => {
+            }else{
+
+              console.log("Cosecha Stock peso cambiado");
+
+              var pesoAnterior = this.Historial.ingreso;
+              var peso = this.formulario.peso;
+
+              if (pesoAnterior > peso) {
+
+                var result = pesoAnterior - peso;
+                var valorstock = this.Historial.stock - result;
+
+                this.cosecha = {
+                  stock: valorstock,
+                  idHis: this.Historial.idHistorial,
+                  ingreso: this.Historial.ingreso,
+                  fecha: this.Historial.fecha,
+                  responsable: this.Historial.responsable,
+                }
+
+                this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
                   console.log(data);
                   if (this.proveedor.status) {
 
-                    console.log("Buscando CosechastockAnterior");
-                    this.proveedor.BuscarStockCosecha(this.Cosecha.nombre, this.Cosecha.lote).then(data => {
-                      
+                    this.cosecha = {
+                      stock: valorstock,
+                      idHis: this.Historial.idHistorial,
+                      ingreso: this.formulario.peso,
+                      fecha: this.fechaHis,
+                      responsable: localStorage.getItem('Usuario'),
+                    }
+                    console.log("Actualizando Cosechas stock");
+
+                    console.log(this.cosecha);
+                    this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.Historial.id, this.cosecha).then(data => {
+                      console.log(data);
                       if (this.proveedor.status) {
-                        this.busquedaStock = data[0];
-                        var stock = this.busquedaStock.stock;
-                        var resultado = stock - this.Cosecha.peso_stock;
-                        this.cosechaStock = {
-                          stock: resultado
-                        }
-                        if(resultado != 0){
-                          console.log("Actualizando CosechastockAnterior");
-                          this.UpdateCosechastock(this.busquedaStock.id, this.cosechaStock);
-                        }else{
-                          console.log("Eliminando CosechastockAnterior");
-                          this.DeleteCosechastock(this.busquedaStock.id);
-                        }  
+                        this.MensajeServidor();
                       } else {
                         this.ErrorMensajeServidor();
                         return;
                       }
                     }).catch(data => {
                       console.log(data);
-                    });               
-      
+                    });
+
                   } else {
                     this.ErrorMensajeServidor();
                     return;
                   }
                 }).catch(data => {
                   console.log(data);
-                });  
-                
+                });
+
 
               }else{
 
-                console.log("Cosecha Stock peso cambiado");
+                var result =  peso - pesoAnterior ;
+                var valorstock = parseInt(this.Historial.stock + result);
 
-                this.busquedaStock = data[0];
-                var pesoAnterior = this.Cosecha.peso_stock;
-                var peso = this.formulario.peso;
-
-                if (pesoAnterior > peso) {
-
-                  var result = pesoAnterior - peso;
-                  var valorstock = this.busquedaStock.stock - result;
-
-                  this.cosechaStock = {
-                    stock: valorstock
-                  }
-                  //testeado
-                  console.log("Cosecha Stock peso menor");
-                  this.UpdateCosechastock(this.busquedaStock.id, this.cosechaStock);
-                }else{
-
-                  var result =  peso - pesoAnterior ;
-                  var valorstock = parseInt(this.busquedaStock.stock)  + result;
-
-                  this.cosechaStock = {
-                    stock: valorstock
-                  }
-                  console.log("Cosecha Stock peso mayor:");
-                  this.UpdateCosechastock(this.busquedaStock.id, this.cosechaStock);
+                this.cosecha = {
+                  stock: valorstock,
+                  idHis: this.Historial.idHistorial,
+                  ingreso: this.Historial.ingreso,
+                  fecha: this.Historial.fecha,
+                  responsable: this.Historial.responsable,
                 }
+
+                console.log("Cosecha Stock peso mayor:");
+                this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
+                  console.log(data);
+                  if (this.proveedor.status) {
+
+                    this.cosecha = {
+                      stock: valorstock,
+                      idHis: this.Historial.idHistorial,
+                      ingreso: this.formulario.peso,
+                      fecha: this.fechaHis,
+                      responsable: localStorage.getItem('Usuario'),
+                    }
+                    console.log("Actualizando Cosechas stock");
+
+                    console.log(this.cosecha);
+                    this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.Historial.id, this.cosecha).then(data => {
+                      console.log(data);
+                      if (this.proveedor.status) {
+                        this.MensajeServidor();
+                      } else {
+                        this.ErrorMensajeServidor();
+                        return;
+                      }
+                    }).catch(data => {
+                      console.log(data);
+                    });
+
+                  } else {
+                    this.ErrorMensajeServidor();
+                    return;
+                  }
+                }).catch(data => {
+                  console.log(data);
+                });
               }
-                
-            }else{
-              this.cosechaStock = {
-                codigo: this.cosecha.codigo,
-                lote: this.cosecha.lote,
-                nombre: this.cosecha.nombre,
-                stock: this.cosecha.peso_stock
+            }
+
+          }else{
+
+            this.cosecha = {
+              stock: this.Historial.stock - this.formulario.peso,
+              idHis: this.Historial.idHistorial,
+              ingreso: this.Historial.ingreso,
+              fecha: this.Historial.fecha,
+              responsable: this.Historial.responsable,
+            }
+            console.log(this.cosecha);
+
+            console.log("Eliminando Historial");
+
+            this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
+
+              this.cosecha = {
+                nombre: this.nombreCosecha,
+                codigo: this.codigoCosecha,
+                lote: loteCalculado,
+                stock: this.formulario.peso,
+                historial: this.historial,
               }
               console.log("Insertando nueva CosechaStock");
-              this.InsertNuevaCosechaStock(this.cosechaStock);
-            }
-          }).catch(data => {
-            console.log(data);
-          });
-        } else {
-          this.ErrorMensajeServidor();
-          return;
-        }
-      }).catch(data => {
-        console.log(data);
-      });
+
+              this.proveedor.InsertarDocumento('cosechas/post',this.cosecha).then(data => {
+                console.log(data);
+                if (this.proveedor.status) {
+                  this.MensajeServidor();
+                } else {
+                  this.ErrorMensajeServidor();
+                  return;
+                }
+              }).catch(data => {
+                console.log(data);
+              });
+            }).catch(data => {
+              console.log(data);
+            });
+
+          }
+        }).catch(data => {
+          console.log(data);
+        });
     } else {
 
       this.closeModal();
     }
   }
 
-  async InsertNuevaCosechaStock(cosechaStock:any){
-    this.proveedor.InsertarCosechaStock(cosechaStock).then(data => {
-      if (this.proveedor.status) {
-        console.log("Buscando CosechastockAnterior");
-        this.SearchCosechastockAnterior(this.Cosecha.nombre, this.Cosecha.lote);    
-      } else {
-        this.ErrorMensajeServidor();
-        return;
-      }
-    }).catch(data => {
-      console.log(data);
-    });
-  }
 
-  async SearchCosechastockAnterior(nombre:any,lote:any){
-    this.proveedor.BuscarStockCosecha(nombre, lote).then(data => {                 
-      if (this.proveedor.status) {
-        this.busquedaStock = data[0];
-        var stock = this.busquedaStock.stock;
-        var resultado =  stock - this.Cosecha.peso_stock;
-        this.cosechaStock = {
-          stock: stock - resultado
-        }
-
-        if(resultado != 0){
-          console.log("Actualizando CosechastockAnterior");
-          this.UpdateCosechastock(this.busquedaStock.id, this.cosechaStock);
-        }else{
-          console.log("Eliminando CosechastockAnterior");
-          this.DeleteCosechastock(this.busquedaStock.id);
-        }  
-      } else {
-        this.ErrorMensajeServidor();
-        return;
-      }
-    }).catch(data => {
-      console.log(data);
-    });  
-  }
-
-  async UpdateCosechastock(id:any,cosechaStock:any){
-    this.proveedor.ActualizarCosechaStock(id,cosechaStock).then(data => {
-      console.log(data);
-      if (this.proveedor.status) {
-        this.MensajeServidor();
-      } else {
-        this.ErrorMensajeServidor();
-        return;
-      }
-    }).catch(data => {
-      console.log(data);
-    }); 
-  }
-
-  
-  async DeleteCosechastock(id:any){
-    this.proveedor.EliminarCosechaStock(id).subscribe(data => {
-      console.log(data);
-      if (this.proveedor.status) {
-        this.MensajeServidor();
-      } else {
-        this.ErrorMensajeServidor();
-        return;
-      }
-    });
-  }
+  /* async ActualizarHistorial(){
+    
+  } */
 
   async MensajeServidor() {
     const alert = await this.alertController.create({

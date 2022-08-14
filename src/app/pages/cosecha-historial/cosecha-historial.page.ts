@@ -11,14 +11,14 @@ import { ProviderService } from 'src/provider/ApiRest/provider.service';
 export class CosechaHistorialPage implements OnInit {
 
   cosechaHistorial:any=[];
+  historial:any;
   cosecha:any;
-  cosechaStock:any;
 
   constructor(public proveedor: ProviderService,
     public alertController: AlertController,
     public navCtrl:NavController,
     public modalController:ModalController,) {
-      
+
     }
 
   ngOnInit() {
@@ -26,24 +26,23 @@ export class CosechaHistorialPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.proveedor.loadHistorialCosecha().then(data => {
-      this.cosechaHistorial=data;
-      console.log(this.cosechaHistorial)
-    }).catch(data => {
-      console.log(data);
-    })
+   this.loadDatos();
   }
-  
-  async EditCosecha(id:any){
-    this.proveedor.BuscarCosecha(id).then(data => {
-      this.cosecha= data;
-      this.ModelPresent(id);
+
+  loadDatos(){
+    this.proveedor.obtenerDocumentos('cosechasHistorial/documents').then(data => {
+      this.cosechaHistorial=data;
     }).catch(data => {
       console.log(data);
     })
   }
 
-  async ValidarDelete(id:any,nombre:any,lote:any,peso:any){
+   async EditCosecha(historial:any){
+      this.historial= historial;
+      this.ModelPresent();
+   }
+
+  async ValidarDelete(historial:any){
     const alert = await this.alertController.create({
       header: 'Eliminar',
       message: '¿Seguro que desea elimar?',
@@ -55,7 +54,30 @@ export class CosechaHistorialPage implements OnInit {
         }, {
           text: 'Si',
           handler: () => {
-            this.SearchCosechaStock(id,nombre,lote,peso);
+
+            var ingreso = historial.ingreso;
+            var stock = historial.stock;
+            var result =  stock - ingreso ;
+
+            this.cosecha = {
+              stock: result,
+              idHis: historial.idHistorial,
+              ingreso: historial.ingreso,
+              fecha: historial.fecha,
+              responsable: historial.responsable,
+            }
+            this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', historial.id,this.cosecha).then(data => {
+              console.log(data);
+              if (this.proveedor.status) {
+                this.loadDatos();
+                this.MensajeServidor();
+              } else {
+                this.ErrorMensajeServidor();
+                return;
+              }
+            }).catch(data => {
+              console.log(data);
+            });
           }
         }
       ]
@@ -64,67 +86,16 @@ export class CosechaHistorialPage implements OnInit {
     await alert.present();
   }
 
-  async SearchCosechaStock(id:any,nombre:any,lote:any,peso:any){
-    
-    this.proveedor.BuscarStockCosecha(nombre, lote).then(data => {              
-      
-        var busquedaStock = data[0];
-        var resultado = busquedaStock.stock - peso;
-        this.cosechaStock = {
-          stock: resultado
-        }
-        if(resultado != 0){
-          console.log("Actualizando CosechastockAnterior");
-          this.UpdateCosechastock(busquedaStock.id, this.cosechaStock);
-          this.DeleteCosecha(id);
-        }else{
-          console.log("Eliminando CosechastockAnterior");
-          this.DeleteCosechastock(busquedaStock.id);
-          this.DeleteCosecha(id);
-        }  
-      
-    }).catch(data => {
-      console.log(data);
-      return this.ErrorMensajeServidor();
-    });  
-  }
-
-  async UpdateCosechastock(id:any,cosechaStock:any){
-    this.proveedor.ActualizarCosechaStock(id,cosechaStock).then(data => {
-      console.log(data);
-    }).catch(data => {
-      console.log(data);
-      return this.ErrorMensajeServidor();
-    }); 
-  }
-
-  async DeleteCosecha(id:any){
-    this.proveedor.EliminarCosecha(id).subscribe(data => {
-      console.log(data+" "+this.proveedor.status);
-      this.ionViewWillEnter();
-      if(this.proveedor.status){
-        this.MensajeServidor();       
-      }else{
-        this.ErrorMensajeServidor();
-      }
-    })
-  }
-
-  async DeleteCosechastock(id:any){
-    this.proveedor.EliminarCosechaStock(id).subscribe(data => {
-      console.log(data);
-    });
-  }
 
 
-  async ModelPresent(id:any){
+
+  async ModelPresent(){
     const modal = await this.modalController.create({
       component: ModalCosechaPage,
       cssClass: 'modalCosecha',
       componentProps:{
-        'Cosecha':this.cosecha,
+        'Historial':this.historial,
         'type':'Editar Registro',
-        'id' : id,
         'accion': true,
       }
     });

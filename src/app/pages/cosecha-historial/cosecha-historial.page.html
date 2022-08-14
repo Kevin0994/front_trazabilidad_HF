@@ -28,19 +28,19 @@
           <td>{{cosecha.nombre}}</td>
           <td>{{cosecha.codigo}}</td>
           <td>{{cosecha.fecha}}</td>
-          <td>{{cosecha.peso_stock}} kg</td>
+          <td>{{cosecha.ingreso}} kg</td>
           <td>{{cosecha.lote}}</td>
           <td>{{cosecha.responsable}}</td>
           <td>
             <input type="button" 
               class="btn btn-warning btn-sm btn-edit"
               value="Edit"
-              (click)="EditCosecha(cosecha.id)"
+              (click)="EditCosecha(cosecha)"
             />
             <input type="button"
               class="btn btn-danger btn-sm btn-del"
               value="Delete"
-              (click)="ValidarDelete(cosecha.id,cosecha.nombre,cosecha.lote,cosecha.peso_stock)"
+              (click)="ValidarDelete(cosecha)"
             />
           </td>
         </tr>

@@ -18,21 +18,12 @@ export class CosechaPage implements OnInit {
     public alertController: AlertController,
     public navCtrl:NavController,
     public modalController:ModalController,) {
-      
     }
 
   ngOnInit() {
 
   }
 
-  // Función reemplazada por el método génetico de la API
-  // ionViewWillEnter(){
-  //   this.proveedor.loadCosechas().then(data => {
-  //     this.cosechas=data;
-  //   }).catch(data => {
-  //     console.log(data);
-  //   })
-  // }
 
   ionViewWillEnter(){
     this.proveedor.obtenerDocumentos('cosechas/documents').then(data => {

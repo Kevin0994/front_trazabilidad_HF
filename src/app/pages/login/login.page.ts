@@ -55,7 +55,6 @@ export class LoginPage implements OnInit {
       )
       return;
     }
-    
   }
 
   async ValidarUsuario() {

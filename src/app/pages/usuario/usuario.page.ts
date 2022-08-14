@@ -27,7 +27,11 @@ export class UsuarioPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.proveedor.loadUsuarios().then(data => {
+    this.loadDatos();
+  }
+
+  loadDatos(){
+    this.proveedor.obtenerDocumentos('usuarios/documents').then(data => {
       this.usuarios=data;
     }).catch(data => {
       console.log(data);
@@ -51,7 +55,7 @@ export class UsuarioPage implements OnInit {
   }
 
   async EditUsuario(id:any){
-    this.proveedor.BuscarUsuario(id).then(data => {
+    this.proveedor.obtenerDocumentosPorId('usuario/',id).then(data => {
       this.usuario= data;
       this.ModelPresent(id);
     }).catch(data => {
@@ -89,9 +93,10 @@ export class UsuarioPage implements OnInit {
         }, {
           text: 'Si',
           handler: () => {
-            this.proveedor.EliminarUsuario(id).subscribe(data => {
+            this.proveedor.eliminarDocumento('usuario/documents/',id).subscribe(data => {
               this.ionViewWillEnter();
               if(this.proveedor.status){
+                this.loadDatos();
                 this.ErrorMensajeServidor();
               }else{
                 this.MensajeServidor();
