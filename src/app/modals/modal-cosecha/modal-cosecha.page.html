@@ -5,7 +5,7 @@
       <ion-button (click)="closeModal()">
         <ion-icon name="arrow-back-circle-outline"></ion-icon>
       </ion-button>
-      Cerrar
+      Back
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -15,7 +15,8 @@
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="Registro()"  id="form">
       <div>
         <ion-select formControlName="nombre" placeholder="Seleccione un nombre">
-          <ion-select-option *ngFor="let cosecha of lista">{{cosecha.nombre}}</ion-select-option>
+          <ion-select-option *ngFor="let cosecha of lista">
+            {{cosecha.nombre}}</ion-select-option>
         </ion-select>
       </div>
       <input 

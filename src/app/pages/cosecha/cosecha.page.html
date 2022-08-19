@@ -2,8 +2,8 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
-      <ion-label>Cosecha</ion-label>
     </ion-buttons>
+    <ion-label>Cosecha</ion-label>
   </ion-toolbar>
 </ion-header>
  
@@ -30,7 +30,7 @@
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let cosecha of cosechas">
-          
+
           <td>{{cosecha.nombre}}</td>
           <td>{{cosecha.codigo}}</td>
           <td>{{cosecha.stock}} kg</td>

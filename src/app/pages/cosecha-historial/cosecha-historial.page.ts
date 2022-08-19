@@ -10,15 +10,14 @@ import { ProviderService } from 'src/provider/ApiRest/provider.service';
 })
 export class CosechaHistorialPage implements OnInit {
 
-  cosechaHistorial:any=[];
-  cosecha:any;
-  cosechaStock:any;
+  cosechaHistorial: any=[];
+  cosecha: any;
+  cosechaStock: any;
 
   constructor(public proveedor: ProviderService,
     public alertController: AlertController,
-    public navCtrl:NavController,
-    public modalController:ModalController,) {
-      
+    public navCtrl: NavController,
+    public modalController: ModalController,) {
     }
 
   ngOnInit() {
@@ -26,27 +25,25 @@ export class CosechaHistorialPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.proveedor.loadHistorialCosecha().then(data => {
+    this.proveedor.obtenerDocumentos('cosechasHistorial/documents').then(data => {
       this.cosechaHistorial=data;
-      console.log(this.cosechaHistorial)
     }).catch(data => {
       console.log(data);
-    })
+    });
   }
-  
-  async EditCosecha(id:any){
+  async EditCosecha(id: any){
     this.proveedor.BuscarCosecha(id).then(data => {
       this.cosecha= data;
       this.ModelPresent(id);
     }).catch(data => {
       console.log(data);
-    })
+    });
   }
 
-  async ValidarDelete(id:any,nombre:any,lote:any,peso:any){
+  async ValidarDelete(id: any, nombre: any, lote: any, peso: any){
     const alert = await this.alertController.create({
       header: 'Eliminar',
-      message: '¿Seguro que desea elimar?',
+      message: '¿Seguro que desea eliminar?',
       buttons: [
         {
           text: 'No',
@@ -64,16 +61,15 @@ export class CosechaHistorialPage implements OnInit {
     await alert.present();
   }
 
-  async SearchCosechaStock(id:any,nombre:any,lote:any,peso:any){
-    
-    this.proveedor.BuscarStockCosecha(nombre, lote).then(data => {              
-      
-        var busquedaStock = data[0];
-        var resultado = busquedaStock.stock - peso;
+  async SearchCosechaStock(id: any, nombre: any, lote: any, peso: any){
+
+    this.proveedor.BuscarStockCosecha(nombre, lote).then(data => {
+        const busquedaStock = data[0];
+        const resultado = busquedaStock.stock - peso;
         this.cosechaStock = {
           stock: resultado
         }
-        if(resultado != 0){
+        if(resultado !== 0){
           console.log("Actualizando CosechastockAnterior");
           this.UpdateCosechastock(busquedaStock.id, this.cosechaStock);
           this.DeleteCosecha(id);
@@ -81,43 +77,43 @@ export class CosechaHistorialPage implements OnInit {
           console.log("Eliminando CosechastockAnterior");
           this.DeleteCosechastock(busquedaStock.id);
           this.DeleteCosecha(id);
-        }  
-      
+        }
+
     }).catch(data => {
       console.log(data);
       return this.ErrorMensajeServidor();
-    });  
+    });
   }
 
-  async UpdateCosechastock(id:any,cosechaStock:any){
+  async UpdateCosechastock(id: any, cosechaStock: any){
     this.proveedor.ActualizarCosechaStock(id,cosechaStock).then(data => {
       console.log(data);
     }).catch(data => {
       console.log(data);
       return this.ErrorMensajeServidor();
-    }); 
+    });
   }
 
-  async DeleteCosecha(id:any){
+  async DeleteCosecha(id: any){
     this.proveedor.EliminarCosecha(id).subscribe(data => {
-      console.log(data+" "+this.proveedor.status);
+      console.log(data + " " + this.proveedor.status);
       this.ionViewWillEnter();
       if(this.proveedor.status){
-        this.MensajeServidor();       
+        this.MensajeServidor();
       }else{
         this.ErrorMensajeServidor();
       }
-    })
+    });
   }
 
-  async DeleteCosechastock(id:any){
+  async DeleteCosechastock(id: any){
     this.proveedor.EliminarCosechaStock(id).subscribe(data => {
       console.log(data);
     });
   }
 
 
-  async ModelPresent(id:any){
+  async ModelPresent(id: any){
     const modal = await this.modalController.create({
       component: ModalCosechaPage,
       cssClass: 'modalCosecha',
@@ -130,7 +126,7 @@ export class CosechaHistorialPage implements OnInit {
 
     modal.onDidDismiss().then(data => {
       this.ionViewWillEnter();
-    })
+    });
 
     return await modal.present();
   }
