@@ -19,37 +19,43 @@ export class HomePage implements OnInit{
     private menu: MenuController,
     private cookieService: CookieService
   ){
-    this.menu.enable(true);
-    this.ValidarRol();    
+    this.menu.enable(true);   
   }
 
   ngOnInit() {
-    this.proveedor.obtenerDocumentos('cosechas/documents').then(cosecha => {
-      this.cosechas = cosecha;
-      console.log(cosecha);
-    });
+    this.menu.enable(true);
+    this.ValidarRol();
   }
 
+  ngAfterViewInit(){
 
+  }
 
   ValidarRol(){
-    // this.proveedor.BuscarRolUsuario(this.cookieService.get('idUsuario')).then(data => {
-    //   console.log(data);
-    //   if(data != true){
-    //     document.getElementById("admin").style.display = "none";
-    //   }else{
-    //     document.getElementById("admin").style.display = "block";
-    //   }
-    // }).catch(data => {
-    //   console.log(data);
-    // })
-
-    this.proveedor.obtenerDocumentosPorId('usuario/documents/rol',this.cookieService.get('idUsuario')).then(data => {
+    this.proveedor.obtenerDocumentosPorId('usuario/documents/rol/',this.cookieService.get('idUsuario')).then(data => {
       console.log(data);
-      if(data != true){
-        document.getElementById("admin").style.display = "none";
+
+      if(data != "Administrador"){
+
+        if(data == 'Empleado Bodega'){
+          console.log("data");
+          document.getElementById('bodega').style.display = "block";
+          document.getElementById('fabrica').style.display = "none";
+          document.getElementById('admin').style.display = "none";
+          document.getElementById('labelAdmin').style.display = "none";
+        }else{
+
+          document.getElementById('bodega').style.display = "none";
+          document.getElementById('fabrica').style.display = "block";
+          document.getElementById('admin').style.display = "none";
+          document.getElementById('labelAdmin').style.display = "none";
+        }
+
       }else{
-        document.getElementById("admin").style.display = "block";
+        document.getElementById('bodega').style.display = "block";
+        document.getElementById('fabrica').style.display = "block";
+        document.getElementById('admin').style.display = "block";
+        document.getElementById('labelAdmin').style.display = "block";
       }
     }).catch(data => {
       console.log(data);
@@ -57,7 +63,7 @@ export class HomePage implements OnInit{
   }
 
   async logout(){
-    
+
     const alert = await this.alertController.create({
       header: 'Salir',
       message: '¿Seguro desea salir?',

@@ -19,7 +19,7 @@ export class ModalUsuarioPage implements OnInit {
   public usuario:any;
 
   constructor(public proveedor: ProviderService,
-    public fb: FormBuilder, 
+    public fb: FormBuilder,
     public navCtrl:NavController,
     public alertController: AlertController,
     public modalController:ModalController,) { }
@@ -83,22 +83,22 @@ export class ModalUsuarioPage implements OnInit {
     }
 
     if(this.type == 'Nuevo Registro'){
-      
-      this.proveedor.InsertarUsuario(this.usuario).then(data => {
+
+      this.proveedor.InsertarDocumento('usuario/post',this.usuario).then(data => {
         console.log(data);
-        
+
         if(this.proveedor.status){
           this.MensajeServidor();
         }else{
           this.ErrorMensajeServidor();
-          return; 
+          return;
         }
       }).catch(data => {
         console.log(data);
       });
     }else{
 
-      this.proveedor.ActualizarUsuario(this.id,this.usuario).then(data => {
+      this.proveedor.actualizarDocumento('usuario/documents/',this.id,this.usuario).then(data => {
         console.log(data);
         
         if(this.proveedor.status){

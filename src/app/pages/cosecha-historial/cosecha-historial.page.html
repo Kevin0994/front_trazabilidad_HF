@@ -12,6 +12,7 @@
     <table class="table table-white">
       <thead class="table-header text-light">
         <tr>
+      
           <th scope="col">Nombre</th>
           <th scope="col">Codigo</th>
           <th scope="col">Fecha</th>
@@ -23,22 +24,23 @@
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let cosecha of cosechaHistorial">
+          
           <td>{{cosecha.nombre}}</td>
           <td>{{cosecha.codigo}}</td>
-          <td>{{cosecha.fecha}}</td>
-          <td>{{cosecha.peso_stock}} kg</td>
+          <td>{{cosecha.fecha.substr(0, 10)}}</td>
+          <td>{{cosecha.ingreso}} kg</td>
           <td>{{cosecha.lote}}</td>
           <td>{{cosecha.responsable}}</td>
           <td>
             <input type="button" 
               class="btn btn-warning btn-sm btn-edit"
-              value="Editar"
-              (click)="EditCosecha(cosecha.id)"
+              value="Edit"
+              (click)="EditCosecha(cosecha)"
             />
             <input type="button"
               class="btn btn-danger btn-sm btn-del"
-              value="Eliminar"
-              (click)="ValidarDelete(cosecha.id,cosecha.nombre,cosecha.lote,cosecha.peso_stock)"
+              value="Delete"
+              (click)="ValidarDelete(cosecha)"
             />
           </td>
         </tr>

@@ -16,7 +16,7 @@ import { CookieService } from 'ngx-cookie-service';
     AppComponent,
   ],
   imports: [
-    BrowserModule, 
+    BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
     FormsModule,

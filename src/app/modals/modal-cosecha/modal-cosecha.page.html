@@ -14,26 +14,30 @@
   <div class="container" >
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="Registro()"  id="form">
       <div>
+<<<<<<< HEAD
         <ion-select formControlName="nombre" placeholder="Seleccione un nombre">
           <ion-select-option *ngFor="let cosecha of lista">
             {{cosecha.nombre}}</ion-select-option>
+=======
+        <ion-select (ionChange)="handleChange($event)"  formControlName="nombre" placeholder={{Historial.nombre}}>
+          <ion-select-option  *ngFor="let cosecha of lista"  [value]="cosecha">{{cosecha.nombre}}</ion-select-option>
+>>>>>>> 42563cf6ba68a7eb9ccd0f2665366f034ea8daf8
         </ion-select>
       </div>
-      <input 
-        type="number" 
-        formControlName="codigo" 
-        placeholder="Código" 
+      <input
+        formControlName="codigo"
+        placeholder="Código"
         class="form-input"
       >
-      <input 
+      <input *ngIf="accion"
         type="date"
-        formControlName="fecha" 
+        formControlName="fecha"
         class="form-input"
       >
-      <input 
+      <input
         type="number"
-        formControlName="peso" 
-        class="form-input" 
+        formControlName="peso"
+        class="form-input"
         placeholder="Peso stock"
       >
       <ion-button type="submit" expand="block" shape="round" class="button-submit">
