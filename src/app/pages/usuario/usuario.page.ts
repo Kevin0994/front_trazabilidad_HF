@@ -54,23 +54,18 @@ export class UsuarioPage implements OnInit {
     return await modal.present();
   }
 
-  async EditUsuario(id:any){
-    this.proveedor.obtenerDocumentosPorId('usuario/',id).then(data => {
-      this.usuario= data;
-      this.ModelPresent(id);
-    }).catch(data => {
-      console.log(data);
-    })
+  async EditUsuario(usuario:any){
+    this.usuario= usuario;
+    this.ModelPresent();
   }
 
-  async ModelPresent(id:any){
+  async ModelPresent(){
     const modal = await this.modalController.create({
       component: ModalUsuarioPage,
       cssClass: 'modalCosecha',
       componentProps:{
         'Usuario':this.usuario,
         'type':'Editar Registro',
-        'id' : id
       }
     });
 

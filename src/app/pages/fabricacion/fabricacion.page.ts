@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { AlertController, NavController, ModalController } from '@ionic/angular';
+import { ModalFabricacionPage } from '../../modals/modal-fabricacion/modal-fabricacion.page'
 
 @Component({
   selector: 'app-fabricacion',
@@ -13,9 +15,13 @@ export class FabricacionPage implements OnInit {
 
 categorias:any=[];
 productos:any=[];
+categoriaProducto:any;
 
   constructor(private renderer2: Renderer2,
-    public proveedor: ProviderService,) { }
+    public proveedor: ProviderService,
+    public alertController: AlertController,
+    public navCtrl:NavController,
+    public modalController:ModalController,) { }
 
   ngOnInit() {
   }
@@ -47,8 +53,54 @@ productos:any=[];
     })
   }
 
-  openProduct(productos:any){
+  openProduct(productos:any,categoria:any){
     this.productos=productos;
+    this.categoriaProducto=categoria;
     console.log(this.productos);
   }
+
+  BuscarMateriaPrima(producto:any){
+    this.proveedor.obtenerDocumentosPorId('cosechas/documents/',producto.materiaPrima).then(data => {
+      const materiaPrima = data;
+      this.openModal(producto, materiaPrima);
+    }).catch(data => {
+      console.log(data);
+    })
+  }
+
+
+  async openModal(producto:any, materiaPrima:any){
+    const modal = await this.modalController.create({
+      component: ModalFabricacionPage,
+      cssClass: 'modalCosecha',
+      componentProps:{
+        'Producto': producto,
+        'Categoria': this.categoriaProducto,
+        'MateriaPrima': materiaPrima,
+      }
+    });
+
+    return await modal.present();
+  }
+
+  async MensajeServidor(){
+    const alert = await this.alertController.create({
+      header: 'Eliminar',
+      message: 'La eliminacion se completo con exito',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  async ErrorMensajeServidor(){
+    const alert = await this.alertController.create({
+      header: 'Error del servidor',
+      message: 'error al conectarse con el servidor',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
 }

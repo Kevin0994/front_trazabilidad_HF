@@ -13,25 +13,38 @@ export class ModalUsuarioPage implements OnInit {
 
   @Input() Usuario: any="init";
   @Input() type: any;
-  @Input() id: any;
-  formRegistro: FormGroup;
-  public formulario:any;
-  public usuario:any;
+  public formRegistro: FormGroup;
+  private formulario:any;
+  private usuario:any;
+  private nombreRol:any;
+  private lista: any;
 
   constructor(public proveedor: ProviderService,
     public fb: FormBuilder,
     public navCtrl:NavController,
     public alertController: AlertController,
-    public modalController:ModalController,) { }
+    public modalController:ModalController,) { 
+
+    }
 
   ngOnInit() {
     if(this.type == 'Nuevo Registro'){
       this.newForm();
     }else{
-      this.newForm();
+      this.nombreRol=this.Usuario.rol
       this.editForm();
     }
   }
+
+  ionViewWillEnter() {
+    this.proveedor.obtenerDocumentos('listaRoles/documents').then(data => {
+      this.lista = data;
+      console.log( this.Usuario);
+    }).catch(data => {
+      console.log(data);
+    })
+  }
+
 
   closeModal(){
     this.modalController.dismiss();
@@ -60,6 +73,11 @@ export class ModalUsuarioPage implements OnInit {
     })
   }
 
+
+  handleChange(ev) {
+    this.nombreRol = ev.detail.value;
+  }
+
   async saveProfile(){
     this.formulario = this.formRegistro.value;
     if(this.formRegistro.invalid){
@@ -78,11 +96,12 @@ export class ModalUsuarioPage implements OnInit {
       apellidos: this.formulario.apellidos,
       email: this.formulario.email,
       userName: this.formulario.userName,
-      rol: this.formulario.rol,
+      rol: this.nombreRol,
       password: this.formulario.password,
     }
 
     if(this.type == 'Nuevo Registro'){
+
 
       this.proveedor.InsertarDocumento('usuario/post',this.usuario).then(data => {
         console.log(data);
@@ -98,9 +117,10 @@ export class ModalUsuarioPage implements OnInit {
       });
     }else{
 
-      this.proveedor.actualizarDocumento('usuario/documents/',this.id,this.usuario).then(data => {
+
+      this.proveedor.actualizarDocumento('usuario/documents/',this.Usuario.id,this.usuario).then(data => {
         console.log(data);
-        
+
         if(this.proveedor.status){
           this.MensajeServidor();
         }else{
@@ -112,6 +132,7 @@ export class ModalUsuarioPage implements OnInit {
       });
     }
   }
+
 
   async MensajeServidor(){
     const alert = await this.alertController.create({

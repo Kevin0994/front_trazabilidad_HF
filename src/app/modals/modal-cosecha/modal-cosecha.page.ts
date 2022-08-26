@@ -127,7 +127,7 @@ export class ModalCosechaPage implements OnInit {
 
     const hist={
       id: idHistorial,
-      ingreso: this.formulario.peso,
+      ingreso: this.formulario.peso * 1000,
       fecha: new Date().toString(),
       responsable: localStorage.getItem('Usuario'),
     }
@@ -140,9 +140,9 @@ export class ModalCosechaPage implements OnInit {
         var peso = this.formulario.peso;
         var stock = this.busquedaStock.stock
         this.cosecha = {
-          stock: parseInt(peso) + stock,
+          stock: (parseInt(peso) + stock) * 1000,
           idHis: idHistorial,
-          ingreso: this.formulario.peso,
+          ingreso: this.formulario.peso * 1000,
           fecha: new Date().toString(),
           responsable: localStorage.getItem('Usuario'),
         }
@@ -164,7 +164,7 @@ export class ModalCosechaPage implements OnInit {
           nombre: this.nombreCosecha,
           codigo: this.codigoCosecha,
           lote: loteCalculado,
-          stock: this.formulario.peso,
+          stock: this.formulario.peso * 1000,
           historial: this.historial,
         }
         console.log(this.cosecha);
@@ -193,7 +193,7 @@ export class ModalCosechaPage implements OnInit {
 
     const hist={
       id: this.Historial.idHistorial,
-      ingreso: this.formulario.peso,
+      ingreso: this.formulario.peso * 1000,
       fecha: this.fechaHis,
       responsable: localStorage.getItem('Usuario'),
     }
@@ -215,9 +215,9 @@ export class ModalCosechaPage implements OnInit {
               console.log("Cosecha nombre o lote cambiado");
 
               this.cosecha = {
-                stock: this.Historial.stock - this.formulario.peso,
+                stock: (this.Historial.stock - this.formulario.peso) * 1000,
                 idHis: this.Historial.idHistorial,
-                ingreso: this.Historial.ingreso,
+                ingreso: this.Historial.ingreso * 1000,
                 fecha: this.Historial.fecha,
                 responsable: this.Historial.responsable,
               }
@@ -232,7 +232,7 @@ export class ModalCosechaPage implements OnInit {
                   var peso = this.formulario.peso;
                   var stock = this.busquedaStock.stock
                   this.cosecha = {
-                    stock: parseInt(peso) + stock,
+                    stock: (parseInt(peso) + stock) * 1000,
                     idHis: this.Historial.idHistorial,
                     ingreso: this.formulario.peso,
                     fecha: this.fechaHis,
@@ -274,9 +274,9 @@ export class ModalCosechaPage implements OnInit {
                 var valorstock = this.Historial.stock - result;
 
                 this.cosecha = {
-                  stock: valorstock,
+                  stock: valorstock * 1000,
                   idHis: this.Historial.idHistorial,
-                  ingreso: this.Historial.ingreso,
+                  ingreso: this.Historial.ingreso * 1000,
                   fecha: this.Historial.fecha,
                   responsable: this.Historial.responsable,
                 }
@@ -286,9 +286,9 @@ export class ModalCosechaPage implements OnInit {
                   if (this.proveedor.status) {
 
                     this.cosecha = {
-                      stock: valorstock,
+                      stock: valorstock * 1000,
                       idHis: this.Historial.idHistorial,
-                      ingreso: this.formulario.peso,
+                      ingreso: this.formulario.peso * 1000,
                       fecha: this.fechaHis,
                       responsable: localStorage.getItem('Usuario'),
                     }
@@ -319,15 +319,17 @@ export class ModalCosechaPage implements OnInit {
               }else{
 
                 var result =  peso - pesoAnterior ;
-                var valorstock = parseInt(this.Historial.stock + result);
+                var vstock = this.Historial.stock + result;
 
                 this.cosecha = {
-                  stock: valorstock,
+                  stock: vstock * 1000,
                   idHis: this.Historial.idHistorial,
-                  ingreso: this.Historial.ingreso,
+                  ingreso: this.Historial.ingreso * 1000,
                   fecha: this.Historial.fecha,
                   responsable: this.Historial.responsable,
                 }
+
+                console.table(this.Historial)
 
                 console.log("Cosecha Stock peso mayor:");
                 this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
@@ -335,9 +337,9 @@ export class ModalCosechaPage implements OnInit {
                   if (this.proveedor.status) {
 
                     this.cosecha = {
-                      stock: valorstock,
+                      stock: vstock * 1000,
                       idHis: this.Historial.idHistorial,
-                      ingreso: this.formulario.peso,
+                      ingreso: this.formulario.peso * 1000,
                       fecha: this.fechaHis,
                       responsable: localStorage.getItem('Usuario'),
                     }
@@ -369,9 +371,9 @@ export class ModalCosechaPage implements OnInit {
           }else{
 
             this.cosecha = {
-              stock: this.Historial.stock - this.formulario.peso,
+              stock: (this.Historial.stock - this.formulario.peso) * 1000,
               idHis: this.Historial.idHistorial,
-              ingreso: this.Historial.ingreso,
+              ingreso: this.Historial.ingreso * 1000,
               fecha: this.Historial.fecha,
               responsable: this.Historial.responsable,
             }
@@ -385,7 +387,7 @@ export class ModalCosechaPage implements OnInit {
                 nombre: this.nombreCosecha,
                 codigo: this.codigoCosecha,
                 lote: loteCalculado,
-                stock: this.formulario.peso,
+                stock: this.formulario.peso * 1000,
                 historial: this.historial,
               }
               console.log("Insertando nueva CosechaStock");
