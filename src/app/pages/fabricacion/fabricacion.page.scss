@@ -1,0 +1,60 @@
+ion-content {
+  --background: var(--ion-color-green);
+
+  .containerButtons{
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    height: 40%;
+    top: 30%;
+
+    ion-button{
+      padding: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .buttonSemi{
+      --background: #678B17;
+      --border-radius: 41px;
+      color: white;
+      width: 262px;
+      height: 302px;
+    }
+
+    .buttonFinal{
+      --background: #FDA92A;
+      --border-radius: 41px;
+      color: white;
+      width: 262px;
+      height: 302px;
+    }
+  }
+
+  ion-slide{
+    .categorias {
+      padding: 0.5rem;
+    }
+  }
+}
+
+ion-toolbar {
+  text-align: center;
+  font-weight: bold;
+}
+
+ion-card {
+  border-radius: 1rem;
+  margin: 0.5rem;
+  box-shadow: -6px 7px 13px rgba(0, 0, 0, 0.25);
+
+  ion-card-content {
+    color: rgba(0, 0, 0, 0.745);
+
+    h3 {
+      text-align: center;
+      font-size: 1rem;
+    }
+  }
+}
+

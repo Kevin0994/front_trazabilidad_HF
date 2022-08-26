@@ -4,7 +4,6 @@ import { IngresadoGuard } from './ingresado.guard';
 import { NoIngresadoGuard } from './no-ingresado.guard';
 
 const routes: Routes = [
-  
   {
     path: '',
     redirectTo: 'login',
@@ -49,9 +48,10 @@ const routes: Routes = [
     path: 'cosecha-historial',
     loadChildren: () => import('./pages/cosecha-historial/cosecha-historial.module').then( m => m.CosechaHistorialPageModule),
     canActivate: [IngresadoGuard]
-  },  {
+  },
+  {
     path: 'fabricacion',
-    loadChildren: () => import('./pages/fabricacion/fabricacion.module').then( m => m.FabricacionPageModule)
+    loadChildren: () => import('./pages/fabricacion/fabricacion.module').then( m => m.FabricacionPageModule),
   },
   {
     path: 'procesos',
