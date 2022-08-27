@@ -11,10 +11,10 @@ export class ProcesosPage implements OnInit {
 
   public productos:any;
 
-  constructor(public proveedor: ProviderService,
-    public alertController: AlertController,
-    public navCtrl:NavController,
-    public modalController:ModalController) { }
+  constructor(private proveedor: ProviderService,
+    private alertController: AlertController,
+    private navCtrl:NavController,
+    private modalController:ModalController) { }
 
   ngOnInit() {
 
@@ -23,6 +23,7 @@ export class ProcesosPage implements OnInit {
   ionViewWillEnter(){
     this.proveedor.obtenerDocumentos('productosSemi/documents').then(data => {
       this.productos=data;
+      console.table(this.productos);
     }).catch(data => {
       console.log(data);
     })

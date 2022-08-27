@@ -62,14 +62,9 @@ export class ModalFabricacionPage implements OnInit {
           nombre_mp: this.MateriaPrima.nombre, //nombre matria prima
           nombre_ps: this.Producto.nombre, //nombre producto semifinal
           lote_mp: this.loteMateriaPrima, //lote materia prima
-          lote_ps: new Date(this.formulario.fecha).getMonth() + 1, //lote producto semifinal
+          lote_ps: new Date().getMonth() + 1, //lote producto semifinal
           peso_mp: this.formulario.pesoMateriaPrima, //peso materia prima
-          n_proceso: 1, //numero de proceso
           fechaEntrada: new Date().toLocaleString(),
-          fechaSalida: 'na',
-          n_fundas: this.formulario.fundas, //numero de fundas
-          peso_ps: this.formulario.pesoFinal, //peso producto semifinal
-          conversion: 'conversion',
           responsable: localStorage.getItem('Usuario'),
           estado: 'En proceso',
         }
@@ -82,14 +77,14 @@ export class ModalFabricacionPage implements OnInit {
           if(this.proveedor.status){
             this.MensajeServidor();
           }else{
-            this.ErrorMensajeServidor();
+            this.ErrorMensajeServidor('Error al conectar con el servidor');
             return;
           }
         }).catch(data => {
           console.log(data);
         });
       }else{
-        this.ErrorMensajeServidor();
+        this.ErrorMensajeServidor(this.loteMateriaPrima.error[0]);
         return;
       }
     }).catch(data => {
@@ -105,8 +100,6 @@ export class ModalFabricacionPage implements OnInit {
       'nombre': new FormControl(this.Producto.nombre,Validators.required),
       'materiaPrima': new FormControl(this.MateriaPrima.nombre,Validators.required),
       'pesoMateriaPrima': new FormControl("",Validators.required),
-      'fundas': new FormControl("",Validators.required),
-      'pesoFinal': new FormControl("",Validators.required),
     })
   }
 
@@ -126,10 +119,10 @@ export class ModalFabricacionPage implements OnInit {
     await alert.present();
   }
 
-  async ErrorMensajeServidor(){
+  async ErrorMensajeServidor(mensaje:any){
     const alert = await this.alertController.create({
       header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
+      message: mensaje.messege + '- cantidad faltante: '+mensaje.stock,
       buttons: ['OK']
     });
 
