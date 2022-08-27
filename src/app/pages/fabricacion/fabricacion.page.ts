@@ -9,7 +9,15 @@ import { ModalFabricacionPage } from '../../modals/modal-fabricacion/modal-fabri
   styleUrls: ['./fabricacion.page.scss'],
 })
 export class FabricacionPage implements OnInit {
+  public showSemi: boolean = false;
+  public showButtons: boolean = true;
 
+categoriaSlides = {
+  slidesPerView: 3,
+};
+  categorias: any=[];
+  productos: any=[];
+  constructor(public proveedor: ProviderService,) { }
 @ViewChild('buttons') botones: ElementRef ;
 @ViewChild('PageSemi') pageSemi: ElementRef ;
 
@@ -30,6 +38,7 @@ categoriaProducto:any;
     this.LoadCategorias();
   }
 
+
   openPage(){
     const Botones = this.botones.nativeElement;
     const PageSemi = this.pageSemi.nativeElement;
@@ -43,13 +52,12 @@ categoriaProducto:any;
     this.renderer2.setStyle(PageSemi,'display','none');
     this.renderer2.setStyle(Botones,'display','block');
   }
-
   LoadCategorias(){
     this.proveedor.obtenerDocumentos('categoriaProducto/documents').then(data => {
-      console.log(data);
       this.categorias=data;
     }).catch(data => {
       console.log(data);
+    });
     })
   }
 

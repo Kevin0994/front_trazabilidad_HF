@@ -2,44 +2,39 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
-      <ion-label>Fabricacion</ion-label>
     </ion-buttons>
+    <ion-label>Fabricacion</ion-label>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div #buttons>
-    <ion-button color="primary" (click)="openPage()">
-      Semifinal
+  <div *ngIf="showButtons" class="containerButtons">
+    <ion-button class="buttonSemi" (click)="showSemi=true; showButtons=false">
+      SEMIFINAL
     </ion-button>
-    <ion-button color="primary" [routerLink]="['/cosecha-historial']">
-      Final
+    <ion-button class="buttonFinal" [routerLink]="['/cosecha-historial']">
+      FINAL
     </ion-button>
   </div>
-  <div #PageSemi style="display: none;">
+  <div *ngIf="showSemi">
     <div  style="width: 100%; margin:auto; padding: 1em;">
       <h1 style="text-align: center;">Categorias</h1>
-      <ion-card style="display: inline-block; width: auto;" *ngFor="let categoria of categorias" (click)="openProduct(categoria.productos, categoria.nombre)" type="button">
-        <ion-card-header>
-          <img class="image" style="width: 200px;" [src]="categoria.img" alt="">
-        </ion-card-header>
-        <ion-card-content>
-          {{categoria.nombre}}
-        </ion-card-content>
-      </ion-card>
+      <ion-row>
+        <ion-col>
+          <ion-slides [options]="categoriaSlides">
+            <ion-slide class="categorias" *ngFor="let categoria of categorias">
+              <ion-card (click)="openProduct(categoria.podructos)" type="button">
+                <img style="width: 400px; height: 300px" [src]="categoria.img">
+                <ion-card-content>
+                  <h3><strong>{{categoria.nombre}}</strong></h3>
+                </ion-card-content>
+              </ion-card>
+            </ion-slide>
+          </ion-slides>
+        </ion-col>
+      </ion-row>
     </div>
-    <div #ProductoSemi style="width: 100%; margin:auto; padding: 1em;">
-      <h1 style="text-align: center;">Productos</h1>
-      <ion-card style="display: inline-block; width: auto;" *ngFor="let producto of productos" (click)="BuscarMateriaPrima(producto)" type="button">
-        <ion-card-header>
-          <img class="image" style="width: 200px;" [src]="producto.img" alt="">
-        </ion-card-header>
-        <ion-card-content>
-          {{producto.nombre}}
-        </ion-card-content>
-      </ion-card>
-    </div>
-    <ion-button color="primary" (click)="ClosePage()">
+    <ion-button color="primary" (click)="showButtons=true; showSemi=false">
       Regresar
     </ion-button>
   </div>
