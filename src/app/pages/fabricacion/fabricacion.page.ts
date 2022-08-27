@@ -9,21 +9,18 @@ import { ModalFabricacionPage } from '../../modals/modal-fabricacion/modal-fabri
   styleUrls: ['./fabricacion.page.scss'],
 })
 export class FabricacionPage implements OnInit {
+
+@ViewChild('buttons') botones: ElementRef ;
+@ViewChild('PageSemi') pageSemi: ElementRef ;
   public showSemi: boolean = false;
   public showButtons: boolean = true;
+  public categoriaProducto:any;
+  categorias: any=[];
+  productos: any=[];
 
 categoriaSlides = {
   slidesPerView: 3,
 };
-  categorias: any=[];
-  productos: any=[];
-  constructor(public proveedor: ProviderService,) { }
-@ViewChild('buttons') botones: ElementRef ;
-@ViewChild('PageSemi') pageSemi: ElementRef ;
-
-categorias:any=[];
-productos:any=[];
-categoriaProducto:any;
 
   constructor(private renderer2: Renderer2,
     public proveedor: ProviderService,
@@ -39,26 +36,12 @@ categoriaProducto:any;
   }
 
 
-  openPage(){
-    const Botones = this.botones.nativeElement;
-    const PageSemi = this.pageSemi.nativeElement;
-    this.renderer2.setStyle(Botones,'display','none');
-    this.renderer2.setStyle(PageSemi,'display','block');
-  }
-
-  ClosePage(){
-    const Botones = this.botones.nativeElement;
-    const PageSemi = this.pageSemi.nativeElement;
-    this.renderer2.setStyle(PageSemi,'display','none');
-    this.renderer2.setStyle(Botones,'display','block');
-  }
   LoadCategorias(){
     this.proveedor.obtenerDocumentos('categoriaProducto/documents').then(data => {
       this.categorias=data;
     }).catch(data => {
       console.log(data);
     });
-    })
   }
 
   openProduct(productos:any,categoria:any){
