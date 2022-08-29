@@ -11,7 +11,7 @@ export class FabricacionPage implements OnInit {
   public showButtons: boolean = true;
 
 categoriaSlides = {
-  slidesPerView: 3,
+  slidesPerView: 4,
 };
   categorias: any=[];
   productos: any=[];

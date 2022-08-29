@@ -24,7 +24,7 @@
           <ion-slides [options]="categoriaSlides">
             <ion-slide class="categorias" *ngFor="let categoria of categorias">
               <ion-card (click)="openProduct(categoria.podructos)" type="button">
-                <img style="width: 400px; height: 300px" [src]="categoria.img">
+                <img style="width: 300px; height: 200px" [src]="categoria.img">
                 <ion-card-content>
                   <h3><strong>{{categoria.nombre}}</strong></h3>
                 </ion-card-content>
