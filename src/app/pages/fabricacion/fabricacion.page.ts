@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild, Renderer2 } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 import { AlertController, NavController, ModalController } from '@ionic/angular';
 import { ModalFabricacionPage } from '../../modals/modal-fabricacion/modal-fabricacion.page'
@@ -22,8 +22,7 @@ categoriaSlides = {
   slidesPerView: 3,
 };
 
-  constructor(private renderer2: Renderer2,
-    public proveedor: ProviderService,
+  constructor(public proveedor: ProviderService,
     public alertController: AlertController,
     public navCtrl:NavController,
     public modalController:ModalController,) { }
