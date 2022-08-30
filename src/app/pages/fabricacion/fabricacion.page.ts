@@ -19,7 +19,7 @@ export class FabricacionPage implements OnInit {
   productos: any=[];
 
 categoriaSlides = {
-  slidesPerView: 3,
+  slidesPerView: 4,
 };
 
   constructor(private renderer2: Renderer2,
