@@ -20,7 +20,6 @@ export class ModalFabricacionPage implements OnInit {
 
   constructor(public proveedor: ProviderService,
     private fb: FormBuilder,
-    private navCtrl:NavController,
     private alertController: AlertController,
     private modalController:ModalController,) { }
 

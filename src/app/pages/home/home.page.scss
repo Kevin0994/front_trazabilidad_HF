@@ -25,3 +25,19 @@
 #container a {
   text-decoration: none;
 }
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+ion-toolbar {
+  --background: #668B17;
+  text-align: center;
+  ion-title {
+    font-size: 2rem;
+  }
+}
+
+ion-content {
+  --background: #dce2cf;
+}

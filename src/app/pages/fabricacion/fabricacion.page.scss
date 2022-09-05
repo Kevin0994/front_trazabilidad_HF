@@ -39,8 +39,11 @@ ion-content {
 }
 
 ion-toolbar {
+  --background: #668B17;
   text-align: center;
-  font-weight: bold;
+  ion-title {
+    font-size: 2rem;
+  }
 }
 
 ion-card {

@@ -24,8 +24,8 @@
           
         </tr>
       </thead>
-      <tbody class="bg-white">
-        <tr *ngFor="let producto of productos">
+      <tbody class="bg-white" *ngFor="let producto of productos">
+        <tr   *ngIf="producto.estado == 'En proceso'">
           
           <td>{{producto.n_proceso}}</td>
           <td>{{producto.nombre_ps}}</td>
@@ -39,7 +39,7 @@
             <input type="button" 
               class="btn btn-warning btn-sm btn-edit"
               value="Terminar"
-              (click)="EditCosecha(cosecha)"
+              (click)="openModal(producto.id,producto.peso_mp)"
             />
           </td>
         </tr>
