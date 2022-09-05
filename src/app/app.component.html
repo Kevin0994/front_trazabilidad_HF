@@ -1,48 +1,48 @@
 <ion-app>
   <ion-menu menuId="main-menu" content-id="main">
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar class="menu">
         <ion-title>Menu</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
-      <ion-menu-toggle id="bodega">
+    <ion-content class="content-menu">
+      <ion-menu-toggle id="bodega" class="option-label-menu">
         <ion-label>Bodega</ion-label>
         <ion-list class="menu-items" lines="none">
-          <ion-item [routerLink]="['/cosecha']">
+          <ion-item [routerLink]="['/cosecha']" class="menu-items-option" >
             <ion-icon name="basket" slot="start"></ion-icon>
             <ion-label>Cosechas</ion-label>
           </ion-item>
-          <ion-item [routerLink]="['/actividades']">
+          <ion-item [routerLink]="['/actividades']" class="menu-items-option" >
             <ion-icon name="hand" slot="start"></ion-icon>
             <ion-label>Actividades</ion-label>
           </ion-item>
         </ion-list>
       </ion-menu-toggle>
-      <ion-menu-toggle id="fabrica">
+      <ion-menu-toggle id="fabrica" class="option-label-menu">
         <ion-label>Fabrica</ion-label>
         <ion-list class="menu-items" lines="none">
-          <ion-item [routerLink]="['/inventario']">
+          <ion-item [routerLink]="['/inventario']" class="menu-items-option" >
             <ion-icon name="cart" slot="start"></ion-icon>
             <ion-label>Inventario</ion-label>
           </ion-item>
-          <ion-item [routerLink]="['/fabricacion']">
+          <ion-item [routerLink]="['/fabricacion']" class="menu-items-option" >
             <ion-icon name="add-circle-outline" slot="start"></ion-icon>
             <ion-label>Fabricación</ion-label>
           </ion-item>
-          <ion-item  [routerLink]="['/procesos']">
+          <ion-item  [routerLink]="['/procesos']" class="menu-items-option" >
             <ion-icon name="timer" slot="start"></ion-icon>
             <ion-label>Procesos en curso</ion-label>
           </ion-item>
-          <ion-item  [routerLink]="['/actividades-fabrica']">
+          <ion-item  [routerLink]="['/actividades-fabrica']" class="menu-items-option" >
             <ion-icon name="hand" slot="start"></ion-icon>
             <ion-label>Actividades</ion-label>
           </ion-item>
         </ion-list>
       </ion-menu-toggle>
-      <ion-menu-toggle id="admin" >
+      <ion-menu-toggle class="option-label-menu" id="admin" >
         <ion-label id="labelAdmin">Administracion</ion-label>
-        <ion-item [routerLink]="['/usuario']" >
+        <ion-item [routerLink]="['/usuario']" class="menu-items-option" >
           <ion-icon name="contact" slot="start"></ion-icon>
           <ion-label>Usuarios</ion-label>
         </ion-item>

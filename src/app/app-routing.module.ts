@@ -68,7 +68,11 @@ const routes: Routes = [
   {
     path: 'modal-fabricacion',
     loadChildren: () => import('./modals/modal-fabricacion/modal-fabricacion.module').then( m => m.ModalFabricacionPageModule)
+  },  {
+    path: 'modal-finalizar-proceso',
+    loadChildren: () => import('./modals/modal-finalizar-proceso/modal-finalizar-proceso.module').then( m => m.ModalFinalizarProcesoPageModule)
   },
+
 
 
 

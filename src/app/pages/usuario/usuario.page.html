@@ -2,19 +2,20 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="home"></ion-back-button>
-      <ion-label>Usuarios</ion-label>
     </ion-buttons>
+    <ion-label>Usuarios</ion-label>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-button color="primary" (click)="openModal()">
+  <ion-button class="btn-add" (click)="openModal()">
+    <ion-icon name="add-outline"></ion-icon>
     Nuevo Registro
   </ion-button>
   <br>
     <div class="container">
-      <table class="table table-dark">
-        <thead>
+      <table class="table table-white">
+        <thead class="table-header text-light">
           <tr>
         
             <th scope="col">Nombres</th>
@@ -43,7 +44,7 @@
               />
               <input type="button"
                 class="btn btn-danger btn-sm btn-del"
-                value="Delete"
+                value="Eliminar"
                 (click)="DeleteUsuario(usuario.id)"
               />
             </td>

@@ -1,0 +1,21 @@
+ion-content {
+  --background: var(--ion-color-green);
+}
+
+ion-toolbar {
+  --background: #668B17;
+  text-align: center;
+  ion-title {
+    font-size: 1.8rem;
+  }
+}
+
+.table-header {
+  background-color: #668B17;
+}
+
+.btn-add {
+  margin: 1rem;
+  text-align: center;
+  --background: #4A7AA6;
+}
