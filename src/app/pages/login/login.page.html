@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Happy Fruit</ion-title>
+    <ion-title>HAPPY FRUIT</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -9,18 +9,22 @@
     <div class="content">
       <div class="content-form">
         <form [formGroup]="formLogin">
-          <h3>Iniciar sesión</h3>
+          <div class="content-img">
+            <img src="../../../assets/icon/cropped-Happy-Fruit-Logo.png" alt="">
+          </div>
+          <h3>BIENVENIDO A HAPPY FRUIT</h3>
           <ion-item>
-            <ion-label position="floating">Email</ion-label>
+            <ion-label position="floating">Correo Electrónico</ion-label>
             <ion-input formControlName="email"></ion-input> 
           </ion-item>
           <ion-item>
-            <ion-label position="floating">Password</ion-label>
-            <ion-input formControlName="password"></ion-input>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
           <ion-button (click)="ValidarUsuario()" expand="block">
-            Ingresar
+            Iniciar Sesión
           </ion-button>
+          <h5>Copyright 2022 &copy; <strong>FINCA HAPPY FRUIT</strong></h5>
         </form>
       </div>
     </div>
