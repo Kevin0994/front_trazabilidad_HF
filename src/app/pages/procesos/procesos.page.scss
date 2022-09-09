@@ -1,0 +1,17 @@
+ion-content {
+  --background: var(--ion-color-green);
+}
+
+ion-toolbar {
+  --background: #668B17;
+  text-align: center;
+  
+  ion-back-button {
+    --color: white;
+    font-size: 1.3rem;
+  }
+
+  ion-title {
+    font-size: 1.5rem;
+  }
+}
