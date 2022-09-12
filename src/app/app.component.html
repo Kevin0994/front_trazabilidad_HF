@@ -7,7 +7,7 @@
     </ion-header>
     <ion-content class="content-menu">
       <ion-menu-toggle id="bodega" class="option-label-menu">
-        <ion-label>Bodega</ion-label>
+        <ion-label class="menu-subsection">Bodega</ion-label>
         <ion-list class="menu-items" lines="none">
           <ion-item [routerLink]="['/cosecha']" class="menu-items-option" >
             <ion-icon name="basket" slot="start"></ion-icon>
@@ -20,7 +20,7 @@
         </ion-list>
       </ion-menu-toggle>
       <ion-menu-toggle id="fabrica" class="option-label-menu">
-        <ion-label>Fabrica</ion-label>
+        <ion-label class="menu-subsection">Fabrica</ion-label>
         <ion-list class="menu-items" lines="none">
           <ion-item [routerLink]="['/inventario']" class="menu-items-option" >
             <ion-icon name="cart" slot="start"></ion-icon>
@@ -41,11 +41,13 @@
         </ion-list>
       </ion-menu-toggle>
       <ion-menu-toggle class="option-label-menu" id="admin" >
-        <ion-label id="labelAdmin">Administracion</ion-label>
-        <ion-item [routerLink]="['/usuario']" class="menu-items-option" >
-          <ion-icon name="person-circle-outline" slot="start"></ion-icon>
-          <ion-label>Usuarios</ion-label>
-        </ion-item>
+        <ion-label id="labelAdmin" class="menu-subsection">Administracion</ion-label>
+        <ion-list class="menu-items" lines="none">
+          <ion-item [routerLink]="['/usuario']" class="menu-items-option" >
+            <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+            <ion-label>Usuarios</ion-label>
+          </ion-item>
+        </ion-list>
       </ion-menu-toggle>
     </ion-content>
   </ion-menu>
