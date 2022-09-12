@@ -42,10 +42,20 @@
       </ion-menu-toggle>
       <ion-menu-toggle class="option-label-menu" id="admin" >
         <ion-label id="labelAdmin">Administracion</ion-label>
-        <ion-item [routerLink]="['/usuario']" class="menu-items-option" >
-          <ion-icon name="contact" slot="start"></ion-icon>
-          <ion-label>Usuarios</ion-label>
-        </ion-item>
+        <ion-list class="menu-items" lines="none">
+          <ion-item [routerLink]="['/usuario']" class="menu-items-option" >
+            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-label>Usuarios</ion-label>
+          </ion-item>
+          <ion-item [routerLink]="['/categoria-productos']" class="menu-items-option" >
+            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-label>Categoria de Productos</ion-label>
+          </ion-item>
+          <ion-item [routerLink]="['/productos']" class="menu-items-option" >
+            <ion-icon name="contact" slot="start"></ion-icon>
+            <ion-label>Productos</ion-label>
+          </ion-item>
+        </ion-list>
       </ion-menu-toggle>
     </ion-content>
   </ion-menu>

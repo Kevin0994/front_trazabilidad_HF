@@ -36,7 +36,7 @@ categoriaSlides = {
 
 
   LoadCategorias(){
-    this.proveedor.obtenerDocumentos('categoriaProducto/documents').then(data => {
+    this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
       this.categorias=data;
     }).catch(data => {
       console.log(data);
@@ -45,8 +45,8 @@ categoriaSlides = {
 
   openProduct(productos:any,categoria:any){
     this.productos=productos;
+    console.table(categoria);
     this.categoriaProducto=categoria;
-    console.log(this.productos);
   }
 
   BuscarMateriaPrima(producto:any){

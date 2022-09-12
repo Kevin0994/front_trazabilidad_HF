@@ -50,25 +50,5 @@ export class CosechaPage implements OnInit {
     return await modal.present();
   }
 
-  async MensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Eliminar',
-      message: 'La eliminacion se completo con exito',
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
 }
 

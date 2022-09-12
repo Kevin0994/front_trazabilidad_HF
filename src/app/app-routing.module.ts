@@ -68,10 +68,25 @@ const routes: Routes = [
   {
     path: 'modal-fabricacion',
     loadChildren: () => import('./modals/modal-fabricacion/modal-fabricacion.module').then( m => m.ModalFabricacionPageModule)
-  },  {
+  },
+  {
     path: 'modal-finalizar-proceso',
     loadChildren: () => import('./modals/modal-finalizar-proceso/modal-finalizar-proceso.module').then( m => m.ModalFinalizarProcesoPageModule)
   },
+  {
+    path: 'categoria-productos',
+    loadChildren: () => import('./pages/categoria-productos/categoria-productos.module').then( m => m.CategoriaProductosPageModule)
+  },
+  {
+    path: 'productos',
+    loadChildren: () => import('./pages/productos/productos.module').then( m => m.ProductosPageModule)
+  },
+  {
+    path: 'modal-categoria-producto',
+    loadChildren: () => import('./modals/modal-categoria-producto/modal-categoria-producto.module').then( m => m.ModalCategoriaProductoPageModule)
+  },
+
+    
 
 
 

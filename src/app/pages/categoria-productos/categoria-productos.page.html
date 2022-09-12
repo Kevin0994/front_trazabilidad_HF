@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-label>{{ title }}</ion-label>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="showButtons" class="containerButtons">
+    <ion-button class="buttonSemi" (click)="showSemi=true; showButtons=false; title='Categoria de Productos SemiFinales'">
+      SEMIFINAL
+    </ion-button>
+    <ion-button class="buttonFinal" (click)="showFinal=true; showButtons=false; title='Categoria de Productos Finales';">
+      FINAL
+    </ion-button>
+  </div>
+  <div class="container mt-4" *ngIf="showSemi">
+    <div class="d-flex flex-row-reverse mb-3">
+      <ion-button class="btn-add" (click)="openModal('categoriaProductoSemi/post')">
+        <ion-icon name="add-outline"></ion-icon>
+        Nuevo Registro
+      </ion-button>
+    </div>
+    <table class="table table-white">
+      <thead class="table-header text-light">
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Productos Asociados</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <tr *ngFor="let categoria of categoriaSemi">
+          <td>{{categoria.nombre}}</td>
+          <td>{{categoria.nProductos}}</td>
+          <td> <input type="button" style="margin-right: 20px;"
+            class="btn btn-warning btn-sm btn-edit"
+            value="Editar"
+            (click)="editOpenModal('categoriaProductoSemi/put/',categoria)"
+          />
+          <input type="button"
+            class="btn btn-danger btn-sm btn-del"
+            value="Eliminar"
+            (click)="DeleteCategoria(categoria.id)"
+          /></td>
+        </tr>
+      </tbody>
+    </table>
+    <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Categoria de Productos';">
+      Regresar
+    </ion-button>
+  </div>
+  <div class="container mt-4" *ngIf="showFinal">
+    <div class="d-flex flex-row-reverse mb-3">
+      <ion-button class="btn-add" (click)="openModal('categoriaProductoFinal/post')">
+        <ion-icon name="add-outline"></ion-icon>
+        Nuevo Registro
+      </ion-button>
+    </div>
+    <table class="table table-white">
+      <thead class="table-header text-light">
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Productos Asociados</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <tr *ngFor="let categoria of categoriaFinal">
+          <td>{{categoria.nombre}}</td>
+          <td>{{categoria.nProductos}}</td>
+          <td> <input type="button" style="margin-right: 20px;"
+            class="btn btn-warning btn-sm btn-edit"
+            value="Editar"
+            (click)="editOpenModal('categoriaProductoFinal/put/',categoria)"
+          />
+          <input type="button"
+            class="btn btn-danger btn-sm btn-del"
+            value="Eliminar"
+            (click)="DeleteCategoria(categoria.id)"
+          /></td>
+        </tr>
+      </tbody>
+    </table>
+    <ion-button color="primary" (click)="showButtons=true; showFinal=false;  title='Categoria de Productos';">
+      Regresar
+    </ion-button>
+  </div>
+</ion-content>

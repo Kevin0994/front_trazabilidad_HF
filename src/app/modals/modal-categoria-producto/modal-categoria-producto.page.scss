@@ -1,0 +1,41 @@
+ion-content {
+    --background: var(--ion-color-background);
+    .content-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      ion-button {
+        --background: linear-gradient(70deg, #7633a4 5%, #4834a6 70%);
+      }
+    }
+  
+    .content-perfil {
+      width: 10rem;
+      margin: auto;
+      border-radius: 0rem 0rem 5rem 5rem;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 0rem 0rem 0rem;
+      ion-avatar {
+        width: 10rem;
+        height: 10rem;
+      }
+    }
+  
+    .content-info {
+      padding: 0.5rem 2rem;
+  
+      ion-item {
+        border-radius: 1.5rem;
+        padding: 0;
+      }
+    }
+  
+    .buttons-action__save {
+      --background: #3f906a;
+    }
+  
+    .buttons-action__cancel {
+      --background: rgb(207, 121, 121);
+    }
+  }
