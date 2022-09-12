@@ -1,19 +1,21 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="home"></ion-back-button>
+      <ion-back-button defaultHref="home" text="Regresar"></ion-back-button>
     </ion-buttons>
-    <ion-label>Usuarios</ion-label>
+    <ion-title>Usuarios</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-button class="btn-add" (click)="openModal()">
-    <ion-icon name="add-outline"></ion-icon>
-    Nuevo Registro
-  </ion-button>
   <br>
-    <div class="container">
+  <div class="container">
+      <div class="d-flex flex-row-reverse mb-3">
+        <ion-button class="btn-add" (click)="openModal()">
+          <ion-icon name="add-outline"></ion-icon>
+          Agregar usuario
+        </ion-button>
+      </div>
       <table class="table table-white">
         <thead class="table-header text-light">
           <tr>
@@ -27,7 +29,7 @@
             <th scope="col">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white">
           <tr *ngFor="let usuario of usuarios">
             
             <td>{{usuario.nombres}}</td>
@@ -38,7 +40,7 @@
             <td>{{usuario.password}}</td>
             <td>
               <input type="button" 
-                class="btn btn-warning btn-sm btn-edit"
+                class="btn btn-warning btn-sm btn-edit me-2"
                 value="Edit"
                 (click)="EditUsuario(usuario)"
               />

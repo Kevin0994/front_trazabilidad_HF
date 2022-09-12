@@ -1,41 +1,17 @@
-#container {
-  text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
-
-* {
-  font-family: 'Poppins', sans-serif;
+.btn-exit {
+  --background: #FDA92A;
 }
 
 ion-toolbar {
   --background: #668B17;
   text-align: center;
   ion-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
+}
+
+ion-menu-button {
+  --color: white
 }
 
 ion-content {
