@@ -22,5 +22,5 @@ export class IngresadoGuard implements CanActivate {
         return false;
       }
   }
-  
+
 }

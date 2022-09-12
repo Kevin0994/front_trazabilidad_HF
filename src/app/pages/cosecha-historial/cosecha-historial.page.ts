@@ -66,6 +66,8 @@ export class CosechaHistorialPage implements OnInit {
               fecha: historial.fecha,
               responsable: historial.responsable,
             }
+
+            console.log(this.cosecha);
             this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', historial.id,this.cosecha).then(data => {
               console.log(data);
               if (this.proveedor.status) {

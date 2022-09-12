@@ -84,7 +84,15 @@ const routes: Routes = [
   {
     path: 'modal-categoria-producto',
     loadChildren: () => import('./modals/modal-categoria-producto/modal-categoria-producto.module').then( m => m.ModalCategoriaProductoPageModule)
+  },  {
+    path: 'alimentos',
+    loadChildren: () => import('./pages/alimentos/alimentos.module').then( m => m.AlimentosPageModule)
   },
+  {
+    path: 'modal-alimentos',
+    loadChildren: () => import('./modals/modal-alimentos/modal-alimentos.module').then( m => m.ModalAlimentosPageModule)
+  },
+
 
     
 

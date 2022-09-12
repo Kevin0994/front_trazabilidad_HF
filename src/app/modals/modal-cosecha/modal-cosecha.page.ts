@@ -217,7 +217,7 @@ export class ModalCosechaPage implements OnInit {
               this.cosecha = {
                 stock: (this.Historial.stock - this.formulario.peso) * 1000,
                 idHis: this.Historial.idHistorial,
-                ingreso: this.Historial.ingreso * 1000,
+                ingreso: this.Historial.ingreso,
                 fecha: this.Historial.fecha,
                 responsable: this.Historial.responsable,
               }
@@ -234,7 +234,7 @@ export class ModalCosechaPage implements OnInit {
                   this.cosecha = {
                     stock: (parseInt(peso) + stock) * 1000,
                     idHis: this.Historial.idHistorial,
-                    ingreso: this.formulario.peso,
+                    ingreso: this.formulario.peso * 1000,
                     fecha: this.fechaHis,
                     responsable: localStorage.getItem('Usuario'),
                   }
@@ -371,7 +371,7 @@ export class ModalCosechaPage implements OnInit {
           }else{
 
             this.cosecha = {
-              stock: (this.Historial.stock - this.formulario.peso) * 1000,
+              stock: (this.Historial.stock - this.formulario.peso),
               idHis: this.Historial.idHistorial,
               ingreso: this.Historial.ingreso * 1000,
               fecha: this.Historial.fecha,
