@@ -41,11 +41,6 @@ export class ProviderService {
       }, err => {
         this.status=false;
         resolve(err);
-        if(err.status == 400){
-          return this.error=400
-        }else{
-          return this.error=0
-        }
       }).closed;
     });
   }
@@ -58,11 +53,6 @@ export class ProviderService {
       }, err => {
         this.status=false;
         resolve(err);
-        if(err.status == 400){
-          return this.error=400
-        }else{
-          return this.error=0
-        }
       }).closed;
     });
   }
@@ -78,14 +68,16 @@ export class ProviderService {
   }
 
 
-  BuscarStockCosecha(rutaDocumento:string,nombre:any,lote:any){
+  InsertarCosecha(rutaDocumento:string,nombre:any,lote:any, document:any){
     console.log(this.API_URL+rutaDocumento+nombre+lote)
     return new Promise(resolve => {
-      this.http.get(this.API_URL + rutaDocumento + nombre+"/"+lote).subscribe(data => {
+      this.http.post(this.API_URL + rutaDocumento + nombre+"/"+lote, document).subscribe(data => {
         resolve(data);
+        return this.status=true;
       }, err => {
-        console.log(err);
-      });
+        this.status=false;
+        resolve(err);
+      }).closed;
     });
   }
 
@@ -97,11 +89,6 @@ export class ProviderService {
       }, err => {
         this.status=false;
         resolve(err);
-        if(err.status == 400){
-          return this.error=400
-        }else{
-          return this.error=0
-        }
       }).closed;
     });
   }

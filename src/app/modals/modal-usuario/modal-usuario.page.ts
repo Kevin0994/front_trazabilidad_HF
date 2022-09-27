@@ -16,8 +16,8 @@ export class ModalUsuarioPage implements OnInit {
   public formRegistro: FormGroup;
   private formulario:any;
   private usuario:any;
-  private nombreRol:any;
-  private lista: any;
+  public nombreRol:any;
+  public lista: any;
 
   constructor(public proveedor: ProviderService,
     public fb: FormBuilder,
@@ -71,6 +71,7 @@ export class ModalUsuarioPage implements OnInit {
       'rol': new FormControl(this.Usuario.rol,Validators.required),
       'password': new FormControl(this.Usuario.password,Validators.required),
     })
+    this.nombreRol = this.Usuario.rol;
   }
 
 

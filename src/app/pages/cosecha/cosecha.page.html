@@ -18,6 +18,12 @@
         <ion-icon name="document-text-outline"></ion-icon>
         Historial
       </ion-button>
+      <input
+      type="text"
+      style="padding-right:40px;margin-right:auto;width:30%;"
+      placeholder="Ingrese un nombre de cosecha"
+      (keyup)="updateFilter($event)"
+    />
     </div>
     <table class="table table-white">
       <thead class="table-header text-light">

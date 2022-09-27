@@ -1,57 +1,41 @@
 ion-content {
-  --background: white;
-}
+  --background: var(--ion-color-background);
+  .content-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ion-button {
+      --background: linear-gradient(70deg, #7633a4 5%, #4834a6 70%);
+    }
+  }
 
-.form-input {
-  width: 100%;
-  background-color: rgb(219, 219, 219);
-  padding: 1rem;
-  color: black;
-  outline: none;
-  border-radius: 1rem;
-  border: none;
-  margin-bottom: 1.5rem;
-}
+  .content-perfil {
+    width: 10rem;
+    margin: auto;
+    border-radius: 0rem 0rem 5rem 5rem;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0rem 0rem 0rem;
+    ion-avatar {
+      width: 10rem;
+      height: 10rem;
+    }
+  }
 
-ion-label {
-  color: black;
-}
+  .content-info {
+    padding: 0.5rem 2rem;
 
-ion-select {
-  /* Applies to the value and placeholder color */
-  color: #545ca7;
+    ion-item {
+      border-radius: 1.5rem;
+      padding: 0;
+    }
+  }
 
-  /* Set a different placeholder color */
-  --placeholder-color: #000;
+  .buttons-action__save {
+    --background: #3f906a;
+  }
 
-  /* Set full opacity on the placeholder */
-  --placeholder-opacity: 1;
-  background: rgb(219, 219, 219);
-  border-radius: 1rem;
-  margin: 1rem 0;
-  padding: 1rem;
-}
-
-ion-button {
-  color: white;
-}
-
-ion-icon {
-  color: white;
-  --ionicon-stroke-width: 32px;
-}
-
-.button-submit {
-  --background: #3D84B7;
-}
-
-ion-item {
-  --background: rgb(219, 219, 219);
-  --background-focused: white;
-  --background-activated-opacity: white;
-  --background-hover: white;
-  --background-activated: white;
-  --border-style: none;
-  border-radius: 1.5rem;
-  color: black;
+  .buttons-action__cancel {
+    --background: rgb(207, 121, 121);
+  }
 }

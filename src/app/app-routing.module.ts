@@ -92,6 +92,10 @@ const routes: Routes = [
     path: 'modal-alimentos',
     loadChildren: () => import('./modals/modal-alimentos/modal-alimentos.module').then( m => m.ModalAlimentosPageModule)
   },
+  {
+    path: 'modal-producto-semifinal',
+    loadChildren: () => import('./modals/modal-producto-semifinal/modal-producto-semifinal.module').then( m => m.ModalProductoSemifinalPageModule)
+  },
 
 
     

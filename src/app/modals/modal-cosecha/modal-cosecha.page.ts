@@ -20,14 +20,13 @@ export class ModalCosechaPage implements OnInit {
   @Input() accion: any;
 
   formRegistro: FormGroup;
-  private nombreCosecha: string;
+  public nombreCosecha: string;
   private codigoCosecha: string;
   public selectedItem:any=[];
   private formulario: any;
   private cosecha: any;
   private historial: any=[];
   public lista: any;
-  private busquedaStock: any;
   private fechaHis: any;
 
 
@@ -121,12 +120,10 @@ export class ModalCosechaPage implements OnInit {
   async saveProfile() {
     this.formulario = this.formRegistro.value;
 
-    var idHistorial = Math.random().toString(36).substr(2, 9);
-
     let loteCalculado = new Date().getMonth() + 1;
 
     const hist={
-      id: idHistorial,
+      id: 1,
       ingreso: this.formulario.peso * 1000,
       fecha: new Date().toString(),
       responsable: localStorage.getItem('Usuario'),
@@ -134,55 +131,29 @@ export class ModalCosechaPage implements OnInit {
 
     this.historial.push(hist);
 
-    this.proveedor.BuscarStockCosecha('cosechaStock/',this.nombreCosecha, loteCalculado).then(data => {
-      if (Object.entries(data).length != 0) {
-        this.busquedaStock = data[0];
-        var peso = this.formulario.peso;
-        var stock = this.busquedaStock.stock
-        this.cosecha = {
-          stock: (parseInt(peso) + stock) * 1000,
-          idHis: idHistorial,
-          ingreso: this.formulario.peso * 1000,
-          fecha: new Date().toString(),
-          responsable: localStorage.getItem('Usuario'),
-        }
+    this.cosecha = {
+      nombreN: this.nombreCosecha,
+      codigo: this.codigoCosecha,
+      loteN: loteCalculado,
+      stockN: this.formulario.peso * 1000,
+      historial: this.historial,
+    }
 
-        console.log(this.cosecha);
-        this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.busquedaStock.id, this.cosecha).then(data => {
-          console.log(data);
+    console.table(this.cosecha);
+
+    this.proveedor.InsertarCosecha('cosechas/post/',this.nombreCosecha, loteCalculado, this.cosecha).then(data => {
+      console.log(data);
           if (this.proveedor.status) {
-            this.MensajeServidor();
+            this.cosecha['status']=data;
+            this.MensajeServidor(this.cosecha);
           } else {
             this.ErrorMensajeServidor();
             return;
           }
-        }).catch(data => {
-          console.log(data);
-        });
-      } else {
-        this.cosecha = {
-          nombre: this.nombreCosecha,
-          codigo: this.codigoCosecha,
-          lote: loteCalculado,
-          stock: this.formulario.peso * 1000,
-          historial: this.historial,
-        }
-        console.log(this.cosecha);
-        this.proveedor.InsertarDocumento('cosechas/post',this.cosecha).then(data => {
-          console.log(data);
-          if (this.proveedor.status) {
-            this.MensajeServidor();
-          } else {
-            this.ErrorMensajeServidor();
-            return;
-          }
-        }).catch(data => {
-          console.log(data);
-        });
-      }
     }).catch(data => {
       console.log(data);
     });
+
   }
 
  async editProfile() {
@@ -200,7 +171,7 @@ export class ModalCosechaPage implements OnInit {
 
     this.historial.push(hist);
 
-    if (this.nombreCosecha != this.Historial.nombre || this.formulario.peso != this.Historial.ingreso || loteCalculado != this.Historial.lote) {
+    /* if (this.nombreCosecha != this.Historial.nombre || this.formulario.peso != this.Historial.ingreso || loteCalculado != this.Historial.lote) {
 
         this.proveedor.BuscarStockCosecha('cosechaStock/',this.nombreCosecha, loteCalculado).then(data => {
 
@@ -414,7 +385,7 @@ export class ModalCosechaPage implements OnInit {
     } else {
 
       this.closeModal();
-    }
+    } */
   }
 
 
@@ -422,7 +393,7 @@ export class ModalCosechaPage implements OnInit {
     
   } */
 
-  async MensajeServidor() {
+  async MensajeServidor(Objeto:any) {
     const alert = await this.alertController.create({
       header: 'Registro',
       message: 'El registro se completo con exito',
@@ -430,6 +401,7 @@ export class ModalCosechaPage implements OnInit {
         {
           text: 'OK',
           handler: () => {
+            this.modalController.dismiss(Objeto);
             this.closeModal();
           }
         }]

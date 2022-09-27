@@ -18,7 +18,7 @@
   </div>
   <div class="container mt-4" *ngIf="showSemi">
     <div class="d-flex flex-row-reverse mb-3">
-      <ion-button class="btn-add" (click)="openModal('categoriaProductoSemi/post')">
+      <ion-button class="btn-add" (click)="openModal('productoSemi/post/')">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
       </ion-button>
@@ -40,12 +40,12 @@
           <td> <input type="button" style="margin-right: 20px;"
             class="btn btn-warning btn-sm btn-edit"
             value="Editar"
-            (click)="editOpenModal('categoriaProductoSemi/put/',categoria)"
+            (click)="editOpenModal('productoSemi/put/',producto)"
           />
           <input type="button"
             class="btn btn-danger btn-sm btn-del"
             value="Eliminar"
-            (click)="DeleteCategoria(categoria.id)"
+            (click)="DeleteProducto(producto)"
           /></td>
         </tr>
       </tbody>
@@ -78,12 +78,12 @@
           <td> <input type="button" style="margin-right: 20px;"
             class="btn btn-warning btn-sm btn-edit"
             value="Editar"
-            (click)="editOpenModal('categoriaProductoFinal/put/',categoria)"
+            (click)="editOpenModal('categoriaProductoFinal/put/',producto)"
           />
           <input type="button"
             class="btn btn-danger btn-sm btn-del"
             value="Eliminar"
-            (click)="DeleteCategoria(categoria.id)"
+            (click)="DeleteProducto(producto)"
           /></td>
         </tr>
       </tbody>

@@ -14,7 +14,7 @@
   <div class="container" >
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="Registro()"  id="form">
       <div>
-        <ion-select (ionChange)="handleChange($event)"  formControlName="nombre" placeholder={{Historial.nombre}}>
+        <ion-select (ionChange)="handleChange($event)" [selectedText]="nombreCosecha" formControlName="nombre" placeholder="Seleccione un alimento">
           <ion-select-option  *ngFor="let cosecha of lista"  [value]="cosecha">{{cosecha.nombre}}</ion-select-option>
         </ion-select>
       </div>
