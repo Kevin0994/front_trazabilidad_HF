@@ -27,16 +27,11 @@
           
           <td>{{cosecha.nombre}}</td>
           <td>{{cosecha.codigo}}</td>
-          <td>{{cosecha.fecha.substr(0, 10)}}</td>
+          <td>{{cosecha.fechaF}}</td>
           <td>{{cosecha.ingreso}} kg</td>
           <td>{{cosecha.lote}}</td>
           <td>{{cosecha.responsable}}</td>
           <td>
-            <input type="button" 
-              class="btn btn-warning btn-sm btn-edit me-2"
-              value="Edit"
-              (click)="EditCosecha(cosecha)"
-            />
             <input type="button"
               class="btn btn-danger btn-sm btn-del"
               value="Delete"

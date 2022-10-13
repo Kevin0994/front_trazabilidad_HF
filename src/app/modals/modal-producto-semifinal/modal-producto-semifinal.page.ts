@@ -179,15 +179,19 @@ export class ModalProductoSemifinalPage implements OnInit {
 
       console.log(this.url);
       this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
-
+        let datos:any = data;
         if(this.proveedor.status){
+          console.log('status 200');
+          this.producto['id']=this.categoria.id;
+          this.producto['categoria']=this.categoria.nombre;
           this.producto['status']='nuevo';
-          this.MensajeServidor(this.producto);
+          this.proveedor.MensajeServidor(this.modalController,this.alertController,this.producto);
         }else{
-          this.ErrorMensajeServidor();
+          this.proveedor.ErrorMensajePersonalizado(this.alertController,datos.error);
           return;
         }
       }).catch(data => {
+        this.proveedor.ErrorMensajePersonalizado(this.alertController,data.error);
         console.log(data);
       });
     }else{
@@ -213,9 +217,9 @@ export class ModalProductoSemifinalPage implements OnInit {
             this.producto['id']=this.Producto.id;
             this.producto['categoria']=this.categoria.nombre;
             this.producto['status']='editado';
-            this.MensajeServidor(this.producto);
+            this.proveedor.MensajeServidor(this.modalController,this.alertController,this.producto);
           }else{
-            this.ErrorMensajeServidor();
+            this.proveedor.ErrorMensajeServidor(this.alertController);
             return;
           }
         }).catch(data => {
@@ -262,32 +266,5 @@ export class ModalProductoSemifinalPage implements OnInit {
     let dataURL: string = canvas.toDataURL("image/png");
     this.base64DefaultURL = dataURL;
     return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-  }
-
-  async MensajeServidor(Objeto:any){
-    const alert = await this.alertController.create({
-      header: 'Registro',
-      message: 'El registro se completo con exito',
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.modalController.dismiss(Objeto);
-            this.closeModal();
-          }
-        }]
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
-
-    await alert.present();
   }
 }

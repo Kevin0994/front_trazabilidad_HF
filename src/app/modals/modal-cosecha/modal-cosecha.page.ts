@@ -14,10 +14,6 @@ import { ProviderService } from '../../../provider/ApiRest/provider.service'
 })
 export class ModalCosechaPage implements OnInit {
 
-  @Input() Historial: any = "init";
-  @Input() type: any;
-  @Input() id: any;
-  @Input() accion: any;
 
   formRegistro: FormGroup;
   public nombreCosecha: string;
@@ -39,11 +35,9 @@ export class ModalCosechaPage implements OnInit {
   }
 
   ngOnInit() {
-    if (this.type == 'Nuevo Registro') {
-      this.newForm();
-    } else {
-     this.editForm();
-    }
+
+    this.newForm();
+
   }
 
   ionViewWillEnter() {
@@ -68,25 +62,6 @@ export class ModalCosechaPage implements OnInit {
     })
   }
 
-  editForm() {
-    this.nombreCosecha = this.Historial.nombre;
-    this.codigoCosecha = this.Historial.codigo;
-    this.selectedItem = {
-      nombre:this.nombreCosecha,
-      codigo:this.codigoCosecha,
-    };
-    const fecha = new Date(this.Historial.fecha);
-    let day = fecha.getDate()
-    let month = fecha.getMonth() + 1
-    let year = fecha.getFullYear()
-    this.formRegistro = this.fb.group({
-      'nombre': new FormControl(this.selectedItem, Validators.required),
-      'codigo': new FormControl(this.Historial.codigo, Validators.required),
-      'fecha': new FormControl(`${year}-0${month}-${day}`, Validators.required),
-      'peso': new FormControl(this.Historial.ingreso, Validators.required),
-    })
-    this.formRegistro.controls.codigo.disable();
-  }
 
   handleChange(ev) {
     this.formulario = this.formRegistro.value;
@@ -110,11 +85,9 @@ export class ModalCosechaPage implements OnInit {
       await alert.present();
       return;
     }
-    if (this.type == 'Nuevo Registro') {
-      this.saveProfile();
-    } else {
-      this.editProfile();
-    }
+
+    this.saveProfile();
+
   }
 
   async saveProfile() {
@@ -123,9 +96,8 @@ export class ModalCosechaPage implements OnInit {
     let loteCalculado = new Date().getMonth() + 1;
 
     const hist={
-      id: 1,
       ingreso: this.formulario.peso * 1000,
-      fecha: new Date().toString(),
+      fecha: new Date(),
       responsable: localStorage.getItem('Usuario'),
     }
 
@@ -145,279 +117,13 @@ export class ModalCosechaPage implements OnInit {
       console.log(data);
           if (this.proveedor.status) {
             this.cosecha['status']=data;
-            this.MensajeServidor(this.cosecha);
+            this.proveedor.MensajeServidor(this.modalController,this.alertController,this.cosecha);
           } else {
-            this.ErrorMensajeServidor();
-            return;
+            this.proveedor.ErrorMensajeServidor(this.alertController);
           }
     }).catch(data => {
       console.log(data);
     });
-
-  }
-
- async editProfile() {
-    this.formulario = this.formRegistro.value;
-
-    this.fechaHis = new Date(this.formulario.fecha);
-    let loteCalculado = new Date(this.formulario.fecha).getMonth() + 1;
-
-    const hist={
-      id: this.Historial.idHistorial,
-      ingreso: this.formulario.peso * 1000,
-      fecha: this.fechaHis,
-      responsable: localStorage.getItem('Usuario'),
-    }
-
-    this.historial.push(hist);
-
-    /* if (this.nombreCosecha != this.Historial.nombre || this.formulario.peso != this.Historial.ingreso || loteCalculado != this.Historial.lote) {
-
-        this.proveedor.BuscarStockCosecha('cosechaStock/',this.nombreCosecha, loteCalculado).then(data => {
-
-          if (Object.entries(data).length != 0) {
-
-            this.busquedaStock = data[0];
-
-            console.log("Cosecha Stock encontrado");
-
-            if(this.Historial.nombre != this.nombreCosecha || loteCalculado != this.Historial.lote){
-
-              console.log("Cosecha nombre o lote cambiado");
-
-              this.cosecha = {
-                stock: (this.Historial.stock - this.formulario.peso) * 1000,
-                idHis: this.Historial.idHistorial,
-                ingreso: this.Historial.ingreso,
-                fecha: this.Historial.fecha,
-                responsable: this.Historial.responsable,
-              }
-              console.log(this.cosecha);
-
-              console.log("Eliminando Historial");
-
-              this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
-                console.log(data);
-                if (this.proveedor.status) {
-
-                  var peso = this.formulario.peso;
-                  var stock = this.busquedaStock.stock
-                  this.cosecha = {
-                    stock: (parseInt(peso) + stock) * 1000,
-                    idHis: this.Historial.idHistorial,
-                    ingreso: this.formulario.peso * 1000,
-                    fecha: this.fechaHis,
-                    responsable: localStorage.getItem('Usuario'),
-                  }
-                  console.log("Actualizando Cosechas stock");
-
-                  console.log(this.cosecha);
-                  this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.busquedaStock.id, this.cosecha).then(data => {
-                    console.log(data);
-                    if (this.proveedor.status) {
-                      this.MensajeServidor();
-                    } else {
-                      this.ErrorMensajeServidor();
-                      return;
-                    }
-                  }).catch(data => {
-                    console.log(data);
-                  });
-
-                } else {
-                  this.ErrorMensajeServidor();
-                  return;
-                }
-              }).catch(data => {
-                console.log(data);
-              });
-
-            }else{
-
-              console.log("Cosecha Stock peso cambiado");
-
-              var pesoAnterior = this.Historial.ingreso;
-              var peso = this.formulario.peso;
-
-              if (pesoAnterior > peso) {
-
-                var result = pesoAnterior - peso;
-                var valorstock = this.Historial.stock - result;
-
-                this.cosecha = {
-                  stock: valorstock * 1000,
-                  idHis: this.Historial.idHistorial,
-                  ingreso: this.Historial.ingreso * 1000,
-                  fecha: this.Historial.fecha,
-                  responsable: this.Historial.responsable,
-                }
-
-                this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
-                  console.log(data);
-                  if (this.proveedor.status) {
-
-                    this.cosecha = {
-                      stock: valorstock * 1000,
-                      idHis: this.Historial.idHistorial,
-                      ingreso: this.formulario.peso * 1000,
-                      fecha: this.fechaHis,
-                      responsable: localStorage.getItem('Usuario'),
-                    }
-                    console.log("Actualizando Cosechas stock");
-
-                    console.log(this.cosecha);
-                    this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.Historial.id, this.cosecha).then(data => {
-                      console.log(data);
-                      if (this.proveedor.status) {
-                        this.MensajeServidor();
-                      } else {
-                        this.ErrorMensajeServidor();
-                        return;
-                      }
-                    }).catch(data => {
-                      console.log(data);
-                    });
-
-                  } else {
-                    this.ErrorMensajeServidor();
-                    return;
-                  }
-                }).catch(data => {
-                  console.log(data);
-                });
-
-
-              }else{
-
-                var result =  peso - pesoAnterior ;
-                var vstock = this.Historial.stock + result;
-
-                this.cosecha = {
-                  stock: vstock * 1000,
-                  idHis: this.Historial.idHistorial,
-                  ingreso: this.Historial.ingreso * 1000,
-                  fecha: this.Historial.fecha,
-                  responsable: this.Historial.responsable,
-                }
-
-                console.table(this.Historial)
-
-                console.log("Cosecha Stock peso mayor:");
-                this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
-                  console.log(data);
-                  if (this.proveedor.status) {
-
-                    this.cosecha = {
-                      stock: vstock * 1000,
-                      idHis: this.Historial.idHistorial,
-                      ingreso: this.formulario.peso * 1000,
-                      fecha: this.fechaHis,
-                      responsable: localStorage.getItem('Usuario'),
-                    }
-                    console.log("Actualizando Cosechas stock");
-
-                    console.log(this.cosecha);
-                    this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/post/',this.Historial.id, this.cosecha).then(data => {
-                      console.log(data);
-                      if (this.proveedor.status) {
-                        this.MensajeServidor();
-                      } else {
-                        this.ErrorMensajeServidor();
-                        return;
-                      }
-                    }).catch(data => {
-                      console.log(data);
-                    });
-
-                  } else {
-                    this.ErrorMensajeServidor();
-                    return;
-                  }
-                }).catch(data => {
-                  console.log(data);
-                });
-              }
-            }
-
-          }else{
-
-            this.cosecha = {
-              stock: (this.Historial.stock - this.formulario.peso),
-              idHis: this.Historial.idHistorial,
-              ingreso: this.Historial.ingreso * 1000,
-              fecha: this.Historial.fecha,
-              responsable: this.Historial.responsable,
-            }
-            console.log(this.cosecha);
-
-            console.log("Eliminando Historial");
-
-            this.proveedor.ActualizarCosechaHistorial('cosechaHistorial/delete/', this.Historial.id,this.cosecha).then(data => {
-
-              this.cosecha = {
-                nombre: this.nombreCosecha,
-                codigo: this.codigoCosecha,
-                lote: loteCalculado,
-                stock: this.formulario.peso * 1000,
-                historial: this.historial,
-              }
-              console.log("Insertando nueva CosechaStock");
-
-              this.proveedor.InsertarDocumento('cosechas/post',this.cosecha).then(data => {
-                console.log(data);
-                if (this.proveedor.status) {
-                  this.MensajeServidor();
-                } else {
-                  this.ErrorMensajeServidor();
-                  return;
-                }
-              }).catch(data => {
-                console.log(data);
-              });
-            }).catch(data => {
-              console.log(data);
-            });
-
-          }
-        }).catch(data => {
-          console.log(data);
-        });
-    } else {
-
-      this.closeModal();
-    } */
-  }
-
-
-  /* async ActualizarHistorial(){
-    
-  } */
-
-  async MensajeServidor(Objeto:any) {
-    const alert = await this.alertController.create({
-      header: 'Registro',
-      message: 'El registro se completo con exito',
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.modalController.dismiss(Objeto);
-            this.closeModal();
-          }
-        }]
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor() {
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
-
-    await alert.present();
   }
 
 }

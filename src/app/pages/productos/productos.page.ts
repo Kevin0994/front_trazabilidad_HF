@@ -40,6 +40,7 @@ export class ProductosPage implements OnInit {
   CargarDatos(){
     this.proveedor.obtenerDocumentos('productoSemi/documents').then(data => {
       this.productoSemi=data;
+      console.log(data);
       this.OrdenarTabla(this.productoSemi);
     }).catch(data => {
       console.log(data);
@@ -117,7 +118,6 @@ export class ProductosPage implements OnInit {
       console.log(data);
       if (this.proveedor.status) {
         this.eliminarDatosTabla(producto);
-        this.CargarDatos();
         this.MensajeServidor();
       } else {
         this.ErrorMensajeServidor();
@@ -142,21 +142,23 @@ export class ProductosPage implements OnInit {
       // Verifica si hay que ingresar o editar
       if(producto.status === 'editado'){//Edita el producto de la tabla
         let foundIndex = this.productoSemi.findIndex(obj =>
-          obj.id == producto.id
+          obj.codigo == producto.codigo
         );
         this.productoSemi[foundIndex] = producto;
         this.OrdenarTabla(this.productoSemi);
       }
       if(producto.status === 'nuevo'){//Inserta la nueva cosecha en la tabla
-        this.CargarDatos();
+        this.productoSemi.push(producto);
+        this.OrdenarTabla(this.productoSemi);
       }
     }
   }
 
   eliminarDatosTabla(producto:any){
     let foundIndex = this.productoSemi.findIndex(obj =>
-      obj.id == producto.id
+      obj.codigo == producto.codigo
     );
+    console.log(this.productoSemi[foundIndex]);
     this.productoSemi.splice(foundIndex,1);
   }
 

@@ -18,6 +18,9 @@
   </div>
   <div class="container mt-4" *ngIf="showSemi">
     <div class="d-flex flex-row-reverse mb-3">
+      <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
+        Regresar
+      </ion-button>
       <ion-button class="btn-add" (click)="openModal('productoSemi/post/')">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
@@ -50,12 +53,13 @@
         </tr>
       </tbody>
     </table>
-    <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
-      Regresar
-    </ion-button>
+
   </div>
   <div class="container mt-4" *ngIf="showFinal">
     <div class="d-flex flex-row-reverse mb-3">
+      <ion-button color="primary" (click)="showButtons=true; showFinal=false;  title='Productos';">
+        Regresar
+      </ion-button>
       <ion-button class="btn-add" (click)="openModal('categoriaProductoFinal/post')">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
@@ -88,8 +92,5 @@
         </tr>
       </tbody>
     </table>
-    <ion-button color="primary" (click)="showButtons=true; showFinal=false;  title='Productos';">
-      Regresar
-    </ion-button>
   </div>
 </ion-content>

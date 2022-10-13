@@ -37,10 +37,6 @@ export class CosechaHistorialPage implements OnInit {
     })
   }
 
-   async EditCosecha(historial:any){
-      this.historial= historial;
-      this.ModelPresent();
-   }
 
   async ValidarDelete(historial:any){
     const alert = await this.alertController.create({
@@ -86,27 +82,6 @@ export class CosechaHistorialPage implements OnInit {
     });
 
     await alert.present();
-  }
-
-
-
-
-  async ModelPresent(){
-    const modal = await this.modalController.create({
-      component: ModalCosechaPage,
-      cssClass: 'modalCosecha',
-      componentProps:{
-        'Historial':this.historial,
-        'type':'Editar Registro',
-        'accion': true,
-      }
-    });
-
-    modal.onDidDismiss().then(data => {
-      this.ionViewWillEnter();
-    })
-
-    return await modal.present();
   }
 
   async MensajeServidor(){
