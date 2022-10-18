@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Observable, Observer } from 'rxjs';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-modal-producto-semifinal',
@@ -34,6 +35,7 @@ export class ModalProductoSemifinalPage implements OnInit {
   public base64DefaultURL:any;
 
   constructor(public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,
     public navCtrl:NavController,
     public alertController: AlertController,
@@ -185,13 +187,13 @@ export class ModalProductoSemifinalPage implements OnInit {
           this.producto['id']=this.categoria.id;
           this.producto['categoria']=this.categoria.nombre;
           this.producto['status']='nuevo';
-          this.proveedor.MensajeServidor(this.modalController,this.alertController,this.producto);
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
         }else{
-          this.proveedor.ErrorMensajePersonalizado(this.alertController,datos.error);
+          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,datos.error);
           return;
         }
       }).catch(data => {
-        this.proveedor.ErrorMensajePersonalizado(this.alertController,data.error);
+        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,data.error);
         console.log(data);
       });
     }else{
@@ -217,9 +219,9 @@ export class ModalProductoSemifinalPage implements OnInit {
             this.producto['id']=this.Producto.id;
             this.producto['categoria']=this.categoria.nombre;
             this.producto['status']='editado';
-            this.proveedor.MensajeServidor(this.modalController,this.alertController,this.producto);
+            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
           }else{
-            this.proveedor.ErrorMensajeServidor(this.alertController);
+            this.providerMensajes.ErrorMensajeServidor(this.alertController);
             return;
           }
         }).catch(data => {

@@ -18,7 +18,7 @@
   </div>
   <div class="container mt-4" *ngIf="showSemi">
     <div class="d-flex flex-row-reverse mb-3">
-      <ion-button class="btn-add" (click)="openModal('categoriaProductoSemi/post')">
+      <ion-button class="btn-add" (click)="registroCategoria('categoriaProductoSemi/post','Semi')">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
       </ion-button>
@@ -26,6 +26,7 @@
     <table class="table table-white">
       <thead class="table-header text-light">
         <tr>
+          <th scope="col">Codigo</th>
           <th scope="col">Nombre</th>
           <th scope="col">Productos Asociados</th>
           <th scope="col">Acciones</th>
@@ -33,12 +34,13 @@
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let categoria of categoriaSemi">
+          <td>{{categoria.id}}</td>
           <td>{{categoria.nombre}}</td>
           <td>{{categoria.nProductos}}</td>
           <td> <input type="button" style="margin-right: 20px;"
             class="btn btn-warning btn-sm btn-edit"
             value="Editar"
-            (click)="editOpenModal('categoriaProductoSemi/put/',categoria)"
+            (click)="editCategoria('categoriaProductoSemi/put/',categoria,'Semi')"
           />
           <input type="button"
             class="btn btn-danger btn-sm btn-del"
@@ -54,7 +56,7 @@
   </div>
   <div class="container mt-4" *ngIf="showFinal">
     <div class="d-flex flex-row-reverse mb-3">
-      <ion-button class="btn-add" (click)="openModal('categoriaProductoFinal/post')">
+      <ion-button class="btn-add" (click)="registroCategoria('categoriaProductoFinal/post','Final')">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
       </ion-button>
@@ -62,6 +64,7 @@
     <table class="table table-white">
       <thead class="table-header text-light">
         <tr>
+          <th scope="col">Codigo</th>
           <th scope="col">Nombre</th>
           <th scope="col">Productos Asociados</th>
           <th scope="col">Acciones</th>
@@ -69,12 +72,13 @@
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let categoria of categoriaFinal">
+          <td>{{categoria.id}}</td>
           <td>{{categoria.nombre}}</td>
           <td>{{categoria.nProductos}}</td>
           <td> <input type="button" style="margin-right: 20px;"
             class="btn btn-warning btn-sm btn-edit"
             value="Editar"
-            (click)="editOpenModal('categoriaProductoFinal/put/',categoria)"
+            (click)="editCategoria('categoriaProductoFinal/put/',categoria,'Final')"
           />
           <input type="button"
             class="btn btn-danger btn-sm btn-del"

@@ -105,42 +105,4 @@ export class ProviderService {
     });
   }
 
-  //Mensajes
-  async MensajeServidor(modalController:ModalController,alertController:AlertController,Objeto:any) {
-    const alert = await alertController.create({
-      header: 'Registro',
-      message: 'El registro se completo con exito',
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            console.log('cerrado');
-            modalController.dismiss(Objeto);
-          }
-        }]
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(alertController:AlertController) {
-    const alert = await alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajePersonalizado(alertController:AlertController,mensaje:any){
-    const alert = await alertController.create({
-      header: 'Error del servidor',
-      message: mensaje,
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
 }

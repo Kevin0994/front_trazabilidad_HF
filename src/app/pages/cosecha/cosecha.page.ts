@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { AlertController, NavController, ModalController } from '@ionic/angular';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
+import { ProviderMetodosCrud } from '../../../provider/methods/providerMetodosCrud.service'
 import { ModalCosechaPage } from '../../modals/modal-cosecha/modal-cosecha.page'
 
 @Component({
@@ -15,7 +16,8 @@ export class CosechaPage implements OnInit {
   private cosecha:any;    //Guarda la cosecha que se creo
   temp:any = [];
 
-  constructor(public proveedor: ProviderService,
+  constructor(private proveedor: ProviderService,
+    private providerMetodosCrud: ProviderMetodosCrud,
     public alertController: AlertController,
     public navCtrl:NavController,
     public modalController:ModalController,) {
@@ -61,17 +63,8 @@ export class CosechaPage implements OnInit {
         lote: data.data.loteN,
         status: data.data.status,
       }
-      // Verifica si hay que ingresar o editar una cosecha
-      if(this.cosecha.status != true){//Edita la cosecha de la tabla
-        let foundIndex = this.cosechas.findIndex(obj =>
-          obj.nombre == this.cosecha.nombre && obj.lote == this.cosecha.lote
-        );
-        this.cosechas[foundIndex].stock += this.cosecha.stock;
-        console.table(this.cosechas[foundIndex]);
-      }else{//Inserta la nueva cosecha en la tabla
-        this.cosechas.push(this.cosecha);
-        this.OrdenarTabla();
-      }
+      this.cosechas = this.providerMetodosCrud.actualizarDatosTablaCosecha(this.cosecha,this.cosechas);
+      this.OrdenarTabla();
     }
   }
 

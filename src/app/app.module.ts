@@ -9,6 +9,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ProviderService } from '../provider/ApiRest/provider.service'
+import { ProviderMetodosCrud } from '../provider/methods/providerMetodosCrud.service'
+import { ProviderMensajes } from '../provider/modalMensaje/providerMessege.service'
 import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -28,6 +30,8 @@ import { CookieService } from 'ngx-cookie-service';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     ProviderService,
+    ProviderMetodosCrud,
+    ProviderMensajes,
     CookieService
   ],
   bootstrap: [AppComponent],

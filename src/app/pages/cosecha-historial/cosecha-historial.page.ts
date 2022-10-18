@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
-import { ModalCosechaPage } from 'src/app/modals/modal-cosecha/modal-cosecha.page';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
+import { ProviderMetodosCrud } from 'src/provider/methods/providerMetodosCrud.service';
 
 @Component({
   selector: 'app-cosecha-historial',
@@ -14,7 +15,8 @@ export class CosechaHistorialPage implements OnInit {
   historial:any;
   cosecha:any;
 
-  constructor(public proveedor: ProviderService,
+  constructor(private proveedor: ProviderService,
+    private providerMensajes: ProviderMensajes,
     public alertController: AlertController,
     public navCtrl:NavController,
     public modalController:ModalController,) {
@@ -68,9 +70,9 @@ export class CosechaHistorialPage implements OnInit {
               console.log(data);
               if (this.proveedor.status) {
                 this.loadDatos();
-                this.MensajeServidor();
+                this.providerMensajes.MensajeDeleteServidor(this.alertController);
               } else {
-                this.ErrorMensajeServidor();
+                this.providerMensajes.ErrorMensajeServidor(this.alertController);
                 return;
               }
             }).catch(data => {
@@ -79,26 +81,6 @@ export class CosechaHistorialPage implements OnInit {
           }
         }
       ]
-    });
-
-    await alert.present();
-  }
-
-  async MensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Accion',
-      message: 'La operacion se completo con exito',
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
     });
 
     await alert.present();
