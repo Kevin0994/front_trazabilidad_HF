@@ -6,7 +6,7 @@
     <ion-label>Cosecha</ion-label>
   </ion-toolbar>
 </ion-header>
- 
+
 <ion-content>
   <div class="container mt-4">
     <div class="d-flex flex-row-reverse mb-3">
@@ -14,16 +14,20 @@
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
       </ion-button>
+      <ion-button class="btn-add" (click)="readNFC()">
+        <ion-icon name="add-outline"></ion-icon>
+        Read NFC
+      </ion-button>
+      <ion-button class="btn-add" (click)="writeNFC()">
+        <ion-icon name="add-outline"></ion-icon>
+        Write NFC
+      </ion-button>
       <ion-button class="btn-add" [routerLink]="['/cosecha-historial']">
         <ion-icon name="document-text-outline"></ion-icon>
         Historial
       </ion-button>
-      <input
-      type="text"
-      style="padding-right:40px;margin-right:auto;width:30%;"
-      placeholder="Ingrese un nombre de cosecha"
-      (keyup)="updateFilter($event)"
-    />
+      <input type="text" style="padding-right:40px;margin-right:auto;width:30%;"
+        placeholder="Ingrese un nombre de cosecha" (keyup)="updateFilter($event)" />
     </div>
     <table class="table table-white">
       <thead class="table-header text-light">
