@@ -71,7 +71,7 @@ export class ModalFabricacionPage implements OnInit {
         console.table(this.productoSemifinal);
         console.table(this.loteMateriaPrima);
 
-        this.proveedor.InsertarDocumento('productoSemi/post',this.productoSemifinal).then(data => {
+        this.proveedor.InsertarDocumento('productoSemifinales/post',this.productoSemifinal).then(data => {
           console.log(data);
           if(this.proveedor.status){
             this.MensajeServidor();

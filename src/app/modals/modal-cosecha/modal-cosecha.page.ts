@@ -43,7 +43,7 @@ export class ModalCosechaPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.proveedor.obtenerDocumentos('listaCosechas/documents').then(data => {
+    this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
       this.lista = data;
     }).catch(data => {
       console.log(data);
@@ -68,7 +68,7 @@ export class ModalCosechaPage implements OnInit {
   handleChange(ev) {
     this.formulario = this.formRegistro.value;
     this.nombreCosecha = ev.detail.value.nombre;
-    this.codigoCosecha = ev.detail.value.codigo;
+    this.codigoCosecha = ev.detail.value.id;
     this.formRegistro.controls.codigo.setValue(this.codigoCosecha);
     this.formRegistro.controls.codigo.disable();
     console.log(this.formRegistro);

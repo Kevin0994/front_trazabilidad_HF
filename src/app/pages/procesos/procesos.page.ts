@@ -21,7 +21,7 @@ export class ProcesosPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.proveedor.obtenerDocumentos('productosSemi/documents').then(data => {
+    this.proveedor.obtenerDocumentos('productoSemifinales/documents').then(data => {
       this.productos=data;
       console.table(this.productos);
     }).catch(data => {
@@ -44,8 +44,8 @@ export class ProcesosPage implements OnInit {
 
   async MensajeServidor(){
     const alert = await this.alertController.create({
-      header: 'Eliminar',
-      message: 'La eliminacion se completo con exito',
+      header: 'Exito',
+      message: 'El proceso se ha completado con exito',
       buttons: ['OK']
     });
 

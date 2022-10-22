@@ -29,6 +29,7 @@ export class ProviderMetodosCrud{
         tabla[foundIndex] = data;
         return tabla;
         }else{//Inserta la nueva cosecha en la tabla
+        console.log('Agregando')
         tabla.push(data);
         return tabla;
         }
@@ -38,7 +39,6 @@ export class ProviderMetodosCrud{
         let foundIndex = tabla.findIndex(obj =>
             obj.id == id
         );
-        console.log(tabla[foundIndex]);
         tabla.splice(foundIndex,1);
         return tabla;
     }

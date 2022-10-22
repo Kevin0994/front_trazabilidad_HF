@@ -12,9 +12,14 @@ export class FabricacionPage implements OnInit {
 
 @ViewChild('buttons') botones: ElementRef ;
 @ViewChild('PageSemi') pageSemi: ElementRef ;
+  public title:any="";
   public showSemi: boolean = false;
+  public showFinal: boolean = false;
+  public showView: boolean = false;
   public showButtons: boolean = true;
   public categoriaProducto:any;
+  public categoriaSemi: any=[];
+  public categoriaFinal: any=[];
   categorias: any=[];
   productos: any=[];
 
@@ -31,22 +36,53 @@ categoriaSlides = {
   }
 
   ngAfterViewInit(){
-    this.LoadCategorias();
+
   }
 
-
-  LoadCategorias(){
-    this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
-      this.categorias=data;
-    }).catch(data => {
-      console.log(data);
-    });
+  CargarDatos(){
+    console.log(this.showSemi);
+    if(this.showSemi == true){
+      if(this.categoriaSemi.length != 0){
+        this.categorias = this.categoriaSemi;
+      }
+      this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
+        this.categoriaSemi = data;
+        this.categorias = this.categoriaSemi;
+      }).catch(data => {
+        console.log(data);
+      });
+    }
+    if(this.showFinal == true){
+      if(this.categoriaFinal.length != 0){
+        this.categorias = this.categoriaFinal;
+      }
+      this.proveedor.obtenerDocumentos('categoriaProductoFinal/documents').then(data => {
+        this.categoriaFinal = data;
+        this.categorias=this.categoriaFinal;
+      }).catch(data => {
+        console.log(data);
+      });
+    }
   }
 
-  openProduct(productos:any,categoria:any){
-    this.productos=productos;
-    console.table(categoria);
-    this.categoriaProducto=categoria;
+  openProduct(categoria:any){
+    if(this.showSemi == true){
+      this.proveedor.obtenerDocumentosPorId('productoSemi/documents/',categoria).then(data => {
+        this.productos=data;
+        this.categoriaProducto=categoria;
+      }).catch(data => {
+        console.log(data);
+      });
+    }
+    if(this.showFinal == true){
+      this.proveedor.obtenerDocumentosPorId('productoFinal/documents/',categoria).then(data => {
+        this.productos=data;
+        this.categoriaProducto=categoria;
+        console.log(this.productos);
+      }).catch(data => {
+        console.log(data);
+      });
+    }
   }
 
   BuscarMateriaPrima(producto:any){

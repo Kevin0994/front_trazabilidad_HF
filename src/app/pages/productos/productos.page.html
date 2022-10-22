@@ -9,10 +9,10 @@
 
 <ion-content>
   <div *ngIf="showButtons" class="containerButtons">
-    <ion-button class="buttonSemi" (click)="showSemi=true; showButtons=false; title='Productos SemiFinales'">
+    <ion-button class="buttonSemi" (click)="showSemi=true; showButtons=false; CargarDatos(); title='Productos SemiFinales'">
       SEMIFINAL
     </ion-button>
-    <ion-button class="buttonFinal" (click)="showFinal=true; showButtons=false; title='Productos Finales';">
+    <ion-button class="buttonFinal" (click)="showFinal=true; showButtons=false; CargarDatos(); title='Productos Finales';">
       FINAL
     </ion-button>
   </div>
@@ -21,7 +21,7 @@
       <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
         Regresar
       </ion-button>
-      <ion-button class="btn-add" (click)="openModal('productoSemi/post/')">
+      <ion-button class="btn-add" (click)="registroProducto('productoSemi/post/','Semi')">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
       </ion-button>
@@ -38,12 +38,12 @@
       <tbody class="bg-white">
         <tr *ngFor="let producto of productoSemi">
           <td>{{producto.categoria}}</td>
-          <td>{{producto.codigo}}</td>
+          <td>{{producto.id}}</td>
           <td>{{producto.nombre}}</td>
           <td> <input type="button" style="margin-right: 20px;"
             class="btn btn-warning btn-sm btn-edit"
             value="Editar"
-            (click)="editOpenModal('productoSemi/put/',producto)"
+            (click)="editOpenModal('productoSemi/put/',producto,'Semi')"
           />
           <input type="button"
             class="btn btn-danger btn-sm btn-del"
@@ -60,7 +60,7 @@
       <ion-button color="primary" (click)="showButtons=true; showFinal=false;  title='Productos';">
         Regresar
       </ion-button>
-      <ion-button class="btn-add" (click)="openModal('categoriaProductoFinal/post')">
+      <ion-button class="btn-add" (click)="registroProducto('productoFinal/post/','Final')">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
       </ion-button>
@@ -77,12 +77,12 @@
       <tbody class="bg-white">
         <tr *ngFor="let producto of productoFinal">
           <td>{{producto.categoria}}</td>
-          <td>{{producto.codigo}}</td>
-          <td>{{producto.materiaPrima}}</td>
+          <td>{{producto.id}}</td>
+          <td>{{producto.nombre}}</td>
           <td> <input type="button" style="margin-right: 20px;"
             class="btn btn-warning btn-sm btn-edit"
             value="Editar"
-            (click)="editOpenModal('categoriaProductoFinal/put/',producto)"
+            (click)="editOpenModal('categoriaProductoFinal/put/',producto, 'Final')"
           />
           <input type="button"
             class="btn btn-danger btn-sm btn-del"

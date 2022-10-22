@@ -50,7 +50,7 @@ export class CategoriaProductosPage implements OnInit {
    
   }
 
-  loadDatos(url:string){
+  /* loadDatos(url:string){
     this.proveedor.obtenerDocumentos(url).then(data => {
       if(this.showSemi == true){
         this.categoriaSemi=data;
@@ -60,7 +60,7 @@ export class CategoriaProductosPage implements OnInit {
     }).catch(data => {
       console.log(data);
     })
-  }
+  } */
 
   async registroCategoria(url:string,tabla:any){
     const modal = await this.modalController.create({
