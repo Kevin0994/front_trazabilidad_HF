@@ -92,8 +92,9 @@ export class ModalProductoPage implements OnInit {
         console.log(this.listaMateriaPrima);
         if(this.type != 'Nuevo Registro'){
           this.materiaPrima = {
-            id: this.Producto.materiaPrima,
-            nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
+            id: this.Producto.materiaPrima.producto,
+            categoria: this.Producto.materiaPrima.categoria,
+            nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima.producto)[0].nombre
           }
           this.categoria ={
             id: this.Producto.id,
@@ -119,10 +120,20 @@ export class ModalProductoPage implements OnInit {
   }
 
   handleChangeAlimento(ev) {
-    this.materiaPrima = {
-      id: ev.detail.value,
-      nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
+    if(this.tabla === 'Semi'){
+      this.materiaPrima = {
+        id: ev.detail.value,
+        nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
+      }
     }
+    if(this.tabla === 'Final'){
+      this.materiaPrima = {
+        id: ev.detail.value,
+        categoria: this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].categoriaId,
+        nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
+      }
+    }
+    console.log(this.materiaPrima);
   }
 
   closeModal(){
@@ -200,12 +211,19 @@ export class ModalProductoPage implements OnInit {
       await alert.present();
       return;
     }
+    let reference;
+    if(this.tabla === 'Semi'){
+      reference = this.materiaPrima.id
+    }
+    if(this.tabla === 'Final'){
+      reference = this.materiaPrima
+    }
 
     this.producto = {
       id: this.formulario.codigo,
       nombre: this.formulario.nombre,
       img: this.img,
-      materiaPrima: this.materiaPrima.id,
+      materiaPrima: reference,
       categoriaId: this.categoria.id,
     }
 
