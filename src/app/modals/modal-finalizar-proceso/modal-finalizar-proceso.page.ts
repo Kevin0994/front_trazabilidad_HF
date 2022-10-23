@@ -67,7 +67,7 @@ export class ModalFinalizarProcesoPage implements OnInit {
             }
 
             console.table(this.producto);
-            this.proveedor.actualizarDocumento('productoSemifinales/put/',this.idProceso,this.producto).then(data => {
+            this.proveedor.actualizarDocumento('inventarioProductoSemifinales/put/',this.idProceso,this.producto).then(data => {
               console.log(data);
               if(this.proveedor.status){
                 this.MensajeServidor();

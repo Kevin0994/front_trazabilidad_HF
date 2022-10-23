@@ -41,7 +41,7 @@
           <ion-col>
             <ion-slides [options]="categoriaSlides">
               <ion-slide class="categorias" *ngFor="let producto of productos">
-                <ion-card (click)="BuscarMateriaPrima(producto)" type="button">
+                <ion-card (click)="fabricarProducto(producto,producto.materiaPrima)" type="button">
                   <img style="width: 400px; height: 300px" [src]="producto.img">
                   <ion-card-content>
                     <h3><strong>{{producto.nombre}}</strong></h3>

@@ -113,7 +113,7 @@ export class InventarioPage implements OnInit {
   }
 
   LoadDatos(){
-    this.proveedor.obtenerDocumentos('inventarioProSemi/documents').then(data => {
+    this.proveedor.obtenerDocumentos('inventarioProSemi/terminado/documents').then(data => {
       this.productos=data;
       this.temp=data;
       console.log(this.productos);

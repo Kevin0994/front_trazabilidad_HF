@@ -85,13 +85,19 @@ categoriaSlides = {
     }
   }
 
-  BuscarMateriaPrima(producto:any){
-    this.proveedor.obtenerDocumentosPorId('cosechas/documents/',producto.materiaPrima).then(data => {
-      const materiaPrima = data;
-      this.openModal(producto, materiaPrima);
-    }).catch(data => {
-      console.log(data);
-    })
+  fabricarProducto(producto:any,materiaPrima:any){
+    if(this.showSemi == true){
+      this.proveedor.obtenerDocumentosPorId('cosechas/documents/',producto.materiaPrima).then(data => {
+        const materiaPrima = data;
+        this.openModal(producto, materiaPrima);
+      }).catch(data => {
+        console.log(data);
+      })
+
+    }
+    if(this.showFinal == true){
+      this.openModal(producto,materiaPrima);
+    }
   }
 
 
@@ -103,6 +109,8 @@ categoriaSlides = {
         'Producto': producto,
         'Categoria': this.categoriaProducto,
         'MateriaPrima': materiaPrima,
+        'showSemi': this.showSemi,
+        'showFinal': this.showFinal,
       }
     });
 

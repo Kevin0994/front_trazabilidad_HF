@@ -21,7 +21,7 @@ export class ProcesosPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    this.proveedor.obtenerDocumentos('productoSemifinales/documents').then(data => {
+    this.proveedor.obtenerDocumentos('inventarioProductoSemifinal/proceso/documents').then(data => {
       this.productos=data;
       console.table(this.productos);
     }).catch(data => {
