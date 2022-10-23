@@ -31,7 +31,7 @@ import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
     ProviderService,
     ProviderMetodosCrud,
     ProviderMensajes,
-    CookieService
+    CookieService,
     NFC,
     Ndef,
   ],
