@@ -1,4 +1,4 @@
-import { NgModule,ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -13,11 +13,10 @@ import { ProviderMetodosCrud } from '../provider/methods/providerMetodosCrud.ser
 import { ProviderMensajes } from '../provider/modalMensaje/providerMessege.service'
 import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -33,6 +32,8 @@ import { CookieService } from 'ngx-cookie-service';
     ProviderMetodosCrud,
     ProviderMensajes,
     CookieService
+    NFC,
+    Ndef,
   ],
   bootstrap: [AppComponent],
 })

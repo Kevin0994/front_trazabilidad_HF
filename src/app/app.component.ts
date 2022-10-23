@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import {  MenuController } from '@ionic/angular';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -7,8 +7,6 @@ import {  MenuController } from '@ionic/angular';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private menu: MenuController) {
-
-  }
-  ionWillClose(){}
+  constructor(private menu: MenuController) {}
+  ionWillClose() {}
 }
