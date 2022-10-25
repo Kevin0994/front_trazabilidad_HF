@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Observable, Observer } from 'rxjs';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-modal-categoria-producto',
@@ -23,6 +24,7 @@ export class ModalCategoriaProductoPage implements OnInit {
   public base64DefaultURL:any;
 
   constructor(public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,
     public navCtrl:NavController,
     public alertController: AlertController,
@@ -45,6 +47,7 @@ export class ModalCategoriaProductoPage implements OnInit {
 
   newForm(){
     this.formRegistro = this.fb.group({
+      'codigo': new FormControl("",Validators.required),
       'nombre': new FormControl("",Validators.required),
     })
   }
@@ -52,6 +55,7 @@ export class ModalCategoriaProductoPage implements OnInit {
   editForm(){
     this.img = this.Categoria.img;
     this.formRegistro =  this.fb.group({
+      'codigo': new FormControl(this.Categoria.id,Validators.required),
       'nombre': new FormControl(this.Categoria.nombre,Validators.required),
     })
   }
@@ -68,44 +72,51 @@ export class ModalCategoriaProductoPage implements OnInit {
       await alert.present();
       return;
     }
-
     this.categoria = {
+      idOld: this.Categoria.id,
+      id: this.formulario.codigo,
       nombre: this.formulario.nombre,
       img: this.img,
+      nProductos: this.Categoria.nProductos
     }
-    console.table(this.categoria);
 
-    if(this.type == 'Nuevo Registro'){
+    if(this.categoria.idOld != this.categoria.id || this.Categoria.img != this.categoria.img || this.Categoria.nombre != this.categoria.nombre){
+      if(this.type == 'Nuevo Registro'){
 
+        this.proveedor.InsertarDocumento(this.url,this.categoria).then(data => {
+          console.log(data);
 
-      this.proveedor.InsertarDocumento(this.url,this.categoria).then(data => {
-        console.log(data);
+          if(this.proveedor.status){
+            this.categoria['nProductos']=0;
+            this.categoria['status']=data;
+            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.categoria);
+          }else{
+            this.providerMensajes.ErrorMensajeServidor(this.alertController);
+            return;
+          }
+        }).catch(data => {
+          console.log(data);
+        });
+      }else{
 
-        if(this.proveedor.status){
-          this.MensajeServidor();
-        }else{
-          this.ErrorMensajeServidor();
-          return;
-        }
-      }).catch(data => {
-        console.log(data);
-      });
+        this.proveedor.actualizarDocumento(this.url,this.Categoria.id,this.categoria).then(data => {
+          console.log(data);
+
+          if(this.proveedor.status){
+            this.categoria['status']=data;
+            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.categoria);
+          }else{
+            this.providerMensajes.ErrorMensajeServidor(this.alertController);
+            return;
+          }
+        }).catch(data => {
+          console.log(data);
+        });
+      }
     }else{
-
-
-      this.proveedor.actualizarDocumento(this.url,this.Categoria.id,this.categoria).then(data => {
-        console.log(data);
-
-        if(this.proveedor.status){
-          this.MensajeServidor();
-        }else{
-          this.ErrorMensajeServidor();
-          return;
-        }
-      }).catch(data => {
-        console.log(data);
-      });
+      this.modalController.dismiss();
     }
+
   }
 
   extraerBase64 = async ($event: any) => new Promise((resolve, reject) => {
@@ -183,32 +194,6 @@ export class ModalCategoriaProductoPage implements OnInit {
     let dataURL: string = canvas.toDataURL("image/png");
     this.base64DefaultURL = dataURL;
     return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-  }
-
-  async MensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Registro',
-      message: 'El registro se completo con exito',
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.closeModal();
-          }
-        }]
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
-
-    await alert.present();
   }
 
 

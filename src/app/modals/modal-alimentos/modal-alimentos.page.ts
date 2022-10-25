@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-modal-alimentos',
@@ -17,11 +18,12 @@ export class ModalAlimentosPage implements OnInit {
   private formulario:any;
   private alimento:any;
 
-  constructor(public proveedor: ProviderService,
+  constructor(private proveedor: ProviderService,
+    private providerMensajes: ProviderMensajes,
     public fb: FormBuilder,
-    public navCtrl:NavController,
-    public alertController: AlertController,
-    public modalController:ModalController,) { }
+    private navCtrl:NavController,
+    private alertController: AlertController,
+    private modalController:ModalController,) { }
 
   ngOnInit() {
     if(this.type == 'Nuevo Registro'){
@@ -44,7 +46,7 @@ export class ModalAlimentosPage implements OnInit {
 
   editForm(){
     this.formRegistro =  this.fb.group({
-      'codigo': new FormControl(this.Alimento.codigo,Validators.required),
+      'codigo': new FormControl(this.Alimento.id,Validators.required),
       'nombre': new FormControl(this.Alimento.nombre,Validators.required),
     })
   }
@@ -63,20 +65,23 @@ export class ModalAlimentosPage implements OnInit {
     }
 
     this.alimento = {
-      codigo: this.formulario.codigo,
+      idOld: this.Alimento.id,
+      id: this.formulario.codigo,
       nombre: this.formulario.nombre,
     }
 
-    if(this.type == 'Nuevo Registro'){
+    if(this.Alimento.id != this.alimento.id || this.Alimento.nombre != this.alimento.nombre){
 
+    if(this.type == 'Nuevo Registro'){
 
       this.proveedor.InsertarDocumento('alimentos/post',this.alimento).then(data => {
         console.log(data);
 
         if(this.proveedor.status){
-          this.MensajeServidor();
+          this.alimento['status']=data;
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.alimento);
         }else{
-          this.ErrorMensajeServidor();
+          this.providerMensajes.ErrorMensajeServidor(this.alertController);
           return;
         }
       }).catch(data => {
@@ -84,47 +89,23 @@ export class ModalAlimentosPage implements OnInit {
       });
     }else{
 
-
       this.proveedor.actualizarDocumento('alimentos/put/',this.Alimento.id,this.alimento).then(data => {
         console.log(data);
 
         if(this.proveedor.status){
-          this.MensajeServidor();
+          this.alimento['status']=data;
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.alimento);
         }else{
-          this.ErrorMensajeServidor();
+          this.providerMensajes.ErrorMensajeServidor(this.alertController);
           return;
         }
       }).catch(data => {
         console.log(data);
       });
     }
+    }else{
+      this.modalController.dismiss();
+    }
+
   }
-
-
-  async MensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Registro',
-      message: 'El registro se completo con exito',
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            this.closeModal();
-          }
-        }]
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
-
 }

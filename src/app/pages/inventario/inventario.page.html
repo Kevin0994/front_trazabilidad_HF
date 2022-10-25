@@ -8,26 +8,16 @@
 </ion-header>
 
 <ion-content>
-  <div>
-    <input
-      type="text"
-      style="padding:8px;margin:15px auto;width:30%;"
-      placeholder="Type to filter the name column..."
-      (keyup)="updateFilter($event)"
-    />
-    <ngx-datatable
-    #table
-    class="material"
-    [columns]="cols"
-    [columnMode]="ColumnMode.force"
-    [headerHeight]="50"
-    [footerHeight]="50"
-    rowHeight="auto"
-    [limit]="10"
-    [rows]="productos"
-  >
-  </ngx-datatable>
-    <ngx-datatable-column  prop="pesomp" [width]="300">
+  <div class="container">
+    <input type="text" placeholder="Nombre del producto" (keyup)="updateFilter($event)" class="input-filter" />
+    <ion-button (click)="filterInventory()">
+      <ion-icon name="add-outline"></ion-icon>
+      Read NFC
+    </ion-button>
+    <ngx-datatable #table class="material" [columns]="cols" [columnMode]="ColumnMode.force" [headerHeight]="50"
+      [footerHeight]="50" rowHeight="auto" [limit]="10" [rows]="productos">
+    </ngx-datatable>
+    <ngx-datatable-column prop="pesomp" [width]="300">
       <ng-template #editTmpl let-value="value" ngx-datatable-cell-template>
         <strong>{{ value }} gr</strong>
       </ng-template>

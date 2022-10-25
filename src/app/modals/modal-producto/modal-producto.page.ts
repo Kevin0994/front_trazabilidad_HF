@@ -4,17 +4,19 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Observable, Observer } from 'rxjs';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
-  selector: 'app-modal-producto-semifinal',
-  templateUrl: './modal-producto-semifinal.page.html',
-  styleUrls: ['./modal-producto-semifinal.page.scss'],
+  selector: 'app-modal-producto',
+  templateUrl: './modal-producto.page.html',
+  styleUrls: ['./modal-producto.page.scss'],
 })
-export class ModalProductoSemifinalPage implements OnInit {
+export class ModalProductoPage implements OnInit {
 
   @Input() Producto: any="init";
   @Input() url: any;
   @Input() type: any;
+  @Input() tabla: any;
 
   public formRegistro: FormGroup;
   private formulario:any;
@@ -24,7 +26,7 @@ export class ModalProductoSemifinalPage implements OnInit {
     nombre: '',
   };
   private producto:any;
-  public listaAlimentos:any=[];
+  public listaMateriaPrima:any=[];
   public materiaPrima:any={
     id:'',
     nombre: '',
@@ -34,6 +36,7 @@ export class ModalProductoSemifinalPage implements OnInit {
   public base64DefaultURL:any;
 
   constructor(public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,
     public navCtrl:NavController,
     public alertController: AlertController,
@@ -54,27 +57,58 @@ export class ModalProductoSemifinalPage implements OnInit {
   }
 
   cargarDatos(){
-    this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
-      this.listaAlimentos = data;
-      if(this.type != 'Nuevo Registro'){
-        this.materiaPrima = {
-          id: this.Producto.materiaPrima,
-          nombre: this.listaAlimentos.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
-        }
-        this.categoria ={
-          id: this.Producto.id,
-          nombre: this.Producto.categoria
-        }
-      }
-    }).catch(data => {
-      console.log(data);
-    })
-    this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
+    if(this.tabla === 'Semi'){
+
+      this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
+        this.listaCategorias = data;
+        console.log(this.listaCategorias);
+        this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
+          this.listaMateriaPrima = data;
+          if(this.type != 'Nuevo Registro'){
+            this.materiaPrima = {
+              id: this.Producto.materiaPrima,
+              nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
+            }
+            this.categoria ={
+              id: this.Producto.id,
+              nombre: this.Producto.categoria
+            }
+          }
+        }).catch(data => {
+          console.log(data);
+        })
+      }).catch(data => {
+        console.log(data);
+      })
+
+  }
+
+  if(this.tabla === 'Final'){
+    this.proveedor.obtenerDocumentos('categoriaProductoFinal/documents').then(data => {
       this.listaCategorias = data;
       console.log(this.listaCategorias);
+      this.proveedor.obtenerDocumentos('productoSemi/documents').then(data => {
+        this.listaMateriaPrima = data;
+        console.log(this.listaMateriaPrima);
+        if(this.type != 'Nuevo Registro'){
+          this.materiaPrima = {
+            id: this.Producto.materiaPrima,
+            nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
+          }
+          this.categoria ={
+            id: this.Producto.id,
+            nombre: this.Producto.categoria
+          }
+        }
+      }).catch(data => {
+        console.log(data);
+      })
     }).catch(data => {
       console.log(data);
     })
+
+  }
+
   }
 
   handleChangeCategoria(ev) {
@@ -87,7 +121,7 @@ export class ModalProductoSemifinalPage implements OnInit {
   handleChangeAlimento(ev) {
     this.materiaPrima = {
       id: ev.detail.value,
-      nombre:  this.listaAlimentos.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
+      nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
     }
   }
 
@@ -107,8 +141,8 @@ export class ModalProductoSemifinalPage implements OnInit {
   editForm(){
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
-      'categoria': new FormControl(this.Producto.id,Validators.required),
-      'codigo': new FormControl(this.Producto.codigo,Validators.required),
+      'categoria': new FormControl(this.Producto.categoriaId,Validators.required),
+      'codigo': new FormControl(this.Producto.id,Validators.required),
       'nombre': new FormControl(this.Producto.nombre,Validators.required),
       'materiaPrima': new FormControl(this.Producto.materiaPrima,Validators.required),
     })
@@ -168,58 +202,58 @@ export class ModalProductoSemifinalPage implements OnInit {
     }
 
     this.producto = {
-      codigo: this.formulario.codigo,
+      id: this.formulario.codigo,
       nombre: this.formulario.nombre,
       img: this.img,
       materiaPrima: this.materiaPrima.id,
-      categoria: this.categoria.id
+      categoriaId: this.categoria.id,
     }
 
     if(this.type == 'Nuevo Registro'){
 
-      console.log(this.url);
+      console.log(this.producto);
       this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
         let datos:any = data;
         if(this.proveedor.status){
-          console.log('status 200');
-          this.producto['id']=this.categoria.id;
           this.producto['categoria']=this.categoria.nombre;
-          this.producto['status']='nuevo';
-          this.proveedor.MensajeServidor(this.modalController,this.alertController,this.producto);
+          this.producto['status']=data;
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
         }else{
-          this.proveedor.ErrorMensajePersonalizado(this.alertController,datos.error);
+          console.table(datos);
+          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,datos.error);
           return;
         }
       }).catch(data => {
-        this.proveedor.ErrorMensajePersonalizado(this.alertController,data.error);
         console.log(data);
+        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,data.error);
+
       });
     }else{
       this.producto = {
-        producto: this.Producto,
-        codigo: this.formulario.codigo,
+        idOld: this.Producto.id,
+        id: this.formulario.codigo,
         nombre: this.formulario.nombre,
         img: this.img,
         materiaPrima: this.materiaPrima.id,
-        categoria: this.categoria.id
+        categoriaId: this.categoria.id,
+        categoriaIdOld: this.Producto.categoriaId,
       }
 
       if(this.Producto.categoria == this.categoria.nombre &&
-        this.Producto.codigo == this.producto.codigo &&
+        this.Producto.id == this.producto.id &&
         this.Producto.img == this.producto.img &&
         this.Producto.materiaPrima == this.producto.materiaPrima &&
         this.Producto.nombre == this.producto.nombre){
           this.closeModal();
       }else{
-        this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
+        this.proveedor.actualizarDocumento(this.url,this.producto.idOld,this.producto).then(data => {
           console.log(data);
           if(this.proveedor.status){
-            this.producto['id']=this.Producto.id;
             this.producto['categoria']=this.categoria.nombre;
-            this.producto['status']='editado';
-            this.proveedor.MensajeServidor(this.modalController,this.alertController,this.producto);
+            this.producto['status']=data;
+            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
           }else{
-            this.proveedor.ErrorMensajeServidor(this.alertController);
+            this.providerMensajes.ErrorMensajeServidor(this.alertController);
             return;
           }
         }).catch(data => {

@@ -49,7 +49,7 @@ export class ModalFinalizarProcesoPage implements OnInit {
       return;
     }
     const alert = await this.alertController.create({
-      header: 'Eliminar',
+      header: 'Atencion',
       message: '¿Seguro que desea terminar el proceso?',
       buttons: [
         {
@@ -67,7 +67,7 @@ export class ModalFinalizarProcesoPage implements OnInit {
             }
 
             console.table(this.producto);
-            this.proveedor.actualizarDocumento('productosSemi/put/',this.idProceso,this.producto).then(data => {
+            this.proveedor.actualizarDocumento('inventarioProductoSemifinales/put/',this.idProceso,this.producto).then(data => {
               console.log(data);
               if(this.proveedor.status){
                 this.MensajeServidor();

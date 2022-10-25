@@ -44,7 +44,7 @@
       <ion-item>
         <ion-label position="floating">Materia Prima</ion-label>
         <ion-select (ionChange)="handleChangeAlimento($event)" [selectedText]="materiaPrima.nombre" formControlName="materiaPrima" placeholder="Seleccione un alimento">
-          <ion-select-option  *ngFor="let alimento of listaAlimentos" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
+          <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
         </ion-select>
       </ion-item>
         <br>

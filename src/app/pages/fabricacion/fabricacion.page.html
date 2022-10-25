@@ -9,21 +9,21 @@
 
 <ion-content>
   <div *ngIf="showButtons" class="containerButtons">
-    <ion-button class="buttonSemi" (click)="showSemi=true; showButtons=false">
+    <ion-button class="buttonSemi" (click)="showSemi=true; showView=true; showButtons=false; CargarDatos(); title='Productos SemiFinales'">
       SEMIFINAL
     </ion-button>
-    <ion-button class="buttonFinal" [routerLink]="['/cosecha-historial']">
+    <ion-button class="buttonFinal" (click)="showFinal=true; showView=true; showButtons=false; CargarDatos(); title='Productos Finales'">
       FINAL
     </ion-button>
   </div>
-  <div *ngIf="showSemi">
+  <div *ngIf="showView">
     <div  style="width: 100%; margin:auto; padding: 1em;">
       <h1 class="title">Categorias</h1>
       <ion-row>
         <ion-col>
           <ion-slides [options]="categoriaSlides">
             <ion-slide class="categorias" *ngFor="let categoria of categorias">
-              <ion-card (click)="openProduct(categoria.productos, categoria.nombre)" type="button">
+              <ion-card (click)="openProduct(categoria.id)" type="button">
                 <img style="width: 400px; height: 300px" [src]="categoria.img">
                 <ion-card-content>
                   <h3><strong>{{categoria.nombre}}</strong></h3>
@@ -34,14 +34,14 @@
         </ion-col>
       </ion-row>
     </div>
-    <div *ngIf="showSemi">
+    <div *ngIf="showView">
       <div  style="width: 100%; margin:auto; padding: 1em;">
-        <h1 style="text-align: center;">Categorias</h1>
+        <h1 style="text-align: center;">{{ title }}</h1>
         <ion-row>
           <ion-col>
             <ion-slides [options]="categoriaSlides">
               <ion-slide class="categorias" *ngFor="let producto of productos">
-                <ion-card (click)="BuscarMateriaPrima(producto)" type="button">
+                <ion-card (click)="fabricarProducto(producto,producto.materiaPrima)" type="button">
                   <img style="width: 400px; height: 300px" [src]="producto.img">
                   <ion-card-content>
                     <h3><strong>{{producto.nombre}}</strong></h3>
@@ -53,7 +53,7 @@
         </ion-row>
       </div>
     </div>
-    <ion-button color="primary" (click)="showButtons=true; showSemi=false">
+    <ion-button color="primary" (click)="showButtons=true; showSemi=false; showFinal=false; showView=false; productos=null; categorias=null;">
       Regresar
     </ion-button>
   </div>

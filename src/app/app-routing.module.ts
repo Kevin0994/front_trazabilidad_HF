@@ -84,7 +84,8 @@ const routes: Routes = [
   {
     path: 'modal-categoria-producto',
     loadChildren: () => import('./modals/modal-categoria-producto/modal-categoria-producto.module').then( m => m.ModalCategoriaProductoPageModule)
-  },  {
+  },
+  {
     path: 'alimentos',
     loadChildren: () => import('./pages/alimentos/alimentos.module').then( m => m.AlimentosPageModule)
   },
@@ -94,7 +95,7 @@ const routes: Routes = [
   },
   {
     path: 'modal-producto-semifinal',
-    loadChildren: () => import('./modals/modal-producto-semifinal/modal-producto-semifinal.module').then( m => m.ModalProductoSemifinalPageModule)
+    loadChildren: () => import('./modals/modal-producto/modal-producto.module').then( m => m.ModalProductoSemifinalPageModule)
   },
 
 

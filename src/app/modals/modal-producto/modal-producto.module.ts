@@ -4,9 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ModalProductoSemifinalPageRoutingModule } from './modal-producto-semifinal-routing.module';
+import { ModalProductoSemifinalPageRoutingModule } from './modal-producto-routing.module';
 
-import { ModalProductoSemifinalPage } from './modal-producto-semifinal.page';
+import { ModalProductoPage } from './modal-producto.page';
 
 @NgModule({
   imports: [
@@ -16,6 +16,6 @@ import { ModalProductoSemifinalPage } from './modal-producto-semifinal.page';
     IonicModule,
     ModalProductoSemifinalPageRoutingModule
   ],
-  declarations: [ModalProductoSemifinalPage]
+  declarations: [ModalProductoPage]
 })
 export class ModalProductoSemifinalPageModule {}

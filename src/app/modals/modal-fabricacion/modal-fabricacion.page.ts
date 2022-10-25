@@ -13,6 +13,8 @@ export class ModalFabricacionPage implements OnInit {
   @Input() Producto: any="init";
   @Input() Categoria: any;
   @Input() MateriaPrima: any;
+  @Input() showSemi: any;
+  @Input() showFinal: any;
   public formRegistro: FormGroup;
   private formulario:any;
   private loteMateriaPrima:any;
@@ -71,7 +73,7 @@ export class ModalFabricacionPage implements OnInit {
         console.table(this.productoSemifinal);
         console.table(this.loteMateriaPrima);
 
-        this.proveedor.InsertarDocumento('productoSemi/post',this.productoSemifinal).then(data => {
+        this.proveedor.InsertarDocumento('inventarioProductoSemifinal/post',this.productoSemifinal).then(data => {
           console.log(data);
           if(this.proveedor.status){
             this.MensajeServidor();

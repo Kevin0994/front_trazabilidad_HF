@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMetodosCrud } from 'src/provider/methods/providerMetodosCrud.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 import { ModalAlimentosPage } from '../../modals/modal-alimentos/modal-alimentos.page'
 
 @Component({
@@ -14,6 +16,8 @@ export class AlimentosPage implements OnInit {
   alimento:any;
 
   constructor(public proveedor: ProviderService,
+    private providerMetodosCrud: ProviderMetodosCrud,
+    private providerMensajes:ProviderMensajes,
     public alertController: AlertController,
     public navCtrl:NavController,
     public modalController:ModalController,) { }
@@ -33,7 +37,7 @@ export class AlimentosPage implements OnInit {
     })
   }
 
-  async openModal(){
+  async registerOpenModal(){
     const modal = await this.modalController.create({
       component: ModalAlimentosPage,
       cssClass: 'modalAlimento',
@@ -43,52 +47,92 @@ export class AlimentosPage implements OnInit {
     });
 
     modal.onDidDismiss().then(data => {
-      this.ionViewWillEnter();
+      if(data.data != undefined){ //verifica si recibe el nuevo producto al cerrar el modal
+        this.OrganizarDataModel(data);
+      }
     })
 
     return await modal.present();
   }
-  
-  async EditAlimento(alimento:any){
-    this.alimento= alimento;
-    this.ModelPresentEdit();
-  }
 
-  async ModelPresentEdit(){
+  async ModelPresentEdit(alimento:any){
     const modal = await this.modalController.create({
       component: ModalAlimentosPage,
       cssClass: 'modalCosecha',
       componentProps:{
-        'Alimento':this.alimento,
+        'Alimento': alimento,
         'type':'Editar Registro',
       }
     });
 
     modal.onDidDismiss().then(data => {
-      this.ionViewWillEnter();
+      if(data.data != undefined){ //verifica si recibe el nuevo producto al cerrar el modal
+        this.OrganizarDataModel(data);
+      }
     })
 
     return await modal.present();
   }
 
-  async MensajeServidor(){
+  async deleteAlimento(id:any){
     const alert = await this.alertController.create({
       header: 'Eliminar',
-      message: 'La eliminacion se completo con exito',
-      buttons: ['OK']
+      message: '¿Seguro que desea elimar?',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => {
+          }
+        }, {
+          text: 'Si',
+          handler: () => {
+
+            this.deleteDocument('alimentos/delete/',id ,this.alimentos)
+
+          }
+        }
+      ]
     });
 
     await alert.present();
   }
 
-  async ErrorMensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
+  OrganizarDataModel(data:any){
+    let idOld = data.data.idOld;
+    this.alimento={ // reemplazamos el nuevo producto a una varible
+      id: data.data.id,
+      nombre: data.data.nombre,
+      status: data.data.status
+    }
+    console.table(this.alimento);
 
-    await alert.present();
+    this.alimentos = this.providerMetodosCrud.actualizarDatosTabla(this.alimento,idOld,this.alimentos);
+    this.OrdenarTabla();
+    console.table(this.alimentos);
   }
+
+  OrdenarTabla(){
+    this.alimentos.sort(function(a, b){ //Ordena el array de manera Descendente
+      if(a.nombre > b.nombre){
+          return 1
+      } else if (a.nombre < b.nombre) {
+          return -1
+      } else {
+          return 0
+      }
+   })
+  }
+
+  deleteDocument(urlDocument:string,id:any,tabla:any){
+    this.proveedor.eliminarDocumento(urlDocument,id).subscribe(data => {
+      console.log(data);
+      tabla = this.providerMetodosCrud.eliminarDatosTabla(id,tabla);
+      this.providerMensajes.MensajeDeleteServidor(this.alertController);
+    },error => {
+      let messege = error;
+      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,messege.error);
+    })
+  }
+
 
 }

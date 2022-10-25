@@ -6,9 +6,8 @@ import {
   ModalController,
 } from '@ionic/angular';
 import { ProviderService } from '../../../provider/ApiRest/provider.service';
+import { ProviderMetodosCrud } from '../../../provider/methods/providerMetodosCrud.service';
 import { ModalCosechaPage } from '../../modals/modal-cosecha/modal-cosecha.page';
-import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cosecha',
@@ -21,13 +20,14 @@ export class CosechaPage implements OnInit {
   temp: any = [];
 
   constructor(
-    public proveedor: ProviderService,
+    private proveedor: ProviderService,
+    private providerMetodosCrud: ProviderMetodosCrud,
     public alertController: AlertController,
     public navCtrl: NavController,
-    public modalController: ModalController,
-    private nfc: NFC,
-    private ndef: Ndef
-  ) {}
+    public modalController: ModalController
+  ) // private nfc: NFC,
+  // private ndef: Ndef
+  {}
 
   ngOnInit() {}
 
@@ -45,33 +45,33 @@ export class CosechaPage implements OnInit {
       });
   }
 
-  showAlert(title: string, message: any, iconMessage: any) {
-    Swal.fire({
-      icon: iconMessage,
-      title: title,
-      text: message,
-      confirmButtonText: 'Aceptar',
-      confirmButtonColor: '#91bb35',
-      heightAuto: false,
-    });
-  }
+  // showAlert(title: string, message: any, iconMessage: any) {
+  //   Swal.fire({
+  //     icon: iconMessage,
+  //     title: title,
+  //     text: message,
+  //     confirmButtonText: 'Aceptar',
+  //     confirmButtonColor: '#91bb35',
+  //     heightAuto: false,
+  //   });
+  // }
 
-  writeNFC() {
-    this.nfc.addNdefListener().subscribe((data) => {
-      let message = [this.ndef.textRecord('Ya funciona')];
-      this.nfc.write(message);
-    });
-  }
+  // writeNFC() {
+  //   this.nfc.addNdefListener().subscribe((data) => {
+  //     let message = [this.ndef.textRecord('Ya funciona')];
+  //     this.nfc.write(message);
+  //   });
+  // }
 
-  readNFC() {
-    this.nfc.close();
-    this.nfc.addNdefListener().subscribe((data) => {
-      let message = this.nfc
-        .bytesToString(data.tag.ndefMessage[0].payload)
-        .substring(3);
-      this.showAlert('Probando NFC', message, 'success');
-    });
-  }
+  // readNFC() {
+  //   this.nfc.close();
+  //   this.nfc.addNdefListener().subscribe((data) => {
+  //     let message = this.nfc
+  //       .bytesToString(data.tag.ndefMessage[0].payload)
+  //       .substring(3);
+  //     this.showAlert('Probando NFC', message, 'success');
+  //   });
+  // }
 
   // readNFC() {
   //   let flags = this.nfc.FLAG_READER_NFC_A | this.nfc.FLAG_READER_NFC_V;
@@ -114,20 +114,11 @@ export class CosechaPage implements OnInit {
         lote: data.data.loteN,
         status: data.data.status,
       };
-      // Verifica si hay que ingresar o editar una cosecha
-      if (this.cosecha.status != true) {
-        //Edita la cosecha de la tabla
-        let foundIndex = this.cosechas.findIndex(
-          (obj) =>
-            obj.nombre == this.cosecha.nombre && obj.lote == this.cosecha.lote
-        );
-        this.cosechas[foundIndex].stock += this.cosecha.stock;
-        console.table(this.cosechas[foundIndex]);
-      } else {
-        //Inserta la nueva cosecha en la tabla
-        this.cosechas.push(this.cosecha);
-        this.OrdenarTabla();
-      }
+      this.cosechas = this.providerMetodosCrud.actualizarDatosTablaCosecha(
+        this.cosecha,
+        this.cosechas
+      );
+      this.OrdenarTabla();
     }
   }
 

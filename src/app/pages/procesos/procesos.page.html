@@ -21,12 +21,12 @@
           <th scope="col">Fecha Entrada</th>
           <th scope="col">Responsable</th>
           <th scope="col">Accion</th>
-          
+
         </tr>
       </thead>
       <tbody class="bg-white" *ngFor="let producto of productos">
-        <tr   *ngIf="producto.estado == 'En proceso'">
-          
+        <tr *ngIf="producto.estado === 'En proceso'">
+
           <td>{{producto.n_proceso}}</td>
           <td>{{producto.nombre_ps}}</td>
           <td>{{producto.nombre_mp}}</td>
@@ -36,11 +36,8 @@
           <td>{{producto.fechaEntrada}}</td>
           <td>{{producto.responsable}}</td>
           <td>
-            <input type="button" 
-              class="btn btn-warning btn-sm btn-edit"
-              value="Terminar"
-              (click)="openModal(producto.id,producto.peso_mp)"
-            />
+            <input type="button" class="btn btn-warning btn-sm btn-edit" value="Terminar"
+              (click)="openModal(producto.id,producto.peso_mp)" />
           </td>
         </tr>
       </tbody>

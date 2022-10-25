@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 //import { cosecha } from 'src/app/models/cosecha.interface';
 
@@ -27,6 +28,7 @@ export class ModalCosechaPage implements OnInit {
 
 
   constructor(public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,
     public navCtrl: NavController,
     public alertController: AlertController,
@@ -41,7 +43,7 @@ export class ModalCosechaPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.proveedor.obtenerDocumentos('listaCosechas/documents').then(data => {
+    this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
       this.lista = data;
     }).catch(data => {
       console.log(data);
@@ -66,7 +68,7 @@ export class ModalCosechaPage implements OnInit {
   handleChange(ev) {
     this.formulario = this.formRegistro.value;
     this.nombreCosecha = ev.detail.value.nombre;
-    this.codigoCosecha = ev.detail.value.codigo;
+    this.codigoCosecha = ev.detail.value.id;
     this.formRegistro.controls.codigo.setValue(this.codigoCosecha);
     this.formRegistro.controls.codigo.disable();
     console.log(this.formRegistro);
@@ -117,9 +119,9 @@ export class ModalCosechaPage implements OnInit {
       console.log(data);
           if (this.proveedor.status) {
             this.cosecha['status']=data;
-            this.proveedor.MensajeServidor(this.modalController,this.alertController,this.cosecha);
+            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.cosecha);
           } else {
-            this.proveedor.ErrorMensajeServidor(this.alertController);
+            this.providerMensajes.ErrorMensajeServidor(this.alertController);
           }
     }).catch(data => {
       console.log(data);

@@ -10,7 +10,7 @@ export class ProviderService {
   // private API_URL =
   //   'http://localhost:5001/hf-trazabilidad-89c0e/us-central1/app/';
   private API_URL =
-    'https://shaggy-lands-run-179-49-30-3.loca.lt/hf-trazabilidad-89c0e/us-central1/app/';
+    'http://localhost:5001/hf-trazabilidad-89c0e/us-central1/app/';
 
   constructor(public http: HttpClient) {}
 
@@ -132,51 +132,5 @@ export class ProviderService {
           }
         );
     });
-  }
-
-  //Mensajes
-  async MensajeServidor(
-    modalController: ModalController,
-    alertController: AlertController,
-    Objeto: any
-  ) {
-    const alert = await alertController.create({
-      header: 'Registro',
-      message: 'El registro se completo con exito',
-      buttons: [
-        {
-          text: 'OK',
-          handler: () => {
-            console.log('cerrado');
-            modalController.dismiss(Objeto);
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(alertController: AlertController) {
-    const alert = await alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajePersonalizado(
-    alertController: AlertController,
-    mensaje: any
-  ) {
-    const alert = await alertController.create({
-      header: 'Error del servidor',
-      message: mensaje,
-      buttons: ['OK'],
-    });
-
-    await alert.present();
   }
 }
