@@ -96,7 +96,11 @@ const routes: Routes = [
   {
     path: 'modal-producto-semifinal',
     loadChildren: () => import('./modals/modal-producto/modal-producto.module').then( m => m.ModalProductoSemifinalPageModule)
+  },  {
+    path: 'ingresos-inventario-semi',
+    loadChildren: () => import('./pages/ingresos-inventario-semi/ingresos-inventario-semi.module').then( m => m.IngresosInventarioSemiPageModule)
   },
+
 
 
     

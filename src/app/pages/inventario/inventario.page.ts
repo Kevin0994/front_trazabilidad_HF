@@ -14,6 +14,10 @@ export class InventarioPage implements OnInit {
   @ViewChild('editTmpl' , { static: true }) editTmpl: TemplateRef<any>;
   @ViewChild('hdrTpl' , { static: true }) hdrTpl: TemplateRef<any>;
 
+  public title:any="Productos";
+  public showSemi: boolean = false;
+  public showFinal: boolean = false;
+  public showButtons: boolean = true;
   productos:any = [];
   temp:any = [];
 
@@ -29,70 +33,44 @@ export class InventarioPage implements OnInit {
     }
 
     ngOnInit() {
-      this.cols = [
-        {
-          name: 'N°',
-          prop: 'nproceso',
-        },
-        {
-          name: 'Nombre',
-          prop: 'nombreps'
-        },
-        {
-          name: 'Materia Prima',
-          prop: 'nombremp'
-        },
-        {
-          name: 'Lote',
-          prop: 'loteps'
-        },
-        {
-          cellTemplate: this.editTmpl,
-          headerTemplate: this.hdrTpl,
-          name: 'Peso MP',
-          prop: 'pesomp'
-        },
-        {
-          name: 'Lote MP',
-          prop: 'lotempst'
-        },
-        {
-
-          name: 'Fecha Entrada',
-          prop: 'fechaEntrada'
-        },
-        {
-          name: 'Fecha Salida',
-          prop: 'fechaSalida'
-        },
-        {
-          cellTemplate: this.editTmpl,
-          headerTemplate: this.hdrTpl,
-          name:'Fundas de Gr',
-          prop: 'pesops'
-        },
-        {
-          name:'Numero de Fundas',
-          prop: 'nfundas'
-        },
-        {
-          cellTemplate: this.editTmpl,
-          headerTemplate: this.hdrTpl,
-          name: 'Peso Producto',
-          prop: 'pesops'
-        },
-        {
-          name: 'Conversion',
-          prop: 'conversion'
-        },
-        {
-          name: 'Responsable',
-          prop: 'responsable'
-        }
-      ]
-      this.LoadDatos();
+     this.initTableSemi();
     }
-    
+
+
+  initTableSemi(){
+    this.cols = [
+      {
+        name: 'N°',
+        prop: 'id',
+      },
+      {
+        name: 'Nombre',
+        prop: 'nombre'
+      },
+      {
+        name: 'Materia Prima',
+        prop: 'nombreMp'
+      },
+      {
+        name: 'Stock',
+        prop: 'stock'
+      },
+    ]
+  }
+
+  CargarDatos(){
+    if(this.showSemi){
+      this.proveedor.obtenerDocumentos('inventarioProSemi/documents').then(data => {
+        this.productos=data;
+        this.temp=data;
+        console.log(this.productos);
+      }).catch(data => {
+        console.log(data);
+      })
+    }
+    if(this.showFinal){
+    }
+  }
 
 
   updateFilter(event) {
@@ -112,13 +90,4 @@ export class InventarioPage implements OnInit {
   ionViewWillEnter(){
   }
 
-  LoadDatos(){
-    this.proveedor.obtenerDocumentos('inventarioProSemi/terminado/documents').then(data => {
-      this.productos=data;
-      this.temp=data;
-      console.log(this.productos);
-    }).catch(data => {
-      console.log(data);
-    })
-  }
 }

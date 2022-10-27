@@ -21,6 +21,10 @@ export class ProcesosPage implements OnInit {
   }
 
   ionViewWillEnter(){
+    this.loadData();
+  }
+
+  loadData(){
     this.proveedor.obtenerDocumentos('inventarioProductoSemifinal/proceso/documents').then(data => {
       this.productos=data;
       console.table(this.productos);
@@ -29,16 +33,17 @@ export class ProcesosPage implements OnInit {
     })
   }
 
-  async openModal(id:string,peso:any){
+  async openModal(proceso:any){
     const modal = await this.modalController.create({
       component: ModalFinalizarProcesoPage,
       cssClass: 'modalCosecha',
       componentProps:{
-        'idProceso': id,
-        'pesoMp':peso
+        'Proceso': proceso,
       }
     });
-
+    modal.onDidDismiss().then(data => {
+      this.loadData();
+    })
     return await modal.present();
   }
 

@@ -14,11 +14,11 @@
         <tr>
           <th scope="col">N°</th>
           <th scope="col">Nombre</th>
+          <th scope="col">lote</th>
+          <th scope="col">Fecha Entrada</th>
           <th scope="col">Materia Prima</th>
           <th scope="col">Peso MP</th>
-          <th scope="col">lote</th>
           <th scope="col">lote MP</th>
-          <th scope="col">Fecha Entrada</th>
           <th scope="col">Responsable</th>
           <th scope="col">Accion</th>
           
@@ -27,19 +27,19 @@
       <tbody class="bg-white" *ngFor="let producto of productos">
         <tr   *ngIf="producto.estado == 'En proceso'">
           
-          <td>{{producto.n_proceso}}</td>
-          <td>{{producto.nombre_ps}}</td>
-          <td>{{producto.nombre_mp}}</td>
-          <td>{{producto.peso_mp}} g</td>
-          <td>{{producto.lote_ps}}</td>
-          <td>{{producto.lote_mp_st}}</td>
+          <td>{{producto.id}}</td>
+          <td>{{producto.nombre}}</td>
+          <td>{{producto.lote}}</td>
           <td>{{producto.fechaEntrada}}</td>
+          <td>{{producto.nombreMp}}</td>
+          <td>{{producto.pesoMp}} g</td>
+          <td>{{producto.loteMp_st}}</td>
           <td>{{producto.responsable}}</td>
           <td>
             <input type="button" 
               class="btn btn-warning btn-sm btn-edit"
               value="Terminar"
-              (click)="openModal(producto.id,producto.peso_mp)"
+              (click)="openModal(producto)"
             />
           </td>
         </tr>

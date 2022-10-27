@@ -3,18 +3,36 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home" text="Regresar"></ion-back-button>
     </ion-buttons>
-    <ion-title>inventario</ion-title>
+    <ion-label>Inventario</ion-label>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div>
-    <input
-      type="text"
-      style="padding:8px;margin:15px auto;width:30%;"
-      placeholder="Type to filter the name column..."
-      (keyup)="updateFilter($event)"
-    />
+  <div *ngIf="showButtons" class="containerButtons">
+    <ion-button class="buttonSemi" (click)="showSemi=true; showButtons=false; CargarDatos(); title='Productos SemiFinales'">
+      SEMIFINAL
+    </ion-button>
+    <ion-button class="buttonFinal" (click)="showFinal=true; showButtons=false; CargarDatos(); title='Productos Finales';">
+      FINAL
+    </ion-button>
+  </div>
+  <div *ngIf="showSemi">
+    <div class="d-flex flex-row-reverse mb-3">
+      <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
+        Regresar
+      </ion-button>
+      <ion-button class="btn-add" [routerLink]="['/ingresos-inventario-semi']">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Ingresos
+      </ion-button>
+      <input
+        type="text"
+        style="margin-left:10px;margin-right:auto;width:30%;"
+        placeholder="Type to filter the name column..."
+        (keyup)="updateFilter($event)"
+      />
+    </div>
+
     <ngx-datatable
     #table
     class="material"

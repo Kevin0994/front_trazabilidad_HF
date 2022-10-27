@@ -7,10 +7,10 @@ import { Observable } from 'rxjs';
 export class ProviderService {
   public status: any = false;
   public error: any;
-  //private API_URL =
-  //  'http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/';
   private API_URL =
-    'https://shaggy-lands-run-179-49-30-3.loca.lt/hf-trazabilidad-89c0e/us-central1/app/';
+    'http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/';
+  //private API_URL =
+  //  'https://shaggy-lands-run-179-49-30-3.loca.lt/hf-trazabilidad-89c0e/us-central1/app/';
 
   constructor(public http: HttpClient) {}
 
