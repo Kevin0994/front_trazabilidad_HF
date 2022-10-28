@@ -1,0 +1,31 @@
+ion-content {
+  --background: white;
+  color: black;
+}
+
+.container-anything {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  img {
+    width: 50%;
+    height: 50%;
+    margin: auto;
+  }
+  h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: black;
+  }
+}
+
+.product-information {
+  p {
+    color: black;
+  }
+  label {
+    color: black;
+  }
+}

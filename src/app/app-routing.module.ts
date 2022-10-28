@@ -96,7 +96,11 @@ const routes: Routes = [
   {
     path: 'modal-producto-semifinal',
     loadChildren: () => import('./modals/modal-producto/modal-producto.module').then( m => m.ModalProductoSemifinalPageModule)
+  },  {
+    path: 'modal-leer-nfc',
+    loadChildren: () => import('./modals/modal-leer-nfc/modal-leer-nfc.module').then( m => m.ModalLeerNFCPageModule)
   },
+
 
 
     

@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>modalLeerNFC</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container-anything" *ngIf="!productFound">
+    <img src="../../../assets/icon/NFC logo.jpg" alt="Logo de NFC">
+    <h3>Escanee su etiqueta NFC</h3>
+    <ion-button (click)="test()">Probar NFC</ion-button>
+  </div>
+  <div class="product-information" #elseBlock>
+    <label>Producto</label>
+    <p>{{productFound.id}}</p>
+  </div>
+</ion-content>

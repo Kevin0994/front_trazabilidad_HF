@@ -7,6 +7,8 @@ import {
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
+import { ActionSheetController } from '@ionic/angular';
+import { ModalLeerNFCPage } from '../../modals/modal-leer-nfc/modal-leer-nfc.page';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -21,7 +23,7 @@ export class InventarioPage implements OnInit {
 
   productos: any = [];
   temp: any = [];
-
+  result: string;
   cols: any = [];
 
   ColumnMode = ColumnMode;
@@ -32,7 +34,8 @@ export class InventarioPage implements OnInit {
     private navCtrl: NavController,
     private modalController: ModalController,
     private nfc: NFC,
-    private ndef: Ndef
+    private ndef: Ndef,
+    private actionSheetCtrl: ActionSheetController
   ) {}
 
   ngOnInit() {
@@ -139,27 +142,65 @@ export class InventarioPage implements OnInit {
     });
   }
 
-  // writeNFC() {
-  //   this.nfc.addNdefListener().subscribe((data) => {
-  //     let message = [this.ndef.textRecord('Ya funciona')];
-  //     this.nfc.write(message);
-  //   });
-  // }
+  writeNFC() {
+    this.nfc.addNdefListener().subscribe((data) => {
+      let message = [this.ndef.textRecord('V2CGcBO0py7rXCEJK7Rc')];
+      this.nfc.write(message);
+    });
+  }
 
   filterInventory() {
     let findProduct = this.productos.filter(
       (product) => product.id === '0xFvqT4UJMx5bbj8eQPn'
     );
     console.log('Pruduct founded: ', findProduct[0]);
+    // filter our data
+    const temp = this.temp.filter((data) => data.id === findProduct[0].id);
+    console.log('Temp: ', temp);
+    // update the rows
+    this.productos = temp;
+    // Whenever the filter changes, always go back to the first page
+    this.table.offset = 0;
   }
 
-  // readNFC() {
-  //   this.nfc.close();
-  //   this.nfc.addNdefListener().subscribe((data) => {
-  //     let message = this.nfc
-  //       .bytesToString(data.tag.ndefMessage[0].payload)
-  //       .substring(3);
-  //     this.showAlert('Probando NFC', message, 'success');
-  //   });
-  // }
+  readNFC() {
+    let message = '';
+    this.nfc.close();
+    this.nfc.addNdefListener().subscribe((data) => {
+      message = this.nfc
+        .bytesToString(data.tag.ndefMessage[0].payload)
+        .substring(3);
+      let findProduct = this.productos.filter(
+        (product) => product.id === message
+      );
+      this.showAlert('Probando NFC', findProduct[0].fechaEntrada, 'success');
+    });
+
+    //   Swal.fire({
+    //     title: '<strong>HTML <u>example</u></strong>',
+    //     icon: 'info',
+    //     html: `<p>${findProduct[0].id}</p>,
+    // <p>${findProduct[0].fechaEntrada}</p>`,
+    //     showCloseButton: true,
+    //     showCancelButton: true,
+    //     focusConfirm: false,
+    //     confirmButtonText: '<i class="fa fa-thumbs-up"></i> Great!',
+    //     confirmButtonAriaLabel: 'Thumbs up, great!',
+    //     cancelButtonText: '<i class="fa fa-thumbs-down"></i>',
+    //     cancelButtonAriaLabel: 'Thumbs down',
+    //   });
+    return message;
+  }
+
+  async abrirModalLeerNFC() {
+    const modal = await this.modalController.create({
+      component: ModalLeerNFCPage,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        listInventory: this.productos,
+      },
+    });
+
+    return await modal.present();
+  }
 }

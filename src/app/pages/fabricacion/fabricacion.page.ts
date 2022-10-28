@@ -65,38 +65,45 @@ categoriaSlides = {
     }
   }
 
+
   openProduct(categoria:any){
     if(this.showSemi == true){
-      this.proveedor.obtenerDocumentosPorId('productoSemi/documents/',categoria).then(data => {
-        this.productos=data;
-        this.categoriaProducto=categoria;
-      }).catch(data => {
-        console.log(data);
-      });
+      this.cargarProductos(categoria,'productoSemi/documents/');
     }
     if(this.showFinal == true){
-      this.proveedor.obtenerDocumentosPorId('productoFinal/documents/',categoria).then(data => {
-        this.productos=data;
-        this.categoriaProducto=categoria;
-        console.log(this.productos);
-      }).catch(data => {
-        console.log(data);
-      });
+      this.cargarProductos(categoria,'productoFinal/documents/');
     }
+
+  }
+
+  cargarProductos(categoria:any,collection:any){
+    this.proveedor.obtenerDocumentosPorId(collection,categoria).then(data => {
+      this.productos=data;
+      this.categoriaProducto=categoria;
+      console.log(this.productos);
+    }).catch(data => {
+      console.log(data);
+    });
   }
 
   fabricarProducto(producto:any,materiaPrima:any){
     if(this.showSemi == true){
-      this.proveedor.obtenerDocumentosPorId('cosechas/documents/',producto.materiaPrima).then(data => {
-        const materiaPrima = data;
-        this.openModal(producto, materiaPrima);
+      this.proveedor.obtenerDocumentosPorId('alimentos/documents/',producto.materiaPrima).then(data => {
+        let response = data;
+        this.openModal(producto, response);
       }).catch(data => {
         console.log(data);
       })
 
     }
     if(this.showFinal == true){
-      this.openModal(producto,materiaPrima);
+      let id = materiaPrima.categoria+'/'+materiaPrima.producto;
+      this.proveedor.obtenerDocumentosPorId('productoSemi/',id).then(data => {
+        let response = data;
+        this.openModal(producto, response);
+      }).catch(data => {
+        console.log(data);
+      })
     }
   }
 

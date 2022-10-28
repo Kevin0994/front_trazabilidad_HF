@@ -8,6 +8,8 @@ import {
 import { ProviderService } from '../../../provider/ApiRest/provider.service';
 import { ProviderMetodosCrud } from '../../../provider/methods/providerMetodosCrud.service';
 import { ModalCosechaPage } from '../../modals/modal-cosecha/modal-cosecha.page';
+import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cosecha',
@@ -20,13 +22,12 @@ export class CosechaPage implements OnInit {
   temp: any = [];
 
   constructor(
-    private proveedor: ProviderService,
+    public proveedor: ProviderService,
     private providerMetodosCrud: ProviderMetodosCrud,
     public alertController: AlertController,
     public navCtrl: NavController,
-    public modalController: ModalController
-  ) // private nfc: NFC,
-  // private ndef: Ndef
+    public modalController: ModalController // private nfc: NFC,
+  ) // private ndef: Ndef
   {}
 
   ngOnInit() {}

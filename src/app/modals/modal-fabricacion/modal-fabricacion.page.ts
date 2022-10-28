@@ -26,7 +26,12 @@ export class ModalFabricacionPage implements OnInit {
     private modalController:ModalController,) { }
 
   ngOnInit() {
-    this.newForm();
+    if(this.showSemi == true){
+      this.newFormSemi();
+    }
+    if(this.showFinal == true){
+      this.newFormFinal();
+    }
   }
 
   ionViewWillEnter() {
@@ -96,13 +101,24 @@ export class ModalFabricacionPage implements OnInit {
 
 
 
-  newForm(){
+  newFormSemi(){
     this.formRegistro = this.fb.group({
       'nombre': new FormControl(this.Producto.nombre,Validators.required),
       'materiaPrima': new FormControl(this.MateriaPrima.nombre,Validators.required),
       'pesoMateriaPrima': new FormControl("",Validators.required),
     })
   }
+
+  newFormFinal(){
+    this.formRegistro = this.fb.group({
+      'nombre': new FormControl(this.Producto.nombre,Validators.required),
+      'materiaPrima': new FormControl(this.MateriaPrima.nombre,Validators.required),
+      'pesoMateriaPrima': new FormControl("",Validators.required),
+      'unidades':new FormControl("",Validators.required),
+      'pesoFinal':new FormControl("",Validators.required),
+    })
+  }
+
 
   async MensajeServidor(){
     const alert = await this.alertController.create({

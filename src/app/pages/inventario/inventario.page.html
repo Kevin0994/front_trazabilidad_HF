@@ -10,9 +10,13 @@
 <ion-content>
   <div class="container">
     <input type="text" placeholder="Nombre del producto" (keyup)="updateFilter($event)" class="input-filter" />
-    <ion-button (click)="filterInventory()">
+    <ion-button (click)="abrirModalLeerNFC()">
       <ion-icon name="add-outline"></ion-icon>
-      Read NFC
+      Leer NFC
+    </ion-button>
+    <ion-button (click)="writeNFC()">
+      <ion-icon name="add-outline"></ion-icon>
+      Escribir NFC
     </ion-button>
     <ngx-datatable #table class="material" [columns]="cols" [columnMode]="ColumnMode.force" [headerHeight]="50"
       [footerHeight]="50" rowHeight="auto" [limit]="10" [rows]="productos">
