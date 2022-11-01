@@ -1,37 +1,37 @@
 ion-content {
   --background: var(--ion-color-green);
 
-  .containerButtons{
+  .containerButtons {
     text-align: center;
-    position: absolute;
     width: 100%;
-    height: 40%;
-    top: 30%;
-
-    ion-button{
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ion-button {
       padding: 0.5rem;
       font-size: 1.5rem;
       font-weight: 600;
     }
 
-    .buttonSemi{
-      --background: #678B17;
+    .buttonSemi {
+      --background: #678b17;
       --border-radius: 41px;
       color: white;
-      width: 262px;
+      width: 300px;
       height: 302px;
     }
 
-    .buttonFinal{
-      --background: #FDA92A;
+    .buttonFinal {
+      --background: #fda92a;
       --border-radius: 41px;
       color: white;
-      width: 262px;
+      width: 300px;
       height: 302px;
     }
   }
 
-  ion-slide{
+  ion-slide {
     .categorias {
       padding: 0.5rem;
     }
@@ -39,7 +39,7 @@ ion-content {
 }
 
 ion-toolbar {
-  --background: #668B17;
+  --background: #668b17;
   text-align: center;
 
   ion-back-button {
@@ -66,12 +66,58 @@ ion-card {
 
   ion-card-content {
     color: white;
-    background: #FDA92A;
+    background: #fda92a;
+    padding: 1rem 00rem;
+    height: 3.5rem;
     h3 {
       text-align: center;
       font-weight: bold;
       font-size: 1rem;
+      margin: 0;
     }
   }
 }
 
+@media (max-width: 480px) {
+  ion-back-button {
+    --icon-font-size: 1.5rem;
+  }
+
+  ion-title {
+    font-size: 1.4rem !important;
+  }
+  .containerButtons {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    width: 100%;
+    ion-button {
+      padding: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .buttonSemi,
+    .buttonFinal {
+      --border-radius: 1.2rem;
+      color: white;
+      width: 200px !important;
+      height: 200px !important;
+    }
+
+    .buttonSemi {
+      --background: #678b17;
+    }
+
+    .buttonFinal {
+      --background: #fda92a;
+    }
+  }
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+  ion-card-content {
+    height: 4rem;
+    font-size: 0.4rem;
+  }
+}

@@ -8,10 +8,10 @@ ion-content {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100%;
   img {
     width: 50%;
     height: 50%;
-    margin: auto;
   }
   h3 {
     font-size: 2rem;
@@ -22,10 +22,29 @@ ion-content {
 }
 
 .product-information {
+  color: black;
+}
+
+.container-data {
   p {
     color: black;
+    font-size: 1.2rem;
   }
   label {
     color: black;
+    font-size: 1.2rem;
+  }
+}
+
+ion-icon {
+  color: white;
+}
+
+@media (max-width: 400px) {
+  .container-anything {
+    img {
+      width: 50%;
+      height: 30%;
+    }
   }
 }

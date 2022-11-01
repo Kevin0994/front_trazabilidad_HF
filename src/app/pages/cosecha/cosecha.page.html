@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" text="Regresar"></ion-back-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
     <ion-label>Cosecha</ion-label>
   </ion-toolbar>
@@ -9,25 +9,19 @@
 
 <ion-content>
   <div class="container mt-4">
-    <div class="d-flex flex-row-reverse mb-3">
-      <ion-button class="btn-add" (click)="openModal()">
-        <ion-icon name="add-outline"></ion-icon>
-        Nuevo Registro
-      </ion-button>
-      <ion-button class="btn-add" (click)="readNFC()">
-        <ion-icon name="add-outline"></ion-icon>
-        Read NFC
-      </ion-button>
-      <ion-button class="btn-add" (click)="writeNFC()">
-        <ion-icon name="add-outline"></ion-icon>
-        Write NFC
-      </ion-button>
-      <ion-button class="btn-add" [routerLink]="['/cosecha-historial']">
-        <ion-icon name="document-text-outline"></ion-icon>
-        Historial
-      </ion-button>
-      <input type="text" style="padding-right:40px;margin-right:auto;width:30%;"
-        placeholder="Ingrese un nombre de cosecha" (keyup)="updateFilter($event)" />
+    <div class="header-inventory">
+      <input type="text" placeholder="Ingrese un nombre de cosecha" class="input-filter"
+        (keyup)="updateFilter($event)" />
+      <div class="buttons-actions">
+        <ion-button class="btn-add" (click)="openModal()">
+          <ion-icon name="add-outline"></ion-icon>
+          Nuevo Registro
+        </ion-button>
+        <ion-button class="btn-add" [routerLink]="['/cosecha-historial']">
+          <ion-icon name="document-text-outline"></ion-icon>
+          Historial
+        </ion-button>
+      </div>
     </div>
     <table class="table table-white">
       <thead class="table-header text-light">

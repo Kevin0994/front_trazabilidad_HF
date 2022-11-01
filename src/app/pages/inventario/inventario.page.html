@@ -1,23 +1,42 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home" text="Regresar"></ion-back-button>
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>inventario</ion-title>
+    <ion-label>Inventario</ion-label>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div class="container">
-    <input type="text" placeholder="Nombre del producto" (keyup)="updateFilter($event)" class="input-filter" />
-    <ion-button (click)="abrirModalLeerNFC()">
-      <ion-icon name="add-outline"></ion-icon>
-      Leer NFC
+  </div>
+  <div *ngIf="showButtons" class="containerButtons">
+    <ion-button class="buttonSemi"
+      (click)="showSemi=true; showButtons=false; CargarDatos(); title='Productos SemiFinales'">
+      SEMIFINAL
     </ion-button>
-    <ion-button (click)="writeNFC()">
-      <ion-icon name="add-outline"></ion-icon>
-      Escribir NFC
+    <ion-button class="buttonFinal"
+      (click)="showFinal=true; showButtons=false; CargarDatos(); title='Productos Finales';">
+      FINAL
     </ion-button>
+  </div>
+  <div *ngIf="showSemi" class="container">
+    <div class="w-100 d-flex align-items-center justify-content-center mt-4 mb-4 p-0">
+      <input type="text" placeholder="Nombre del producto" (keyup)="updateFilter($event)" class="input-filter" />
+      <div class="buttons-action">
+        <ion-button (click)="readNFC()">
+          Leer NFC
+        </ion-button>
+        <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
+          Regresar
+        </ion-button>
+        <ion-button class="btn-add" [routerLink]="['/ingresos-inventario-semi']">
+          <!-- <ion-icon name="document-text-outline"></ion-icon> -->
+          Ingresos
+        </ion-button>
+      </div>
+    </div>
+
     <ngx-datatable #table class="material" [columns]="cols" [columnMode]="ColumnMode.force" [headerHeight]="50"
       [footerHeight]="50" rowHeight="auto" [limit]="10" [rows]="productos">
     </ngx-datatable>

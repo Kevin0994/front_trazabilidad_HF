@@ -1,17 +1,46 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>modalLeerNFC</ion-title>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="close()">
+        <ion-icon name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Detalles de producto</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="container-anything" *ngIf="!productFound">
-    <img src="../../../assets/icon/NFC logo.jpg" alt="Logo de NFC">
-    <h3>Escanee su etiqueta NFC</h3>
-    <ion-button (click)="test()">Probar NFC</ion-button>
-  </div>
-  <div class="product-information" #elseBlock>
-    <label>Producto</label>
-    <p>{{productFound.id}}</p>
+  <div>
+    <div class="product-information container">
+      <h3 class="text-center fw-bold mt-4">Producto</h3>
+      <div class="d-flex flex-row align-items-center container-data mb-3">
+        <label class="fw-bold">Id: </label>&nbsp;
+        <p class="m-0">{{product.idProducto}}</p>
+      </div>
+      <div class="d-flex flex-row align-items-center container-data mb-3">
+        <label class="fw-bold">Estado: </label>
+        <p class="m-0">{{product.estado}}</p>
+      </div>
+      <div class="d-flex flex-row align-items-center container-data mb-3">
+        <label class="fw-bold">Fecha entrada: </label>&nbsp;
+        <p class="m-0">{{product.fechaEntrada}}</p>
+      </div>
+      <div class="d-flex flex-row align-items-center container-data mb-3">
+        <label class="fw-bold">Lote: </label>&nbsp;
+        <p class="m-0">{{product.loteMp[0].lote}}, {{product.loteMp[0].salida}}</p>
+      </div>
+      <div class="d-flex flex-row align-items-center container-data mb-3">
+        <label class="fw-bold">Nombre: </label>&nbsp;
+        <p class="m-0">{{product.nombre}}</p>
+      </div>
+      <div class="d-flex flex-row align-items-center container-data mb-3">
+        <label class="fw-bold">Peso: </label>&nbsp;
+        <p class="m-0">{{product.pesoMp}}</p>
+      </div>
+      <div class="d-flex flex-row align-items-center container-data mb-3">
+        <label class="fw-bold">Stock: </label>&nbsp;
+        <p class="m-0">{{product.stock}}</p>
+      </div>
+    </div>
   </div>
 </ion-content>

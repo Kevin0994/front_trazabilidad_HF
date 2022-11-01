@@ -10,8 +10,7 @@ import { ProviderService } from 'src/provider/ApiRest/provider.service';
 })
 export class ModalFinalizarProcesoPage implements OnInit {
 
-  @Input() idProceso: any;
-  @Input() pesoMp: any;
+  @Input() Proceso: any;
   public formRegistro: FormGroup;
   private formulario:any;
   private producto:any;
@@ -60,14 +59,16 @@ export class ModalFinalizarProcesoPage implements OnInit {
           text: 'Si',
           handler: () => {
             this.producto = {
-              fechaSalida: new Date().toLocaleString(),
-              n_fundas: this.formulario.fundas, //numero de fundas
-              peso_ps: this.formulario.peso, //peso producto semifinal
-              conversion: this.pesoMp/this.formulario.peso,
+              idIngreso: this.Proceso.id,
+              fechaSalida: new Date(),
+              unidades: this.formulario.fundas,
+              stock:this.Proceso.stock + this.formulario.peso, //numero de fundas
+              pesoFinal: this.formulario.peso, //peso producto semifinal
+              conversion: this.Proceso.pesoMp/this.formulario.peso,
             }
 
             console.table(this.producto);
-            this.proveedor.actualizarDocumento('inventarioProductoSemifinales/put/',this.idProceso,this.producto).then(data => {
+            this.proveedor.actualizarDocumento('inventarioProductoSemifinales/put/',this.Proceso.idProducto,this.producto).then(data => {
               console.log(data);
               if(this.proveedor.status){
                 this.MensajeServidor();

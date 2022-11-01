@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inventario" text="Regresar"></ion-back-button>
+    </ion-buttons>
+    <ion-title>inventario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div>
+    <input
+      type="text"
+      style="padding:8px;margin:15px auto;width:30%;"
+      placeholder="Type to filter the name column..."
+      (keyup)="updateFilter($event)"
+    />
+    <ngx-datatable
+    #table
+    class="material"
+    [columns]="cols"
+    [columnMode]="ColumnMode.force"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    rowHeight="auto"
+    [limit]="10"
+    [rows]="productos"
+  >
+  </ngx-datatable>
+    <ngx-datatable-column  prop="pesomp" [width]="300">
+      <ng-template #editTmpl let-value="value" ngx-datatable-cell-template>
+        <strong>{{ value }} gr</strong>
+      </ng-template>
+    </ngx-datatable-column>
+  </div>
+</ion-content>
