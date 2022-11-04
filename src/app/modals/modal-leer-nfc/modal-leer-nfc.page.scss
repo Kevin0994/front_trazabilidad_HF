@@ -1,0 +1,50 @@
+ion-content {
+  --background: white;
+  color: black;
+}
+
+.container-anything {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  img {
+    width: 50%;
+    height: 50%;
+  }
+  h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    color: black;
+  }
+}
+
+.product-information {
+  color: black;
+}
+
+.container-data {
+  p {
+    color: black;
+    font-size: 1.2rem;
+  }
+  label {
+    color: black;
+    font-size: 1.2rem;
+  }
+}
+
+ion-icon {
+  color: white;
+}
+
+@media (max-width: 400px) {
+  .container-anything {
+    img {
+      width: 50%;
+      height: 30%;
+    }
+  }
+}

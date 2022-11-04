@@ -3,9 +3,9 @@ ion-content {
 }
 
 ion-toolbar {
-  --background: #668B17;
+  --background: #668b17;
   text-align: center;
-  
+
   ion-back-button {
     --color: white;
     font-size: 1.3rem;
@@ -29,3 +29,6 @@ ion-back-button {
 }
 
 
+.table-header {
+  background-color: #668b17;
+}

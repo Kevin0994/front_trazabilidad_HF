@@ -1,43 +1,54 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { AlertController, ModalController, NavController } from '@ionic/angular';
+import {
+  AlertController,
+  ModalController,
+  NavController,
+} from '@ionic/angular';
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
-
+import { ActionSheetController } from '@ionic/angular';
+import { ModalLeerNFCPage } from '../../modals/modal-leer-nfc/modal-leer-nfc.page';
+import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.page.html',
   styleUrls: ['./inventario.page.scss'],
 })
 export class InventarioPage implements OnInit {
-
   @ViewChild(DatatableComponent) table: DatatableComponent;
-  @ViewChild('editTmpl' , { static: true }) editTmpl: TemplateRef<any>;
-  @ViewChild('hdrTpl' , { static: true }) hdrTpl: TemplateRef<any>;
+  @ViewChild('editTmpl', { static: true }) editTmpl: TemplateRef<any>;
+  @ViewChild('hdrTpl', { static: true }) hdrTpl: TemplateRef<any>;
 
-  public title:any="Productos";
+  public title: any = 'Productos';
   public showSemi: boolean = false;
   public showFinal: boolean = false;
   public showButtons: boolean = true;
-  productos:any = [];
-  temp:any = [];
-
-  cols:any=[];
+  inventorySemiFinalAll: any = [];
+  productos: any = [];
+  temp: any = [];
+  result: string;
+  cols: any = [];
 
   ColumnMode = ColumnMode;
 
-
-  constructor(private proveedor: ProviderService,
+  constructor(
+    private nfc: NFC,
+    private ndef: Ndef,
+    private proveedor: ProviderService,
     private alertController: AlertController,
-    private navCtrl:NavController,
-    private modalController:ModalController) {
-    }
+    private navCtrl: NavController,
+    private modalController: ModalController,
+    private actionSheetCtrl: ActionSheetController
+  ) {}
 
-    ngOnInit() {
-     this.initTableSemi();
-    }
+  ngOnInit() {
+    this.initTableSemi();
+    this.proveedor
+      .obtenerDocumentos('inventarioProductoSemifinal/proceso/documents')
+      .then((data) => (this.inventorySemiFinalAll = data));
+  }
 
-
-  initTableSemi(){
+  initTableSemi() {
     this.cols = [
       {
         name: 'N°',
@@ -45,11 +56,11 @@ export class InventarioPage implements OnInit {
       },
       {
         name: 'Nombre',
-        prop: 'nombre'
+        prop: 'nombre',
       },
       {
         name: 'Materia Prima',
-        prop: 'nombreMp'
+        prop: 'nombreMp',
       },
       {
         name: 'Lote',
@@ -57,9 +68,9 @@ export class InventarioPage implements OnInit {
       },
       {
         name: 'Stock',
-        prop: 'stock'
+        prop: 'stock',
       },
-    ]
+    ];
   }
 
   CargarDatosTabla(){
@@ -84,10 +95,10 @@ queryGetAPI(url:any){
 
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
-
+    console.log('Text input: ', val);
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.nombreps.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.nombre.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
@@ -96,7 +107,41 @@ queryGetAPI(url:any){
     this.table.offset = 0;
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {}
+
+  LoadDatos() {
+    this.proveedor
+      .obtenerDocumentos('inventarioProSemi/terminado/documents')
+      .then((data) => {
+        this.productos = data;
+        this.temp = data;
+        console.log('List of products: ', this.productos);
+      })
+      .catch((data) => {
+        console.log(data);
+      });
   }
 
+  readNFC() {
+    this.nfc.addNdefListener().subscribe((data) => {
+      let payload = this.nfc
+        .bytesToString(data.tag.ndefMessage[0].payload)
+        .substring(3);
+      this.abrirModalLeerNFC(payload);
+    });
+    this.nfc.close();
+  }
+  async abrirModalLeerNFC(codeProduct: any) {
+    const modal = await this.modalController.create({
+      component: ModalLeerNFCPage,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        listInventory: this.inventorySemiFinalAll,
+        code: codeProduct,
+      },
+    });
+
+    modal.present();
+    await modal.onWillDismiss();
+  }
 }
