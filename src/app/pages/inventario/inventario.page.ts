@@ -41,7 +41,7 @@ export class InventarioPage implements OnInit {
     this.cols = [
       {
         name: 'N°',
-        prop: 'id',
+        prop: 'codigo',
       },
       {
         name: 'Nombre',
@@ -52,25 +52,34 @@ export class InventarioPage implements OnInit {
         prop: 'nombreMp'
       },
       {
+        name: 'Lote',
+        prop: 'lote'
+      },
+      {
         name: 'Stock',
         prop: 'stock'
       },
     ]
   }
 
-  CargarDatos(){
-    if(this.showSemi){
-      this.proveedor.obtenerDocumentos('inventarioProSemi/documents').then(data => {
-        this.productos=data;
-        this.temp=data;
-        console.log(this.productos);
-      }).catch(data => {
-        console.log(data);
-      })
+  CargarDatosTabla(){
+    if(this.showSemi == true){
+      this.queryGetAPI('inventarioProSemi/documents');
     }
-    if(this.showFinal){
+    if(this.showFinal  == true){
+      this.queryGetAPI('inventarioProductoFinal/documents');
     }
   }
+
+queryGetAPI(url:any){
+  this.proveedor.obtenerDocumentos(url).then(data => {
+    this.productos=data;
+    this.temp=data;
+    console.log(this.productos);
+  }).catch(data => {
+    console.log(data);
+  })
+}
 
 
   updateFilter(event) {

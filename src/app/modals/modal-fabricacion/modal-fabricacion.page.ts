@@ -18,7 +18,7 @@ export class ModalFabricacionPage implements OnInit {
   public formRegistro: FormGroup;
   private formulario:any;
   private loteMateriaPrima:any;
-  private productoSemifinal:any;
+  private inventario:any;
 
   constructor(public proveedor: ProviderService,
     private fb: FormBuilder,
@@ -64,23 +64,23 @@ export class ModalFabricacionPage implements OnInit {
         this.loteMateriaPrima = data;
         if(this.proveedor.status){
   
-          this.productoSemifinal = {
-            idProducto: this.Producto.id,
+          this.inventario = {
+            codigo: this.Producto.id,
             n_proceso: this.formulario.proceso,
             nombre_mp: this.MateriaPrima.nombre, //nombre matria prima
-            nombre_ps: this.Producto.nombre, //nombre producto semifinal
+            nombre: this.Producto.nombre, //nombre producto semifinal
             lote_mp: this.loteMateriaPrima, //lote materia prima
-            lote_ps: new Date().getMonth() + 1, //lote producto semifinal
+            lote: new Date().getMonth() + 1, //lote producto semifinal
             peso_mp: this.formulario.pesoMateriaPrima, //peso materia prima
             fechaEntrada: new Date(),
             responsable: localStorage.getItem('Usuario'),
             estado: 'En proceso',
           }
   
-          console.table(this.productoSemifinal);
+          console.table(this.inventario);
           console.table(this.loteMateriaPrima);
   
-          this.proveedor.InsertarDocumento('inventarioProductoSemifinal/post',this.productoSemifinal).then(data => {
+          this.proveedor.InsertarDocumento('inventarioProductoSemifinal/post',this.inventario).then(data => {
             console.log(data);
             if(this.proveedor.status){
               this.MensajeServidor();
@@ -101,7 +101,45 @@ export class ModalFabricacionPage implements OnInit {
     }
 
     if(this.showFinal == true){
-      
+      this.proveedor.actualizarDocumento('inventarioProductoSemifinales/stock/',this.MateriaPrima.id,peticion).then(data => {
+        this.loteMateriaPrima = data;
+        if(this.proveedor.status){
+          this.inventario = {
+            codigo: this.Producto.id,
+            n_proceso: this.formulario.proceso,
+            nombre_mp: this.MateriaPrima.nombre, //nombre matria prima
+            nombre: this.Producto.nombre, //nombre producto semifinal
+            lote_mp: this.loteMateriaPrima, //lote materia prima
+            lote: new Date().getMonth() + 1, //lote producto semifinal
+            peso_mp: this.formulario.pesoMateriaPrima, //peso materia prima
+            unidades:this.formulario.unidades,
+            pesoFinal: this.formulario.pesoFinal,
+            fechaEntrada: new Date(),
+            responsable: localStorage.getItem('Usuario'),
+            estado: 'Terminado',
+          }
+  
+          console.table(this.inventario);
+          console.table(this.loteMateriaPrima);
+  
+          this.proveedor.InsertarDocumento('inventarioProductoFinal/post',this.inventario).then(data => {
+            console.log(data);
+            if(this.proveedor.status){
+              this.MensajeServidor();
+            }else{
+              this.ErrorMensajeServidor('Error al conectar con el servidor');
+              return;
+            }
+          }).catch(data => {
+            console.log(data);
+          });
+        }else{
+          this.ErrorMensajeServidor(this.loteMateriaPrima.error[0]);
+          return;
+        }
+      }).catch(data => {
+        console.log(data);
+      });
     }
 
 
