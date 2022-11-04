@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { IngresosInventarioSemiPage } from './ingresos-inventario-semi.page';
+import { IngresosInventario } from './ingresos-inventario.page';
 
 describe('IngresosInventarioSemiPage', () => {
-  let component: IngresosInventarioSemiPage;
-  let fixture: ComponentFixture<IngresosInventarioSemiPage>;
+  let component: IngresosInventario;
+  let fixture: ComponentFixture<IngresosInventario>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ IngresosInventarioSemiPage ],
+      declarations: [ IngresosInventario ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(IngresosInventarioSemiPage);
+    fixture = TestBed.createComponent(IngresosInventario);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

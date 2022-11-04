@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { IngresosInventarioSemiPageRoutingModule } from './ingresos-inventario-semi-routing.module';
+import { IngresosInventarioRoutingModule } from './ingresos-inventario-routing.module';
 
-import { IngresosInventarioSemiPage } from './ingresos-inventario-semi.page';
+import { IngresosInventario } from './ingresos-inventario.page';
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
@@ -15,9 +15,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     CommonModule,
     FormsModule,
     IonicModule,
-    IngresosInventarioSemiPageRoutingModule,
+    IngresosInventarioRoutingModule,
     NgxDatatableModule,
   ],
-  declarations: [IngresosInventarioSemiPage]
+  declarations: [IngresosInventario]
 })
 export class IngresosInventarioSemiPageModule {}

@@ -157,10 +157,10 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'ingresos-inventario-semi',
+    path: 'ingresos-inventario',
     loadChildren: () =>
       import(
-        './pages/ingresos-inventario-semi/ingresos-inventario-semi.module'
+        './pages/ingresos-inventario/ingresos-inventario.module'
       ).then((m) => m.IngresosInventarioSemiPageModule),
   },
 ];

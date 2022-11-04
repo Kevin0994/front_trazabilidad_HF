@@ -1,34 +1,42 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { AlertController, ModalController, NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { AlertController, ModalController, NavController, NavParams, } from '@ionic/angular';
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 
 @Component({
-  selector: 'app-ingresos-inventario-semi',
-  templateUrl: './ingresos-inventario-semi.page.html',
-  styleUrls: ['./ingresos-inventario-semi.page.scss'],
+  selector: 'app-ingresos-inventario',
+  templateUrl: './ingresos-inventario.page.html',
+  styleUrls: ['./ingresos-inventario.page.scss'],
 })
-export class IngresosInventarioSemiPage implements OnInit {
+export class IngresosInventario implements OnInit {
 
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @ViewChild('editTmpl' , { static: true }) editTmpl: TemplateRef<any>;
   @ViewChild('hdrTpl' , { static: true }) hdrTpl: TemplateRef<any>;
-
+  private response = false;
   productos:any = [];
   temp:any = [];
-
   cols:any=[];
 
   ColumnMode = ColumnMode;
 
 
-  constructor(private proveedor: ProviderService,
+  constructor(private router:Router,
+    private proveedor: ProviderService,
     private alertController: AlertController,
     private navCtrl:NavController,
     private modalController:ModalController) {
+      this.response = this.router.getCurrentNavigation().extras.state.tabla;
+      console.log(this.response);
     }
 
     ngOnInit() {
+      this.loadColumnasTabla();
+    }
+  
+  loadColumnasTabla(){
+    if(this.response == true){
       this.cols = [
         {
           name: 'N°',
@@ -57,7 +65,7 @@ export class IngresosInventarioSemiPage implements OnInit {
           prop: 'loteMp_st'
         },
         {
-
+  
           name: 'Fecha Entrada',
           prop: 'fechaEntrada'
         },
@@ -84,9 +92,63 @@ export class IngresosInventarioSemiPage implements OnInit {
           prop: 'responsable'
         }
       ]
-      this.LoadDatos();
+      this.LoadDatos('inventarioProSemi/terminado/documents');
     }
-    
+    if(this.response == false){
+      this.cols = [
+        {
+          name: 'N°',
+          prop: 'id',
+        },
+        {
+          name: 'Nombre',
+          prop: 'nombre'
+        },
+        {
+          name: 'Materia Prima',
+          prop: 'nombreMp'
+        },
+        {
+          name: 'Lote',
+          prop: 'lote'
+        },
+        {
+          cellTemplate: this.editTmpl,
+          headerTemplate: this.hdrTpl,
+          name: 'Peso MP',
+          prop: 'pesoMp'
+        },
+        {
+          name: 'Lote MP',
+          prop: 'loteMp_st'
+        },
+        {
+  
+          name: 'Fecha Entrada',
+          prop: 'fechaEntrada'
+        },
+        {
+          cellTemplate: this.editTmpl,
+          headerTemplate: this.hdrTpl,
+          name:'Peso Final',
+          prop: 'pesoFinal'
+        },
+        {
+          name:'N° Fundas',
+          prop: 'unidades'
+        },
+        {
+          name: 'Conversion',
+          prop: 'conversion'
+        },
+        {
+          name: 'Responsable',
+          prop: 'responsable'
+        }
+      ]
+      this.LoadDatos('inventarioProductoFinal/all/documents');
+    }
+  }
 
 
   updateFilter(event) {
@@ -106,8 +168,8 @@ export class IngresosInventarioSemiPage implements OnInit {
   ionViewWillEnter(){
   }
 
-  LoadDatos(){
-    this.proveedor.obtenerDocumentos('inventarioProSemi/terminado/documents').then(data => {
+  LoadDatos(url:any){
+    this.proveedor.obtenerDocumentos(url).then(data => {
       this.productos=data;
       this.temp=data;
       console.log(this.productos);

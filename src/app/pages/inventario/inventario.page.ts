@@ -5,10 +5,12 @@ import {
   NavController,
 } from '@ionic/angular';
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
+//import { IngresosInventarioSemiPage } from 'src/app/pages/ingresos-inventario/ingresos-inventario.page';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 import { ActionSheetController } from '@ionic/angular';
 import { ModalLeerNFCPage } from '../../modals/modal-leer-nfc/modal-leer-nfc.page';
 import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
+import { Router, NavigationExtras } from '@angular/router';
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.page.html',
@@ -32,6 +34,7 @@ export class InventarioPage implements OnInit {
   ColumnMode = ColumnMode;
 
   constructor(
+    private router:Router,
     private nfc: NFC,
     private ndef: Ndef,
     private proveedor: ProviderService,
@@ -92,6 +95,25 @@ queryGetAPI(url:any){
   })
 }
 
+ingresosGet(){
+  if(this.showSemi == true){
+    const response: NavigationExtras = {
+      state : {
+        tabla: true
+      }
+    };
+    this.router.navigateByUrl('ingresos-inventario', response);
+  }
+  if(this.showFinal  == true){
+    const response: NavigationExtras = {
+      state : {
+        tabla: false
+      }
+    };
+    this.router.navigateByUrl('ingresos-inventario', response);
+  }
+
+}
 
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
@@ -131,6 +153,7 @@ queryGetAPI(url:any){
     });
     this.nfc.close();
   }
+
   async abrirModalLeerNFC(codeProduct: any) {
     const modal = await this.modalController.create({
       component: ModalLeerNFCPage,
