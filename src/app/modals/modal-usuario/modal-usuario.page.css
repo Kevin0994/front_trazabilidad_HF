@@ -1,0 +1,55 @@
+ion-content {
+  --background: var(--ion-color-background);
+}
+
+ion-content .content-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+ion-content .content-button ion-button {
+  --background: linear-gradient(70deg, #7633a4 5%, #4834a6 70%);
+}
+
+ion-content .content-perfil {
+  width: 10rem;
+  margin: auto;
+  border-radius: 0rem 0rem 5rem 5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 2rem 0rem 0rem 0rem;
+}
+
+ion-content .content-perfil ion-avatar {
+  width: 10rem;
+  height: 10rem;
+}
+
+ion-content .content-info {
+  padding: 0.5rem 2rem;
+}
+
+ion-content .content-info ion-item {
+  border-radius: 1.5rem;
+  padding: 0;
+}
+
+ion-content .buttons-action__save {
+  --background: #3f906a;
+}
+
+ion-content .buttons-action__cancel {
+  --background: rgb(207, 121, 121);
+}
+/*# sourceMappingURL=modal-usuario.page.css.map */

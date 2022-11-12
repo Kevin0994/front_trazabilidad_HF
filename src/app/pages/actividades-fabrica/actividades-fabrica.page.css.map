@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,WAAW,CAAC;EACV,YAAY,CAAA,uBAAC;CACd;;AAED,AAAA,WAAW,CAAC;EACV,YAAY,CAAA,QAAC;EACb,UAAU,EAAE,MAAM;CAUnB;;AAZD,AAGE,WAHS,CAGT,SAAS,CAAC;EACR,SAAS,EAAE,MAAM;CAClB;;AALH,AAOE,WAPS,CAOT,eAAe,CAAC;EACd,OAAO,CAAA,MAAC;EACR,SAAS,EAAE,MAAM;CAClB",
+    "sources": [
+        "actividades-fabrica.page.scss"
+    ],
+    "names": [],
+    "file": "actividades-fabrica.page.css"
+}

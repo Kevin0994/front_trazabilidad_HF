@@ -34,7 +34,7 @@ export class InventarioPage implements OnInit {
   ColumnMode = ColumnMode;
 
   constructor(
-    private router:Router,
+    private router: Router,
     private nfc: NFC,
     private ndef: Ndef,
     private proveedor: ProviderService,
@@ -47,7 +47,7 @@ export class InventarioPage implements OnInit {
   ngOnInit() {
     this.initTableSemi();
     this.proveedor
-      .obtenerDocumentos('inventarioProductoSemifinal/proceso/documents')
+      .obtenerDocumentos('inventarioProSemi/terminado/documents')
       .then((data) => (this.inventorySemiFinalAll = data));
   }
 
@@ -67,7 +67,7 @@ export class InventarioPage implements OnInit {
       },
       {
         name: 'Lote',
-        prop: 'lote'
+        prop: 'lote',
       },
       {
         name: 'Stock',
@@ -76,44 +76,46 @@ export class InventarioPage implements OnInit {
     ];
   }
 
-  CargarDatosTabla(){
-    if(this.showSemi == true){
+  CargarDatosTabla() {
+    if (this.showSemi == true) {
       this.queryGetAPI('inventarioProSemi/documents');
     }
-    if(this.showFinal  == true){
+    if (this.showFinal == true) {
       this.queryGetAPI('inventarioProductoFinal/documents');
     }
   }
 
-queryGetAPI(url:any){
-  this.proveedor.obtenerDocumentos(url).then(data => {
-    this.productos=data;
-    this.temp=data;
-    console.log(this.productos);
-  }).catch(data => {
-    console.log(data);
-  })
-}
-
-ingresosGet(){
-  if(this.showSemi == true){
-    const response: NavigationExtras = {
-      state : {
-        tabla: true
-      }
-    };
-    this.router.navigateByUrl('ingresos-inventario', response);
-  }
-  if(this.showFinal  == true){
-    const response: NavigationExtras = {
-      state : {
-        tabla: false
-      }
-    };
-    this.router.navigateByUrl('ingresos-inventario', response);
+  queryGetAPI(url: any) {
+    this.proveedor
+      .obtenerDocumentos(url)
+      .then((data) => {
+        this.productos = data;
+        this.temp = data;
+        console.log(this.productos);
+      })
+      .catch((data) => {
+        console.log(data);
+      });
   }
 
-}
+  ingresosGet() {
+    if (this.showSemi == true) {
+      const response: NavigationExtras = {
+        state: {
+          tabla: true,
+        },
+      };
+      this.router.navigateByUrl('ingresos-inventario', response);
+    }
+    if (this.showFinal == true) {
+      const response: NavigationExtras = {
+        state: {
+          tabla: false,
+        },
+      };
+      this.router.navigateByUrl('ingresos-inventario', response);
+    }
+  }
 
   updateFilter(event) {
     const val = event.target.value.toLowerCase();

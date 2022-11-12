@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Nuevo Registro</ion-title>
-    <ion-buttons slot="start" >
+    <ion-buttons slot="start">
       <ion-button (click)="closeModal()">
         <ion-icon name="arrow-back-circle-outline"></ion-icon>
       </ion-button>
@@ -11,29 +11,17 @@
 </ion-header>
 
 <ion-content>
-  <div class="container" >
-    <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="Registro()"  id="form">
+  <div class="container">
+    <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="Registro()" id="form">
       <div>
-        <ion-select (ionChange)="handleChange($event)" [selectedText]="nombreCosecha" formControlName="nombre" placeholder="Seleccione un alimento">
-          <ion-select-option  *ngFor="let cosecha of lista"  [value]="cosecha">{{cosecha.nombre}}</ion-select-option>
+        <ion-select (ionChange)="handleChange($event)" [selectedText]="nombreCosecha" formControlName="nombre"
+          placeholder="Seleccione un alimento">
+          <ion-select-option *ngFor="let cosecha of lista" [value]="cosecha">{{cosecha.nombre}}</ion-select-option>
         </ion-select>
       </div>
-      <input
-        formControlName="codigo"
-        placeholder="Código"
-        class="form-input"
-      >
-      <input *ngIf="accion"
-        type="date"
-        formControlName="fecha"
-        class="form-input"
-      >
-      <input
-        type="number"
-        formControlName="peso"
-        class="form-input"
-        placeholder="Peso stock"
-      >
+      <input formControlName="codigo" placeholder="Código" class="form-input">
+      <input type="date" formControlName="fecha" class="form-input">
+      <input type="number" formControlName="peso" class="form-input" placeholder="Peso stock">
       <ion-button type="submit" expand="block" shape="round" class="button-submit">
         <ion-icon name="save"></ion-icon> Guardar
       </ion-button>
@@ -42,5 +30,5 @@
       <ion-icon name="close"></ion-icon> Cancelar
     </ion-button>  -->
   </div>
-  
+
 </ion-content>

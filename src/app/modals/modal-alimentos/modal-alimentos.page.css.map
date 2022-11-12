@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,WAAW,CAAC;EACV,YAAY,CAAA,MAAC;CACd;;AAED,AAAA,QAAQ,CAAC;EACP,YAAY,CAAA,MAAC;EACb,KAAK,EAAE,KAAK;CACb",
+    "sources": [
+        "modal-alimentos.page.scss"
+    ],
+    "names": [],
+    "file": "modal-alimentos.page.css"
+}

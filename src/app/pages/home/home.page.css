@@ -1,0 +1,22 @@
+.btn-exit {
+  --background: #FDA92A;
+}
+
+ion-toolbar {
+  --background: #668B17;
+  text-align: center;
+}
+
+ion-toolbar ion-title {
+  font-size: 1.5rem;
+}
+
+ion-menu-button {
+  --color: white
+;
+}
+
+ion-content {
+  --background: #dce2cf;
+}
+/*# sourceMappingURL=home.page.css.map */

@@ -1,0 +1,35 @@
+ion-content {
+  --background: var(--ion-color-green);
+}
+
+ion-toolbar {
+  --background: #668b17;
+  text-align: center;
+}
+
+ion-toolbar ion-back-button {
+  --color: white;
+  font-size: 1.3rem;
+}
+
+ion-toolbar ion-title {
+  font-size: 1.5rem;
+}
+
+.table-header {
+  background-color: #668B17;
+}
+
+.btn-add {
+  --background: #4A7AA6;
+}
+
+ion-back-button {
+  --color: white;
+  font-size: 1.3rem;
+}
+
+.table-header {
+  background-color: #668b17;
+}
+/*# sourceMappingURL=procesos.page.css.map */

@@ -1,0 +1,34 @@
+ion-content {
+  --background: var(--ion-color-green);
+}
+
+ion-toolbar {
+  --background: #668B17;
+  text-align: center;
+}
+
+ion-toolbar ion-label {
+  font-size: 1.5rem;
+}
+
+.table-header {
+  background-color: #668B17;
+}
+
+.btn-add {
+  --background: #4A7AA6;
+}
+
+ion-back-button {
+  --color: white;
+  font-size: 1.3rem;
+}
+
+th {
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}
+/*# sourceMappingURL=alimentos.page.css.map */
