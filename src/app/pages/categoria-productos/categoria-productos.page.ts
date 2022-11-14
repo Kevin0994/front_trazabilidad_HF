@@ -15,6 +15,7 @@ export class CategoriaProductosPage implements OnInit {
   public title:any="Categoria de Productos";
   public categoriaSemi:any=[];
   public categoriaFinal:any=[];
+  public categoriaTabla:any=[];
   public showSemi: boolean = false;
   public showFinal: boolean = false;
   public showButtons: boolean = true;
@@ -32,37 +33,79 @@ export class CategoriaProductosPage implements OnInit {
     public modalController:ModalController,) { }
 
   ngOnInit() {
+  
   }
 
-  ionViewWillEnter(){
-    this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
-      this.categoriaSemi=data;
-      console.log(this.categoriaSemi);
-      this.proveedor.obtenerDocumentos('categoriaProductoFinal/documents').then(data => {
-        this.categoriaFinal=data;
-        console.log(this.categoriaFinal);
-      }).catch(data => {
-        console.log(data);
-      })
-    }).catch(data => {
-      console.log(data);
-    })
-   
-  }
+  CargarDatos() {
 
-  /* loadDatos(url:string){
-    this.proveedor.obtenerDocumentos(url).then(data => {
-      if(this.showSemi == true){
-        this.categoriaSemi=data;
+    if (this.showSemi == true) {
+      if (this.categoriaSemi.length != 0) {
+        this.categoriaTabla = this.categoriaSemi;
       }else{
-        this.categoriaFinal=data;
+        this.categoriaTabla = null;
       }
-    }).catch(data => {
-      console.log(data);
-    })
-  } */
+      this.proveedor
+        .obtenerDocumentos('categoriaProductoSemi/documents')
+        .then((data) => {
+          this.categoriaSemi = data;
+          this.categoriaTabla = this.categoriaSemi;
+        })
+        .catch((data) => {
+          console.log(data);
+        });
+    }
+    if (this.showFinal == true) {
+      if (this.categoriaFinal.length != 0) {
+        this.categoriaTabla = this.categoriaFinal;
+      }else{
+        this.categoriaTabla = null;
+      }
+      this.proveedor
+        .obtenerDocumentos('categoriaProductoFinal/documents')
+        .then((data) => {
+          this.categoriaFinal = data;
+          this.categoriaTabla = this.categoriaFinal;
+        })
+        .catch((data) => {
+          console.log(data);
+        });
+    }
+  }
 
-  async registroCategoria(url:string,tabla:any){
+  validateDataPost(){
+    let datos = Array();
+
+    if (this.showSemi == true) {
+      datos['url'] = 'categoriaProductoSemi/post';
+      datos['tabla'] = 'Semi';
+
+      return datos;
+    }
+
+    if(this.showFinal == true){
+      datos['url'] = 'categoriaProductoFinal/post';
+      datos['tabla'] = 'Final';
+
+      return datos;
+    }
+  }
+
+  registroCategoria(){
+
+    let categoria = this.validateDataPost();
+
+    if (this.showSemi == true) {
+      return this.registroCategoriaModal(categoria['url'],categoria['tabla']);
+    }
+
+    if(this.showFinal == true){
+
+      return this.registroCategoriaModal(categoria['url'],categoria['tabla']);
+    }
+  }
+
+  async registroCategoriaModal(url:string,tabla:any){
+
     const modal = await this.modalController.create({
       component: ModalCategoriaProductoPage,
       cssClass: 'modalCosecha',
@@ -81,7 +124,41 @@ export class CategoriaProductosPage implements OnInit {
     return await modal.present();
   }
 
-  async editCategoria(url:string,categoria:any,tabla:any){
+  validateDataPut(){
+    let datos = Array();
+
+    if (this.showSemi == true) {
+      datos['url'] = 'categoriaProductoSemi/put/';
+      datos['tabla'] = 'Semi';
+
+      return datos;
+    }
+
+    if(this.showFinal == true){
+      datos['url'] = 'categoriaProductoFinal/put/';
+      datos['tabla'] = 'Final';
+
+      return datos;
+    }
+  }
+
+  editCategoria(categoria:any){
+
+    let datos = this.validateDataPut();
+
+    if (this.showSemi == true) {
+
+      return this.editCategoriaModal(datos['url'] ,categoria ,datos['tabla']);
+    }
+
+    if(this.showFinal == true){
+
+      return this.editCategoriaModal(datos['url'] ,categoria ,datos['tabla']);
+    }
+  }
+
+
+  async editCategoriaModal(url:string,categoria:any,tabla:any){
 
     const modal = await this.modalController.create({
       component: ModalCategoriaProductoPage,
@@ -131,6 +208,7 @@ export class CategoriaProductosPage implements OnInit {
     this.proveedor.eliminarDocumento(urlDocument,id).subscribe(data => {
       console.log(data);
       tabla = this.providerMetodosCrud.eliminarDatosTabla(id,tabla);
+      this.categoriaTabla = tabla;
       this.providerMensajes.MensajeDeleteServidor(this.alertController);
     },error => {
       this.messege = error;
@@ -150,12 +228,14 @@ export class CategoriaProductosPage implements OnInit {
 
     if (tabla === 'Semi'){
       this.categoriaSemi = this.providerMetodosCrud.actualizarDatosTabla(categoria,idOld,this.categoriaSemi);
-      this.OrdenarTabla(this.categoriaSemi);
-      console.table(this.categoriaSemi);
+      this.categoriaTabla = this.categoriaSemi;
+      this.OrdenarTabla(this.categoriaTabla);
+      console.table(this.categoriaTabla);
     }else{
       this.categoriaFinal = this.providerMetodosCrud.actualizarDatosTabla(categoria,idOld,this.categoriaFinal);
-      this.OrdenarTabla(this.categoriaFinal);
-      console.table(this.categoriaFinal);
+      this.categoriaTabla = this.categoriaFinal;
+      this.OrdenarTabla(this.categoriaTabla);
+      console.table(this.categoriaTabla);
     }
 
   }

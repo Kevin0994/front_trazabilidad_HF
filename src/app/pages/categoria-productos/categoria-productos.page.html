@@ -9,16 +9,19 @@
 
 <ion-content>
   <div *ngIf="showButtons" class="containerButtons">
-    <ion-button class="buttonSemi" (click)="showSemi=true; showButtons=false; title='Categoria de Productos SemiFinales'">
+    <ion-button class="buttonSemi" (click)="showSemi=true; showFinal=false; showButtons=false; title='Categoria de Productos SemiFinales'; CargarDatos();" >
       SEMIFINAL
     </ion-button>
-    <ion-button class="buttonFinal" (click)="showFinal=true; showButtons=false; title='Categoria de Productos Finales';">
+    <ion-button class="buttonFinal" (click)="showFinal=true; showSemi=false; showButtons=false; title='Categoria de Productos Finales'; CargarDatos();">
       FINAL
     </ion-button>
   </div>
-  <div class="container mt-4" *ngIf="showSemi">
+  <div class="container mt-4" *ngIf="!showButtons">
     <div class="d-flex flex-row-reverse mb-3">
-      <ion-button class="btn-add" (click)="registroCategoria('productoSemi/post/','Semi')">
+      <ion-button color="primary" (click)="showButtons=true; showSemi=false; showFinal=false; title='Categoria de Productos';">
+        Regresar
+      </ion-button>
+      <ion-button class="btn-add" (click)="registroCategoria()">
         <ion-icon name="add-outline"></ion-icon>
         Nuevo Registro
       </ion-button>
@@ -33,14 +36,14 @@
         </tr>
       </thead>
       <tbody class="bg-white">
-        <tr *ngFor="let categoria of categoriaSemi">
+        <tr *ngFor="let categoria of categoriaTabla">
           <td>{{categoria.id}}</td>
           <td>{{categoria.nombre}}</td>
           <td>{{categoria.nProductos}}</td>
           <td> <input type="button" style="margin-right: 20px;"
             class="btn btn-warning btn-sm btn-edit"
             value="Editar"
-            (click)="editCategoria('categoriaProductoSemi/put/',categoria,'Semi')"
+            (click)="editCategoria(categoria)"
           />
           <input type="button"
             class="btn btn-danger btn-sm btn-del"
@@ -50,46 +53,5 @@
         </tr>
       </tbody>
     </table>
-    <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Categoria de Productos';">
-      Regresar
-    </ion-button>
-  </div>
-  <div class="container mt-4" *ngIf="showFinal">
-    <div class="d-flex flex-row-reverse mb-3">
-      <ion-button class="btn-add" (click)="registroCategoria('categoriaProductoFinal/post','Final')">
-        <ion-icon name="add-outline"></ion-icon>
-        Nuevo Registro
-      </ion-button>
-    </div>
-    <table class="table table-white">
-      <thead class="table-header text-light">
-        <tr>
-          <th scope="col">Codigo</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Productos Asociados</th>
-          <th scope="col">Acciones</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white">
-        <tr *ngFor="let categoria of categoriaFinal">
-          <td>{{categoria.id}}</td>
-          <td>{{categoria.nombre}}</td>
-          <td>{{categoria.nProductos}}</td>
-          <td> <input type="button" style="margin-right: 20px;"
-            class="btn btn-warning btn-sm btn-edit"
-            value="Editar"
-            (click)="editCategoria('categoriaProductoFinal/put/',categoria,'Final')"
-          />
-          <input type="button"
-            class="btn btn-danger btn-sm btn-del"
-            value="Eliminar"
-            (click)="DeleteCategoria(categoria.id)"
-          /></td>
-        </tr>
-      </tbody>
-    </table>
-    <ion-button color="primary" (click)="showButtons=true; showFinal=false;  title='Categoria de Productos';">
-      Regresar
-    </ion-button>
   </div>
 </ion-content>

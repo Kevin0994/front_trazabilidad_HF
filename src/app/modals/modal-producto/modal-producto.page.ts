@@ -13,21 +13,21 @@ import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.serv
 })
 export class ModalProductoPage implements OnInit {
 
-  @Input() Producto: any="init";
-  @Input() url: any;
-  @Input() type: any;
-  @Input() tabla: any;
+  @Input() Producto: any="init"; //Variable que obtiene las datos del producto seleccionado a editar
+  @Input() url: any; //string con la url para realizar la peticion al API
+  @Input() type: any; //Especifica la operacion a realizar como insertar o editar
+  @Input() tabla: any; //Especifica el tipo de producto que entra, semifinal o final
 
   public formRegistro: FormGroup;
   private formulario:any;
-  public listaCategorias:any;
-  public categoria:any={
+  public listaCategorias:any; 
+  public categoria:any={ //Guarda los datos especificos de la categoria escogida por el usuario
     id:'',
     nombre: '',
   };
   private producto:any;
   public listaMateriaPrima:any=[];
-  public materiaPrima:any={
+  public materiaPrima:any={ //Guarda los datos especificos de la materia prima escogida por el usuario
     id:'',
     nombre: '',
   };
@@ -57,26 +57,30 @@ export class ModalProductoPage implements OnInit {
   }
 
   cargarDatos(){
+    
     if(this.tabla === 'Semi'){
-
+      //Obtiene las categorias que existen en firestore
       this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
         this.listaCategorias = data;
         console.log(this.listaCategorias);
-        this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
-          this.listaMateriaPrima = data;
-          if(this.type != 'Nuevo Registro'){
-            this.materiaPrima = {
-              id: this.Producto.materiaPrima,
-              nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
-            }
-            this.categoria ={
-              id: this.Producto.id,
-              nombre: this.Producto.categoria
-            }
+      }).catch(data => {
+        console.log(data);
+      })
+      //obtiene los alimentos y productos semifinales 
+      this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
+        this.listaMateriaPrima = data;
+        if(this.type != 'Nuevo Registro'){
+          console.log('Entro');
+          this.materiaPrima = {
+            id: this.Producto.materiaPrima,
+            nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
           }
-        }).catch(data => {
-          console.log(data);
-        })
+          this.categoria ={
+            id: this.Producto.id,
+            nombre: this.Producto.categoria
+          }
+        }
+        console.log(this.materiaPrima);
       }).catch(data => {
         console.log(data);
       })
@@ -84,26 +88,30 @@ export class ModalProductoPage implements OnInit {
   }
 
   if(this.tabla === 'Final'){
+
+    //Obtiene las categorias que existen en firestore
     this.proveedor.obtenerDocumentos('categoriaProductoFinal/documents').then(data => {
       this.listaCategorias = data;
       console.log(this.listaCategorias);
-      this.proveedor.obtenerDocumentos('productoSemi/documents').then(data => {
-        this.listaMateriaPrima = data;
-        console.log(this.listaMateriaPrima);
-        if(this.type != 'Nuevo Registro'){
-          this.materiaPrima = {
-            id: this.Producto.materiaPrima.producto,
-            categoria: this.Producto.materiaPrima.categoria,
-            nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima.producto)[0].nombre
-          }
-          this.categoria ={
-            id: this.Producto.id,
-            nombre: this.Producto.categoria
-          }
+    }).catch(data => {
+      console.log(data);
+    })
+
+    //obtiene los alimentos y productos finales 
+    this.proveedor.obtenerDocumentos('productoSemi/documents').then(data => {
+      this.listaMateriaPrima = data;
+      console.log(this.listaMateriaPrima);
+      if(this.type != 'Nuevo Registro'){
+        this.materiaPrima = {
+          id: this.Producto.materiaPrima.producto,
+          categoria: this.Producto.materiaPrima.categoria,
+          nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima.producto)[0].nombre
         }
-      }).catch(data => {
-        console.log(data);
-      })
+        this.categoria ={
+          id: this.Producto.id,
+          nombre: this.Producto.categoria
+        }
+      }
     }).catch(data => {
       console.log(data);
     })
@@ -193,12 +201,6 @@ export class ModalProductoPage implements OnInit {
     })
   }
 
-  getImage(imageUrl: string) {
-    this.getBase64ImageFromURL(imageUrl).subscribe((base64Data: string) => {
-      this.base64TrimmedURL = base64Data;
-    });
-  }
-
   async saveProfile(){
     this.formulario = this.formRegistro.value;
     if(this.formRegistro.invalid){
@@ -282,41 +284,5 @@ export class ModalProductoPage implements OnInit {
   }
 
 
-  /* Method to fetch image from Url */
-  getBase64ImageFromURL(url: string): Observable<string> {
-    return Observable.create((observer: Observer<string>) => {
-      // create an image object
-      let img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.src = url;
-      if (!img.complete) {
-        // This will call another method that will create image from url
-        img.onload = () => {
-          observer.next(this.getBase64Image(img));
-          observer.complete();
-        };
-        img.onerror = err => {
-          observer.error(err);
-        };
-      } else {
-        observer.next(this.getBase64Image(img));
-        observer.complete();
-      }
-    });
-  }
-
-  /* Method to create base64Data Url from fetched image */
-  getBase64Image(img: HTMLImageElement): string {
-    // We create a HTML canvas object that will create a 2d image
-    var canvas: HTMLCanvasElement = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    let ctx: CanvasRenderingContext2D = canvas.getContext("2d");
-    // This will draw image
-    ctx.drawImage(img, 0, 0);
-    // Convert the drawn image to Data URL
-    let dataURL: string = canvas.toDataURL("image/png");
-    this.base64DefaultURL = dataURL;
-    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-  }
+  
 }

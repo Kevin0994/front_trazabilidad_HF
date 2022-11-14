@@ -14,14 +14,14 @@
     
     <div class="content-perfil">
       <ion-card>
-        <ion-img [src]=img></ion-img>
+        <ion-img [src]=imgURL></ion-img>
       </ion-card>
     </div>
     <br>
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="saveProfile()"  id="form">
 
       <ion-item>
-        <ion-input (change)="capturarFile($event)" type="file" ></ion-input>
+        <ion-input (change)="capturarFile($event)" type="file"  accept=".jpg, .png"></ion-input>
       </ion-item>
       <br>
       <ion-item>

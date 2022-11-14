@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
-import { Observable, Observer } from 'rxjs';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
@@ -16,14 +15,19 @@ export class ModalCategoriaProductoPage implements OnInit {
   @Input() Categoria: any="init";
   @Input() url: any;
   @Input() type: any;
+
   public formRegistro: FormGroup;
   private formulario:any;
   private categoria:any;
-  img: string = '../../../assets/icon/userLoginIcon.png';
+  public img: any;
+  public imgURL: any = 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000';
+  public imgCapture: any = false;
+  private responseImg:any;
   public base64TrimmedURL:any;
   public base64DefaultURL:any;
 
-  constructor(public proveedor: ProviderService,
+  constructor(
+    public proveedor: ProviderService,
     private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,
     public navCtrl:NavController,
@@ -46,6 +50,10 @@ export class ModalCategoriaProductoPage implements OnInit {
   }
 
   newForm(){
+    this.img ={
+      url: 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000',
+      name: 'imagenExample',
+    }
     this.formRegistro = this.fb.group({
       'codigo': new FormControl("",Validators.required),
       'nombre': new FormControl("",Validators.required),
@@ -53,6 +61,7 @@ export class ModalCategoriaProductoPage implements OnInit {
   }
 
   editForm(){
+    this.imgURL = this.Categoria.img.url;
     this.img = this.Categoria.img;
     this.formRegistro =  this.fb.group({
       'codigo': new FormControl(this.Categoria.id,Validators.required),
@@ -77,18 +86,26 @@ export class ModalCategoriaProductoPage implements OnInit {
       id: this.formulario.codigo,
       nombre: this.formulario.nombre,
       img: this.img,
-      nProductos: this.Categoria.nProductos
+      nProductos: this.Categoria.nProductos,
+      status: this.imgCapture,
     }
+
+    console.table(this.categoria);
 
     if(this.categoria.idOld != this.categoria.id || this.Categoria.img != this.categoria.img || this.Categoria.nombre != this.categoria.nombre){
       if(this.type == 'Nuevo Registro'){
 
         this.proveedor.InsertarDocumento(this.url,this.categoria).then(data => {
-          console.log(data);
-
+          console.table(data);
+          this.responseImg = data;
           if(this.proveedor.status){
+
             this.categoria['nProductos']=0;
-            this.categoria['status']=data;
+            this.categoria['status']=this.responseImg.status;
+
+            if(this.imgCapture){
+              this.categoria['img']=this.responseImg.img;
+            }
             this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.categoria);
           }else{
             this.providerMensajes.ErrorMensajeServidor(this.alertController);
@@ -98,12 +115,18 @@ export class ModalCategoriaProductoPage implements OnInit {
           console.log(data);
         });
       }else{
-
+        if(this.imgCapture){
+          this.categoria.img['imgOld'] = this.Categoria.img;
+          console.log(this.categoria);
+        }
+        console.log(this.categoria);
         this.proveedor.actualizarDocumento(this.url,this.Categoria.id,this.categoria).then(data => {
           console.log(data);
+          this.responseImg = data;
 
           if(this.proveedor.status){
             this.categoria['status']=data;
+            this.categoria['img']=this.responseImg.img;
             this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.categoria);
           }else{
             this.providerMensajes.ErrorMensajeServidor(this.alertController);
@@ -145,56 +168,16 @@ export class ModalCategoriaProductoPage implements OnInit {
   })
 
   capturarFile(event): any {
-    const archivoCapturado = event.target.files[0]
-    this.extraerBase64(archivoCapturado).then((imagen:any) => {
-      this.img= imagen.base;
+    let imageFile = event.target.files[0];
+    this.extraerBase64(imageFile).then((imagen:any) => {
+      this.imgURL = imagen.base; 
+      this.img = {
+        base: imagen.base,
+        name: imageFile.name,
+        type: imageFile.type,
+      }
+      this.imgCapture = true;
     })
   }
-
-  getImage(imageUrl: string) {
-    this.getBase64ImageFromURL(imageUrl).subscribe((base64Data: string) => {
-      this.base64TrimmedURL = base64Data;
-      
-    });
-  }
-
-  /* Method to fetch image from Url */
-  getBase64ImageFromURL(url: string): Observable<string> {
-    return Observable.create((observer: Observer<string>) => {
-      // create an image object
-      let img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.src = url;
-      if (!img.complete) {
-        // This will call another method that will create image from url
-        img.onload = () => {
-          observer.next(this.getBase64Image(img));
-          observer.complete();
-        };
-        img.onerror = err => {
-          observer.error(err);
-        };
-      } else {
-        observer.next(this.getBase64Image(img));
-        observer.complete();
-      }
-    });
-  }
-
-  /* Method to create base64Data Url from fetched image */
-  getBase64Image(img: HTMLImageElement): string {
-    // We create a HTML canvas object that will create a 2d image
-    var canvas: HTMLCanvasElement = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    let ctx: CanvasRenderingContext2D = canvas.getContext("2d");
-    // This will draw image
-    ctx.drawImage(img, 0, 0);
-    // Convert the drawn image to Data URL
-    let dataURL: string = canvas.toDataURL("image/png");
-    this.base64DefaultURL = dataURL;
-    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-  }
-
 
 }

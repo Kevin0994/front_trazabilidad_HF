@@ -15,7 +15,7 @@ export class ProductosPage implements OnInit {
   public title:any="Productos";
   public productoSemi:any=[];
   public productoFinal:any=[];
-  private categoria:any;
+  public productosTabla:any;
   public showSemi: boolean = false;
   public showFinal: boolean = false;
   public showButtons: boolean = true;
@@ -39,28 +39,77 @@ export class ProductosPage implements OnInit {
   ionViewWillEnter(){
   }
 
-  CargarDatos(){
-    console.log(this.showSemi);
-    if(this.showSemi == true){
-      this.proveedor.obtenerDocumentos('productoSemi/documents').then(data => {
-        this.productoSemi=data;
-        console.log(this.productoSemi);
-      }).catch(data => {
-        console.log(data);
-      })
-    }
-    if(this.showFinal == true){
-      this.OrdenarTabla(this.productoSemi);
-        this.proveedor.obtenerDocumentos('productoFinal/documents').then(data => {
-          this.productoFinal=data;
-          console.log(this.productoFinal);
-        }).catch(data => {
-          console.log(data);
+
+  CargarDatos() {
+
+    if (this.showSemi == true) {
+      if (this.productoSemi.length != 0) {
+        this.productosTabla = this.productoSemi;
+      }else{
+        this.productosTabla = null;
+      }
+      this.proveedor
+        .obtenerDocumentos('productoSemi/documents')
+        .then((data) => {
+          this.productoSemi = data;
+          this.productosTabla = this.productoSemi;
         })
+        .catch((data) => {
+          console.log(data);
+        });
+    }
+    if (this.showFinal == true) {
+      if (this.productoFinal.length != 0) {
+        this.productosTabla = this.productoFinal;
+      }else{
+        this.productosTabla = null;
+      }
+      this.proveedor
+        .obtenerDocumentos('productoFinal/documents')
+        .then((data) => {
+          this.productoFinal = data;
+          this.productosTabla = this.productoFinal;
+        })
+        .catch((data) => {
+          console.log(data);
+        });
     }
   }
 
-  async registroProducto(url:string,tabla:any){
+  validateDataPost(){
+    let datos = Array();
+
+    if (this.showSemi == true) {
+      datos['url'] = 'productoSemi/post/';
+      datos['tabla'] = 'Semi';
+
+      return datos;
+    }
+
+    if(this.showFinal == true){
+      datos['url'] = 'productoFinal/post/';
+      datos['tabla'] = 'Final';
+
+      return datos;
+    }
+  }
+
+  registroProducto(){
+
+    let producto = this.validateDataPost();
+
+    if (this.showSemi == true) {
+      return this.registroProductoModal(producto['url'],producto['tabla']);
+    }
+
+    if(this.showFinal == true){
+
+      return this.registroProductoModal(producto['url'],producto['tabla']);
+    }
+  }
+
+
+  async registroProductoModal(url:string,tabla:any){
     const modal = await this.modalController.create({
       component: ModalProductoPage,
       cssClass: 'modalCosecha',
@@ -80,6 +129,39 @@ export class ProductosPage implements OnInit {
     return await modal.present();
   }
 
+  validateDataPut(){
+    let datos = Array();
+
+    if (this.showSemi == true) {
+      datos['url'] = 'productoSemi/put/';
+      datos['tabla'] = 'Semi';
+
+      return datos;
+    }
+
+    if(this.showFinal == true){
+      datos['url'] = 'productoFinal/put/';
+      datos['tabla'] = 'Final';
+
+      return datos;
+    }
+  }
+
+  editCategoria(producto:any){
+
+    let datos = this.validateDataPut();
+
+    if (this.showSemi == true) {
+
+      return this.editOpenModal(datos['url'] ,producto ,datos['tabla']);
+    }
+
+    if(this.showFinal == true){
+
+      return this.editOpenModal(datos['url'] ,producto ,datos['tabla']);
+    }
+  }
+
   async editOpenModal(url:string,producto:any,tabla:any){
 
     const modal = await this.modalController.create({
@@ -89,6 +171,7 @@ export class ProductosPage implements OnInit {
         'Producto': producto,
         'url': url,
         'type':'Editar Registro',
+        'tabla': tabla,
       }
     });
 
