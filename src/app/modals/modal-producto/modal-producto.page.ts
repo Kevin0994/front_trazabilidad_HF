@@ -31,7 +31,10 @@ export class ModalProductoPage implements OnInit {
     id:'',
     nombre: '',
   };
-  img: string = '../../../assets/icon/userLoginIcon.png';
+  public img: any;
+  public imgURL: any = 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000';
+  public imgCapture: any = false;
+  private responseImg:any;
   public base64TrimmedURL:any;
   public base64DefaultURL:any;
 
@@ -57,7 +60,12 @@ export class ModalProductoPage implements OnInit {
   }
 
   cargarDatos(){
-    
+
+    this.categoria ={
+      id: this.Producto.categoriaId,
+      nombre: this.Producto.categoria
+    }
+
     if(this.tabla === 'Semi'){
       //Obtiene las categorias que existen en firestore
       this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
@@ -74,10 +82,6 @@ export class ModalProductoPage implements OnInit {
           this.materiaPrima = {
             id: this.Producto.materiaPrima,
             nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
-          }
-          this.categoria ={
-            id: this.Producto.id,
-            nombre: this.Producto.categoria
           }
         }
         console.log(this.materiaPrima);
@@ -106,10 +110,6 @@ export class ModalProductoPage implements OnInit {
           id: this.Producto.materiaPrima.producto,
           categoria: this.Producto.materiaPrima.categoria,
           nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima.producto)[0].nombre
-        }
-        this.categoria ={
-          id: this.Producto.id,
-          nombre: this.Producto.categoria
         }
       }
     }).catch(data => {
@@ -149,6 +149,10 @@ export class ModalProductoPage implements OnInit {
   }
 
   newForm(){
+    this.img ={
+      url: 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000',
+      name: 'imagenExample',
+    }
     this.formRegistro = this.fb.group({
       'categoria': new FormControl("",Validators.required),
       'codigo': new FormControl("",Validators.required),
@@ -158,6 +162,7 @@ export class ModalProductoPage implements OnInit {
   }
 
   editForm(){
+    this.imgURL = this.Producto.img.url;
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
       'categoria': new FormControl(this.Producto.categoriaId,Validators.required),
@@ -195,9 +200,15 @@ export class ModalProductoPage implements OnInit {
   })
 
   capturarFile(event): any {
-    const archivoCapturado = event.target.files[0]
-    this.extraerBase64(archivoCapturado).then((imagen:any) => {
-      this.img= imagen.base;
+    let imageFile = event.target.files[0];
+    this.extraerBase64(imageFile).then((imagen:any) => {
+      this.imgURL = imagen.base;
+      this.img = {
+        base: imagen.base,
+        name: imageFile.name,
+        type: imageFile.type,
+      }
+      this.imgCapture = true;
     })
   }
 
@@ -227,20 +238,25 @@ export class ModalProductoPage implements OnInit {
       img: this.img,
       materiaPrima: reference,
       categoriaId: this.categoria.id,
+      status: this.imgCapture,
     }
 
     if(this.type == 'Nuevo Registro'){
 
       console.log(this.producto);
       this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
-        let datos:any = data;
+        this.responseImg = data;
         if(this.proveedor.status){
           this.producto['categoria']=this.categoria.nombre;
-          this.producto['status']=data;
+          this.producto['status']=this.responseImg.status;
+
+          if(this.imgCapture){
+            this.producto['img']=this.responseImg.img;
+          }
+
           this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
         }else{
-          console.table(datos);
-          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,datos.error);
+          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.responseImg.error);
           return;
         }
       }).catch(data => {
@@ -254,9 +270,14 @@ export class ModalProductoPage implements OnInit {
         id: this.formulario.codigo,
         nombre: this.formulario.nombre,
         img: this.img,
-        materiaPrima: this.materiaPrima.id,
+        materiaPrima: this.formulario.materiaPrima, //this.materiaPrima.id
         categoriaId: this.categoria.id,
         categoriaIdOld: this.Producto.categoriaId,
+        status: this.imgCapture,
+      }
+
+      if(this.imgCapture){
+        this.producto.img['imgOld'] = this.Producto.img;
       }
 
       if(this.Producto.categoria == this.categoria.nombre &&
@@ -266,11 +287,14 @@ export class ModalProductoPage implements OnInit {
         this.Producto.nombre == this.producto.nombre){
           this.closeModal();
       }else{
+        console.log(this.producto);
         this.proveedor.actualizarDocumento(this.url,this.producto.idOld,this.producto).then(data => {
+          this.responseImg = data;
           console.log(data);
           if(this.proveedor.status){
             this.producto['categoria']=this.categoria.nombre;
-            this.producto['status']=data;
+            this.producto['status']=this.responseImg.status;
+            this.producto['img']=this.responseImg.img;
             this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
           }else{
             this.providerMensajes.ErrorMensajeServidor(this.alertController);
@@ -283,6 +307,4 @@ export class ModalProductoPage implements OnInit {
     }
   }
 
-
-  
 }

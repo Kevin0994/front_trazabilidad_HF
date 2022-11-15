@@ -117,9 +117,7 @@ export class ModalCategoriaProductoPage implements OnInit {
       }else{
         if(this.imgCapture){
           this.categoria.img['imgOld'] = this.Categoria.img;
-          console.log(this.categoria);
         }
-        console.log(this.categoria);
         this.proveedor.actualizarDocumento(this.url,this.Categoria.id,this.categoria).then(data => {
           console.log(data);
           this.responseImg = data;
