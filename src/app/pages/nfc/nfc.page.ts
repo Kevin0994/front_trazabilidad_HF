@@ -9,7 +9,8 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./nfc.page.scss'],
 })
 export class NfcPage implements OnInit {
-  myListener: any;
+  myListener: any = null;
+  my;
   segment: string = 'read';
   product: any = {};
   findProduct: boolean = false;
@@ -67,16 +68,17 @@ export class NfcPage implements OnInit {
       }
       this.myListener.unsubscribe();
     });
-    this.myListener.unsuscribe();
   }
 
   writeNFC(code: string) {
-    this.myListener = this.nfc.addNdefListener().subscribe((data) => {
-      let message = [this.ndef.textRecord(code)];
-      this.nfc.write(message);
-      this.myListener.unsubscribe();
-      this.presentAlert('¡Producto guardado!');
-    });
+    if (this.myListener === null) {
+      this.myListener = this.nfc.addNdefListener().subscribe((data) => {
+        let message = [this.ndef.textRecord(code)];
+        this.nfc.write(message);
+        this.presentAlert('¡Producto guardado!');
+        this.myListener.unsubscribe();
+      });
+    } else this.myListener.unsubscribe();
   }
 
   radioGroupChange(event) {
@@ -127,7 +129,7 @@ export class NfcPage implements OnInit {
       ],
     });
 
-    await alert.present();
     this.myListener.unsubscribe();
+    await alert.present();
   }
 }
