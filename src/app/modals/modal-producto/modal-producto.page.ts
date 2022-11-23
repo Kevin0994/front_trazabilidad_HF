@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Observable, Observer } from 'rxjs';
@@ -13,9 +13,12 @@ import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.serv
 })
 export class ModalProductoPage implements OnInit {
 
+  @ViewChild('imgElement') imgElement: ElementRef;
+
   @Input() Producto: any="init"; //Variable que obtiene las datos del producto seleccionado a editar
   @Input() url: any; //string con la url para realizar la peticion al API
-  @Input() type: any; //Especifica la operacion a realizar como insertar o editar
+  @Input() type: any; //titulo de la operacion a realizar como insertar o editar
+  @Input() post: boolean; //ariable que se utiliza para validar que accion se va a realizar (post, put)
   @Input() tabla: any; //Especifica el tipo de producto que entra, semifinal o final
 
   public formRegistro: FormGroup;
@@ -27,10 +30,10 @@ export class ModalProductoPage implements OnInit {
   };
   private producto:any;
   public listaMateriaPrima:any=[];
-  public materiaPrima:any={ //Guarda los datos especificos de la materia prima escogida por el usuario
+  public materiaPrima: any = Array({ 
     id:'',
     nombre: '',
-  };
+  });
   public img: any;
   public imgURL: any = 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000';
   public imgCapture: any = false;
@@ -74,7 +77,7 @@ export class ModalProductoPage implements OnInit {
       }).catch(data => {
         console.log(data);
       })
-      //obtiene los alimentos y productos semifinales 
+      //obtiene los alimentos y productos semifinales
       this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
         this.listaMateriaPrima = data;
         if(this.type != 'Nuevo Registro'){
@@ -127,20 +130,15 @@ export class ModalProductoPage implements OnInit {
     }
   }
 
-  handleChangeAlimento(ev) {
-    if(this.tabla === 'Semi'){
-      this.materiaPrima = {
-        id: ev.detail.value,
-        nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
-      }
+  handleChangeAlimento(ev,index) {
+
+    let file = {
+      id: ev.detail.value,
+      nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
     }
-    if(this.tabla === 'Final'){
-      this.materiaPrima = {
-        id: ev.detail.value,
-        categoria: this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].categoriaId,
-        nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
-      }
-    }
+
+    this.materiaPrima[index]=file;
+
     console.log(this.materiaPrima);
   }
 
@@ -154,10 +152,24 @@ export class ModalProductoPage implements OnInit {
       name: 'imagenExample',
     }
     this.formRegistro = this.fb.group({
-      'categoria': new FormControl("",Validators.required),
-      'codigo': new FormControl("",Validators.required),
-      'nombre': new FormControl("",Validators.required),
-      'materiaPrima': new FormControl("",Validators.required),
+      categoria: ['', [Validators.required]],
+      codigo: ['', [Validators.required]],
+      nombre : ['', [Validators.required]],
+      materiaPrimaForm : this.fb.array([
+        this.fb.control('', [Validators.required]),
+      ]),
+    });
+  }
+
+  get materiaPrimaForm(){
+    return this.formRegistro.get('materiaPrimaForm') as FormArray;
+  }
+
+  addMateriaPrima(){
+    this.materiaPrimaForm.push(this.fb.control('', [Validators.required]));
+    this.materiaPrima.push({
+      id:'',
+      nombre: '',
     })
   }
 
@@ -224,28 +236,30 @@ export class ModalProductoPage implements OnInit {
       await alert.present();
       return;
     }
-    let reference;
-    if(this.tabla === 'Semi'){
-      reference = this.materiaPrima.id
-    }
-    if(this.tabla === 'Final'){
-      reference = this.materiaPrima
-    }
+
+    let refMateriaPrima = this.materiaPrima.map((doc, index) => ({
+      materiaPrima: doc,
+      peso: (<HTMLInputElement>document.getElementById(index)).value
+    }))
 
     this.producto = {
       id: this.formulario.codigo,
       nombre: this.formulario.nombre,
+      presentacion: this.formulario.presentacion,
       img: this.img,
-      materiaPrima: reference,
+      materiaPrima: refMateriaPrima,
       categoriaId: this.categoria.id,
       status: this.imgCapture,
     }
 
-    if(this.type == 'Nuevo Registro'){
+    if(this.post === true){
 
-      console.log(this.producto);
-      this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
+      console.table(this.producto.materiaPrima);
+      console.table(this.producto);
+     /*  this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
+        console.log('termino');
         this.responseImg = data;
+        console.log(this.responseImg);
         if(this.proveedor.status){
           this.producto['categoria']=this.categoria.nombre;
           this.producto['status']=this.responseImg.status;
@@ -258,37 +272,32 @@ export class ModalProductoPage implements OnInit {
         }else{
           this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.responseImg.error);
           return;
-        }
+        } 
       }).catch(data => {
         console.log(data);
         this.providerMensajes.ErrorMensajePersonalizado(this.alertController,data.error);
 
-      });
-    }else{
-      this.producto = {
-        idOld: this.Producto.id,
-        id: this.formulario.codigo,
-        nombre: this.formulario.nombre,
-        img: this.img,
-        materiaPrima: this.formulario.materiaPrima, //this.materiaPrima.id
-        categoriaId: this.categoria.id,
-        categoriaIdOld: this.Producto.categoriaId,
-        status: this.imgCapture,
-      }
+      });  */
+
+    }
+    if(this.post === false){
+
+      this.producto['materiaPrima']= this.formulario.materiaPrima;
+      this.producto['categoriaIdOld']= this.Producto.categoriaId;
 
       if(this.imgCapture){
         this.producto.img['imgOld'] = this.Producto.img;
       }
 
-      if(this.Producto.categoria == this.categoria.nombre &&
+      /* if(this.Producto.categoria == this.categoria.nombre &&
         this.Producto.id == this.producto.id &&
         this.Producto.img == this.producto.img &&
         this.Producto.materiaPrima == this.producto.materiaPrima &&
         this.Producto.nombre == this.producto.nombre){
           this.closeModal();
-      }else{
+      }else{ */
         console.log(this.producto);
-        this.proveedor.actualizarDocumento(this.url,this.producto.idOld,this.producto).then(data => {
+        this.proveedor.actualizarDocumento(this.url,this.Producto.id,this.producto).then(data => {
           this.responseImg = data;
           console.log(data);
           if(this.proveedor.status){
@@ -303,7 +312,7 @@ export class ModalProductoPage implements OnInit {
         }).catch(data => {
           console.log(data);
         });
-      }
+      //}
     }
   }
 

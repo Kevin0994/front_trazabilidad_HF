@@ -19,11 +19,12 @@
     </div>
     <br>
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="saveProfile()"  id="form">
-
+      <!-------------field img---------------->
       <ion-item>
         <ion-input (change)="capturarFile($event)" type="file" ></ion-input>
       </ion-item>
       <br>
+      <!-------------field categoria---------------->
       <ion-item>
         <ion-label position="floating">Categoria</ion-label>
         <ion-select (ionChange)="handleChangeCategoria($event)" [selectedText]="this.categoria.nombre" formControlName="categoria" placeholder="Seleccione una categoria">
@@ -31,22 +32,34 @@
         </ion-select>
       </ion-item>
       <br>
+      <!-------------field codigo---------------->
       <ion-item>
         <ion-label position="floating">Codigo</ion-label>
         <ion-input formControlName="codigo" ></ion-input>
       </ion-item>
       <br>
+      <!-------------field nombre---------------->
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
         <ion-input formControlName="nombre" ></ion-input>
       </ion-item>
       <br>
-      <ion-item>
-        <ion-label position="floating">Materia Prima</ion-label>
-        <ion-select (ionChange)="handleChangeAlimento($event)" [selectedText]="materiaPrima.nombre" formControlName="materiaPrima" placeholder="Seleccione un alimento">
-          <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
-        </ion-select>
-      </ion-item>
+      <!-------------field Materia Prima---------------->
+      <div formArrayName="materiaPrimaForm">
+        <button (click)="addMateriaPrima()" type="button"> + </button>
+          <ng-container *ngFor="let form  of materiaPrimaForm.controls; let i=index;">
+            <ion-item>
+              <ion-label position="floating">Materia Prima</ion-label>
+               <ion-select (ionChange)="handleChangeAlimento($event,i)" [selectedText]="materiaPrima[i].nombre" [formControlName]="i" placeholder="Seleccione un alimento">
+                  <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
+               </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-input [id]="i" type="number" placeholder="Ingreso el monto de la receta"></ion-input>
+            </ion-item>
+          </ng-container>
+      </div>
+      
         <br>
       <ion-button type="submit" expand="block" shape="round" >
         <ion-icon name="save"></ion-icon> Guardar

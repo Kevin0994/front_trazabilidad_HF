@@ -114,7 +114,7 @@ export class FabricacionPage implements OnInit {
   fabricarProducto(producto: any, materiaPrima: any) {
     if (this.showSemi == true) {
       this.proveedor
-        .obtenerDocumentosPorId('alimentos/documents/', producto.materiaPrima)
+        .obtenerDocumentosPorId('alimentos/documents/', materiaPrima._path.segments[1])
         .then((data) => {
           let response = data;
           this.openModal(producto, response);
@@ -124,7 +124,7 @@ export class FabricacionPage implements OnInit {
         });
     }
     if (this.showFinal == true) {
-      let id = materiaPrima.categoria + '/' + materiaPrima.producto;
+      let id = materiaPrima._path.segments[1] + '/' + materiaPrima._path.segments[3];
       this.proveedor
         .obtenerDocumentosPorId('productoSemi/', id)
         .then((data) => {

@@ -9,10 +9,10 @@
 
 <ion-content>
   <div *ngIf="showButtons" class="containerButtons">
-    <ion-button class="buttonSemi" (click)="showSemi=true; showFinal=false; showButtons=false; CargarDatos(); title='Productos SemiFinales'">
+    <ion-button class="buttonSemi" (click)="showSemi=true; showFinal=false; showButtons=false; ValidarSeleccion(); title='Productos SemiFinales'">
       SEMIFINAL
     </ion-button>
-    <ion-button class="buttonFinal" (click)="showFinal=true; showSemi=false; showButtons=false; CargarDatos(); title='Productos Finales';">
+    <ion-button class="buttonFinal" (click)="showFinal=true; showSemi=false; showButtons=false; ValidarSeleccion(); title='Productos Finales';">
       FINAL
     </ion-button>
   </div>
