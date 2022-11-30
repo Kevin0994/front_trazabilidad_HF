@@ -62,10 +62,6 @@ export class InventarioPage implements OnInit {
         prop: 'nombre',
       },
       {
-        name: 'Materia Prima',
-        prop: 'nombreMp',
-      },
-      {
         name: 'Lote',
         prop: 'lote'
       },

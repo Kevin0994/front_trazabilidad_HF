@@ -45,11 +45,11 @@ export class IngresosInventario implements OnInit {
         {
           name: 'Nombre',
           prop: 'nombre'
-        },
+        }/* ,
         {
           name: 'Materia Prima',
           prop: 'nombreMp'
-        },
+        } */,
         {
           name: 'Lote',
           prop: 'lote'
@@ -59,11 +59,11 @@ export class IngresosInventario implements OnInit {
           headerTemplate: this.hdrTpl,
           name: 'Peso MP',
           prop: 'pesoMp'
-        },
+        }/* ,
         {
           name: 'Lote MP',
           prop: 'loteMp_st'
-        },
+        } */,
         {
   
           name: 'Fecha Entrada',
@@ -82,11 +82,11 @@ export class IngresosInventario implements OnInit {
         {
           name:'N° Fundas',
           prop: 'unidades'
-        },
+        }/* ,
         {
           name: 'Conversion',
           prop: 'conversion'
-        },
+        } */,
         {
           name: 'Responsable',
           prop: 'responsable'

@@ -1,7 +1,8 @@
 import { Component, Input ,OnInit } from '@angular/core';
-import { FormBuilder,  FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder,  FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-modal-fabricacion',
@@ -20,7 +21,8 @@ export class ModalFabricacionPage implements OnInit {
   private loteMateriaPrima:any;
   private inventario:any;
 
-  constructor(public proveedor: ProviderService,
+  constructor(private providerMensajes:ProviderMensajes,
+    public proveedor: ProviderService,
     private fb: FormBuilder,
     private alertController: AlertController,
     private modalController:ModalController,) { }
@@ -35,10 +37,8 @@ export class ModalFabricacionPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    
-  }
 
-  
+  }
 
   closeModal(){
     this.modalController.dismiss();
@@ -56,22 +56,29 @@ export class ModalFabricacionPage implements OnInit {
       await alert.present();
       return;
     }
-    var peticion = {
-      ingreso : this.formulario.pesoMateriaPrima
-    }
+
+    let form = this.formulario;
+
+    this.MateriaPrima.map(function(doc,index,array){
+      array[index]['peso'] = form.materiaPrimaForm[index];
+    })
+
+    console.log(this.MateriaPrima);
+
     if(this.showSemi == true){
-      this.proveedor.actualizarDocumento('stock/',this.MateriaPrima.nombre,peticion).then(data => {
+      this.proveedor.InsertarDocumento('inventarioProducto/stock/',this.MateriaPrima).then(data => {
+        console.log('entroo');
         this.loteMateriaPrima = data;
+        console.log( this.loteMateriaPrima);
         if(this.proveedor.status){
   
           this.inventario = {
             codigo: this.Producto.id,
             n_proceso: this.formulario.proceso,
-            nombre_mp: this.MateriaPrima.nombre, //nombre matria prima
+            materiaPrima: this.MateriaPrima.map(doc=>(doc.id)), //Array con los productos usados como materia prima
             nombre: this.Producto.nombre, //nombre producto semifinal
             lote_mp: this.loteMateriaPrima, //lote materia prima
             lote: new Date().getMonth() + 1, //lote producto semifinal
-            peso_mp: this.formulario.pesoMateriaPrima, //peso materia prima
             fechaEntrada: new Date(),
             responsable: localStorage.getItem('Usuario'),
             estado: 'En proceso',
@@ -85,23 +92,23 @@ export class ModalFabricacionPage implements OnInit {
             if(this.proveedor.status){
               this.MensajeServidor();
             }else{
-              this.ErrorMensajeServidor('Error al conectar con el servidor');
+              this.providerMensajes.ErrorMensajeServidor(this.alertController);
               return;
             }
           }).catch(data => {
             console.log(data);
-          });
+          }); 
         }else{
-          this.ErrorMensajeServidor(this.loteMateriaPrima.error[0]);
-          return;
+          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.loteMateriaPrima.error.messege);
+          return; 
         }
       }).catch(data => {
         console.log(data);
-      });
+      }); 
     }
 
     if(this.showFinal == true){
-      this.proveedor.actualizarDocumento('inventarioProductoSemifinales/stock/',this.MateriaPrima.id,peticion).then(data => {
+      this.proveedor.actualizarDocumento('inventarioProductoSemifinales/stock/',this.MateriaPrima.id,'peticion').then(data => {
         this.loteMateriaPrima = data;
         if(this.proveedor.status){
           this.inventario = {
@@ -127,14 +134,14 @@ export class ModalFabricacionPage implements OnInit {
             if(this.proveedor.status){
               this.MensajeServidor();
             }else{
-              this.ErrorMensajeServidor('Error al conectar con el servidor');
+              this.providerMensajes.ErrorMensajeServidor(this.alertController);
               return;
             }
           }).catch(data => {
             console.log(data);
           });
         }else{
-          this.ErrorMensajeServidor(this.loteMateriaPrima.error[0]);
+          this.providerMensajes.ErrorMensajeServidor(this.loteMateriaPrima.error.messege);
           return;
         }
       }).catch(data => {
@@ -145,15 +152,15 @@ export class ModalFabricacionPage implements OnInit {
 
   }
 
-
-
   newFormSemi(){
     this.formRegistro = this.fb.group({
-      'proceso': new FormControl("",Validators.required),
-      'nombre': new FormControl(this.Producto.nombre,Validators.required),
-      'materiaPrima': new FormControl(this.MateriaPrima.nombre,Validators.required),
-      'pesoMateriaPrima': new FormControl("",Validators.required),
-    })
+      proceso: ['', [Validators.required]],
+      nombre : [this.Producto.nombre, [Validators.required]],
+      materiaPrimaForm : this.fb.array([]),
+    });
+
+    this.addMateriaPrima();
+    //this.formRegistro.controls.materiaPrimaForm.disable();
   }
 
   newFormFinal(){
@@ -165,6 +172,19 @@ export class ModalFabricacionPage implements OnInit {
       'unidades':new FormControl("",Validators.required),
       'pesoFinal':new FormControl("",Validators.required),
     })
+  }
+
+  get materiaPrimaForm(){
+    return this.formRegistro.get('materiaPrimaForm') as FormArray;
+  }
+
+  addMateriaPrima(){
+    let form = this.materiaPrimaForm;
+    let formBuilder = this.fb;
+
+    this.MateriaPrima.forEach(function(doc) {
+      form.push(formBuilder.control(doc.peso, [Validators.required]));
+    });
   }
 
 
@@ -179,16 +199,6 @@ export class ModalFabricacionPage implements OnInit {
             this.closeModal();
           }
         }]
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor(mensaje:any){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: mensaje.messege + '- cantidad faltante: '+mensaje.stock,
-      buttons: ['OK']
     });
 
     await alert.present();

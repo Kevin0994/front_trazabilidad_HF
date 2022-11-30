@@ -30,6 +30,7 @@ export class ModalProductoPage implements OnInit {
   };
   private producto:any;
   public listaMateriaPrima:any=[];
+  //public presentacion: any = Array();
   public materiaPrima: any = Array({ 
     id:'',
     nombre: '',
@@ -50,11 +51,22 @@ export class ModalProductoPage implements OnInit {
     public sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-    console.log(this.Producto)
-    if(this.type == 'Nuevo Registro'){
-      this.newForm();
+    console.log(this.Producto);
+
+    if(this.post){
+      if(this.tabla === 'Semi'){
+        this.newFormSemi();
+      }
+      if(this.tabla === 'Final'){
+        this.newFormFinal();
+      }
     }else{
-      this.editForm();
+      if(this.tabla === 'Semi'){
+        this.editFormSemi();
+      }
+      if(this.tabla === 'Final'){
+        //this.editFormSemi();
+      }
     }
   }
 
@@ -68,6 +80,20 @@ export class ModalProductoPage implements OnInit {
       id: this.Producto.categoriaId,
       nombre: this.Producto.categoria
     }
+     //obtiene los alimentos y productos semifinales
+     this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
+      this.listaMateriaPrima = data;
+      if(this.type != 'Nuevo Registro'){
+        console.log('Entro');
+        this.materiaPrima = {
+          id: this.Producto.materiaPrima,
+          nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
+        }
+      }
+      console.log(this.materiaPrima);
+    }).catch(data => {
+      console.log(data);
+    })
 
     if(this.tabla === 'Semi'){
       //Obtiene las categorias que existen en firestore
@@ -77,50 +103,19 @@ export class ModalProductoPage implements OnInit {
       }).catch(data => {
         console.log(data);
       })
-      //obtiene los alimentos y productos semifinales
-      this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
-        this.listaMateriaPrima = data;
-        if(this.type != 'Nuevo Registro'){
-          console.log('Entro');
-          this.materiaPrima = {
-            id: this.Producto.materiaPrima,
-            nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
-          }
-        }
-        console.log(this.materiaPrima);
+    }
+
+    if(this.tabla === 'Final'){
+
+      //Obtiene las categorias que existen en firestore
+      this.proveedor.obtenerDocumentos('categoriaProductoFinal/documents').then(data => {
+        this.listaCategorias = data;
+        console.log(this.listaCategorias);
       }).catch(data => {
         console.log(data);
       })
 
-  }
-
-  if(this.tabla === 'Final'){
-
-    //Obtiene las categorias que existen en firestore
-    this.proveedor.obtenerDocumentos('categoriaProductoFinal/documents').then(data => {
-      this.listaCategorias = data;
-      console.log(this.listaCategorias);
-    }).catch(data => {
-      console.log(data);
-    })
-
-    //obtiene los alimentos y productos finales 
-    this.proveedor.obtenerDocumentos('productoSemi/documents').then(data => {
-      this.listaMateriaPrima = data;
-      console.log(this.listaMateriaPrima);
-      if(this.type != 'Nuevo Registro'){
-        this.materiaPrima = {
-          id: this.Producto.materiaPrima.producto,
-          categoria: this.Producto.materiaPrima.categoria,
-          nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima.producto)[0].nombre
-        }
-      }
-    }).catch(data => {
-      console.log(data);
-    })
-
-  }
-
+    }
   }
 
   handleChangeCategoria(ev) {
@@ -146,7 +141,7 @@ export class ModalProductoPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  newForm(){
+  newFormSemi(){
     this.img ={
       url: 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000',
       name: 'imagenExample',
@@ -161,8 +156,35 @@ export class ModalProductoPage implements OnInit {
     });
   }
 
+  newFormFinal(){
+    this.img ={
+      url: 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000',
+      name: 'imagenExample',
+    }
+    this.formRegistro = this.fb.group({
+      categoria: ['', [Validators.required]],
+      codigo: ['', [Validators.required]],
+      nombre : ['', [Validators.required]],
+      presentacionForm : this.fb.array([
+        this.fb.control('', [Validators.required]),
+      ]),
+      materiaPrimaForm : this.fb.array([
+        this.fb.control('', [Validators.required]),
+      ]),
+    });
+  }
+
+  get presentacionForm(){
+    return this.formRegistro.get('presentacionForm') as FormArray;
+  }
+
   get materiaPrimaForm(){
     return this.formRegistro.get('materiaPrimaForm') as FormArray;
+  }
+
+  addPresentacion(){
+    this.presentacionForm.push(this.fb.control('', [Validators.required]));
+    //this.presentacion.push('');
   }
 
   addMateriaPrima(){
@@ -173,7 +195,15 @@ export class ModalProductoPage implements OnInit {
     })
   }
 
-  editForm(){
+  deletePresentacion(index: number){
+    this.presentacionForm.removeAt(index);
+  }
+
+  deleteMateriaPrima(index: number){
+    this.materiaPrimaForm.removeAt(index);
+  }
+
+  editFormSemi(){
     this.imgURL = this.Producto.img.url;
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
@@ -238,7 +268,8 @@ export class ModalProductoPage implements OnInit {
     }
 
     let refMateriaPrima = this.materiaPrima.map((doc, index) => ({
-      materiaPrima: doc,
+      id: doc.id,
+      nombre: doc.nombre,
       peso: (<HTMLInputElement>document.getElementById(index)).value
     }))
 
@@ -254,9 +285,13 @@ export class ModalProductoPage implements OnInit {
 
     if(this.post === true){
 
+      if(this.tabla === 'Final'){
+        this.producto['presentacion']=this.formulario.presentacionForm;
+      }
+
       console.table(this.producto.materiaPrima);
       console.table(this.producto);
-     /*  this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
+      this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
         console.log('termino');
         this.responseImg = data;
         console.log(this.responseImg);
@@ -277,7 +312,7 @@ export class ModalProductoPage implements OnInit {
         console.log(data);
         this.providerMensajes.ErrorMensajePersonalizado(this.alertController,data.error);
 
-      });  */
+      });
 
     }
     if(this.post === false){

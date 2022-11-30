@@ -44,17 +44,30 @@
         <ion-input formControlName="nombre" ></ion-input>
       </ion-item>
       <br>
+      <!-------------field Presentacion---------------->
+      <div *ngIf="tabla === 'Final'" formArrayName="presentacionForm">
+        <button (click)="addPresentacion()" type="button"> + </button>
+          <ng-container *ngFor="let form  of presentacionForm.controls; let i=index;">
+            <ion-item>
+              <ion-label position="floating">Presentacion </ion-label>
+              <span *ngIf="i != 0" slot="end" type="button" (click)="deletePresentacion(i)">X</span> 
+              <ion-input [formControlName]="i" type="number" placeholder="Ingresa un numero de presentacion"></ion-input>
+            </ion-item>
+          </ng-container>
+      </div>
+      <br>
       <!-------------field Materia Prima---------------->
       <div formArrayName="materiaPrimaForm">
         <button (click)="addMateriaPrima()" type="button"> + </button>
           <ng-container *ngFor="let form  of materiaPrimaForm.controls; let i=index;">
             <ion-item>
-              <ion-label position="floating">Materia Prima</ion-label>
+              <ion-label position="floating">Materia Prima </ion-label>
                <ion-select (ionChange)="handleChangeAlimento($event,i)" [selectedText]="materiaPrima[i].nombre" [formControlName]="i" placeholder="Seleccione un alimento">
                   <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
                </ion-select>
             </ion-item>
             <ion-item>
+              <span *ngIf="i != 0" slot="end" type="button" (click)="deleteMateriaPrima(i)">X</span> 
               <ion-input [id]="i" type="number" placeholder="Ingreso el monto de la receta"></ion-input>
             </ion-item>
           </ng-container>
