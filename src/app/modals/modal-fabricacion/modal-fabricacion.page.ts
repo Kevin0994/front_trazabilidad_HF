@@ -71,7 +71,7 @@ export class ModalFabricacionPage implements OnInit {
         this.loteMateriaPrima = data;
         console.log( this.loteMateriaPrima);
         if(this.proveedor.status){
-  
+
           this.inventario = {
             codigo: this.Producto.id,
             n_proceso: this.formulario.proceso,
@@ -83,10 +83,10 @@ export class ModalFabricacionPage implements OnInit {
             responsable: localStorage.getItem('Usuario'),
             estado: 'En proceso',
           }
-  
+
           console.table(this.inventario);
           console.table(this.loteMateriaPrima);
-  
+
           this.proveedor.InsertarDocumento('inventarioProductoSemifinal/post',this.inventario).then(data => {
             console.log(data);
             if(this.proveedor.status){
@@ -125,10 +125,10 @@ export class ModalFabricacionPage implements OnInit {
             responsable: localStorage.getItem('Usuario'),
             estado: 'Terminado',
           }
-  
+
           console.table(this.inventario);
           console.table(this.loteMateriaPrima);
-  
+
           this.proveedor.InsertarDocumento('inventarioProductoFinal/post',this.inventario).then(data => {
             console.log(data);
             if(this.proveedor.status){
@@ -165,13 +165,14 @@ export class ModalFabricacionPage implements OnInit {
 
   newFormFinal(){
     this.formRegistro = this.fb.group({
-      'proceso': new FormControl("",Validators.required),
-      'nombre': new FormControl(this.Producto.nombre,Validators.required),
-      'materiaPrima': new FormControl(this.MateriaPrima.nombre,Validators.required),
-      'pesoMateriaPrima': new FormControl("",Validators.required),
-      'unidades':new FormControl("",Validators.required),
-      'pesoFinal':new FormControl("",Validators.required),
+      proceso: ['', [Validators.required]],
+      nombre : [this.Producto.nombre, [Validators.required]],
+      materiaPrimaForm : this.fb.array([]),
+      presentacion: ['', [Validators.required]],
+      unidades: ['', [Validators.required]],
+      pesoFinal: ['', [Validators.required]],
     })
+    this.addMateriaPrima();
   }
 
   get materiaPrimaForm(){
@@ -185,6 +186,12 @@ export class ModalFabricacionPage implements OnInit {
     this.MateriaPrima.forEach(function(doc) {
       form.push(formBuilder.control(doc.peso, [Validators.required]));
     });
+  }
+
+  handleChangeUnidades(ev){
+    let pesoFinal = this.formRegistro.value.presentacion * ev.detail.value;
+    this.formRegistro.controls.pesoFinal.setValue(pesoFinal);
+
   }
 
 

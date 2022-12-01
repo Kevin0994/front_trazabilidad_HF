@@ -31,10 +31,10 @@ export class ModalProductoPage implements OnInit {
   private producto:any;
   public listaMateriaPrima:any=[];
   //public presentacion: any = Array();
-  public materiaPrima: any = Array({ 
+  public materiaPrima: any = [Array({ 
     id:'',
     nombre: '',
-  });
+  })];
   public img: any;
   public imgURL: any = 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000';
   public imgCapture: any = false;
@@ -125,7 +125,19 @@ export class ModalProductoPage implements OnInit {
     }
   }
 
-  handleChangeAlimento(ev,index) {
+  handleChangeAlimentoFinal(ev,i,n) {
+
+   let file = {
+      id: ev.detail.value,
+      nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
+    }
+
+    this.materiaPrima[i][n]=file;
+
+    console.log(this.materiaPrima);
+  }
+
+  handleChangeAlimentoSemi(ev,index) {
 
     let file = {
       id: ev.detail.value,
@@ -136,6 +148,7 @@ export class ModalProductoPage implements OnInit {
 
     console.log(this.materiaPrima);
   }
+
 
   closeModal(){
     this.modalController.dismiss();
@@ -165,42 +178,55 @@ export class ModalProductoPage implements OnInit {
       categoria: ['', [Validators.required]],
       codigo: ['', [Validators.required]],
       nombre : ['', [Validators.required]],
-      presentacionForm : this.fb.array([
-        this.fb.control('', [Validators.required]),
-      ]),
       materiaPrimaForm : this.fb.array([
-        this.fb.control('', [Validators.required]),
+        this.fb.array([
+          this.fb.control('', [Validators.required]),
+        ]),
       ]),
     });
-  }
-
-  get presentacionForm(){
-    return this.formRegistro.get('presentacionForm') as FormArray;
+    console.log(this.materiaPrimaForm.controls[0]);
   }
 
   get materiaPrimaForm(){
     return this.formRegistro.get('materiaPrimaForm') as FormArray;
   }
 
-  addPresentacion(){
-    this.presentacionForm.push(this.fb.control('', [Validators.required]));
-    //this.presentacion.push('');
-  }
-
-  addMateriaPrima(){
+  //agrega un form control al array del formulario cuando se ingreso un producto Semifinal
+  addMateriaPrimaSemi(){
     this.materiaPrimaForm.push(this.fb.control('', [Validators.required]));
     this.materiaPrima.push({
       id:'',
       nombre: '',
     })
   }
-
-  deletePresentacion(index: number){
-    this.presentacionForm.removeAt(index);
+  //Elimina un form control al array del formulario cuando se ingreso un producto Semifinal
+  deleteMateriaPrimaSemi(index: number){
+    this.materiaPrimaForm.removeAt(index);
   }
 
-  deleteMateriaPrima(index: number){
-    this.materiaPrimaForm.removeAt(index);
+  //agrega un Formarray vinculado a una receta del formulario cuando se ingreso un producto Final
+  addReceta(){
+    this.materiaPrimaForm.push(this.fb.array([
+      this.fb.control('', [Validators.required]),
+    ]));
+    this.materiaPrima.push(Array({
+      id:'',
+      nombre: '',
+    }));
+  }
+
+  //agrega un form control al array del formulario cuando se ingreso un producto Final
+  addMateriaPrimaFi(index:number){
+    let refMateriaPrima = this.materiaPrimaForm.controls[index] as FormArray;
+    refMateriaPrima.push(this.fb.control('', [Validators.required]));
+    this.materiaPrima[index].push({
+      id:'',
+      nombre: '',
+    })
+  }
+  //Elimina un form control al array del formulario cuando se ingreso un producto Semifinal
+  deleteMateriaPrimaFi(index: number){
+    //this.materiaPrimaForm.controls.removeAt(index);
   }
 
   editFormSemi(){
@@ -256,7 +282,7 @@ export class ModalProductoPage implements OnInit {
 
   async saveProfile(){
     this.formulario = this.formRegistro.value;
-    if(this.formRegistro.invalid){
+    /* if(this.formRegistro.invalid){
       const alert = await this.alertController.create({
         header: 'Datos incompletos',
         message: 'Tienes que llenar todos los datos',
@@ -265,29 +291,45 @@ export class ModalProductoPage implements OnInit {
 
       await alert.present();
       return;
+    } */
+
+    let refMateriaPrima = Array();
+    let arrayMateriaPrima = this.materiaPrima;
+
+    if(this.tabla === 'Semi'){
+      refMateriaPrima = arrayMateriaPrima.map((doc, index) => ({
+        id: doc.id,
+        nombre: doc.nombre,
+        peso: parseFloat((<HTMLInputElement>document.getElementById(index)).value)
+      }));
     }
 
-    let refMateriaPrima = this.materiaPrima.map((doc, index) => ({
-      id: doc.id,
-      nombre: doc.nombre,
-      peso: (<HTMLInputElement>document.getElementById(index)).value
-    }))
+    if(this.tabla === 'Final'){
+      arrayMateriaPrima.forEach(function(form,i){
+        let recetaForm = {
+            presentacion: parseFloat((<HTMLInputElement>document.getElementById('A'+i)).value),
+            materiaPrima: form.map((doc, n) => ({
+              id: doc.id,
+              nombre: doc.nombre,
+              peso: parseFloat((<HTMLInputElement>document.getElementById('B'+i+n)).value)
+            })),
+        }
+        refMateriaPrima.push(recetaForm);
+      })
+      console.log(refMateriaPrima);
+    }
+
 
     this.producto = {
       id: this.formulario.codigo,
       nombre: this.formulario.nombre,
-      presentacion: this.formulario.presentacion,
       img: this.img,
       materiaPrima: refMateriaPrima,
       categoriaId: this.categoria.id,
       status: this.imgCapture,
-    }
+    } 
 
     if(this.post === true){
-
-      if(this.tabla === 'Final'){
-        this.producto['presentacion']=this.formulario.presentacionForm;
-      }
 
       console.table(this.producto.materiaPrima);
       console.table(this.producto);

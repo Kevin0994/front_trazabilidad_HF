@@ -26,20 +26,27 @@
           <ng-container *ngFor="let form  of MateriaPrima; let i=index;">
             <ion-item>
               <ion-label position="floating">{{form.nombre}}  </ion-label>
-              <ion-input [formControlName]="i" type="number" placeholder="Ingresa un numero de presentacion"></ion-input>
+              <ion-input [formControlName]="i" type="number" [disabled]="true" placeholder="Ingresa un numero de presentacion"></ion-input>
             </ion-item>
           </ng-container>
       </div>
       <br>
       <div *ngIf="showFinal == true">
         <ion-item>
-          <ion-label position="floating">N° de frascos</ion-label>
-          <ion-input formControlName="unidades" type="number"></ion-input>
+          <ion-label position="floating">Presentacion</ion-label>
+          <ion-select formControlName="presentacion" placeholder="Seleccione una presentacion">
+            <ion-select-option  *ngFor="let presentacion of Producto.presentacion"  [value]="presentacion">{{presentacion}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <br>
+        <ion-item>
+          <ion-label position="floating">N° de unidades</ion-label>
+          <ion-input (ionChange)="handleChangeUnidades($event)" formControlName="unidades" type="number"></ion-input>
         </ion-item>
         <br>
         <ion-item >
           <ion-label position="floating">Peso final</ion-label>
-          <ion-input formControlName="pesoFinal" type="number"></ion-input>
+          <ion-input formControlName="pesoFinal" [disabled]="true" type="number"></ion-input>
         </ion-item>
         <br>
       </div>
