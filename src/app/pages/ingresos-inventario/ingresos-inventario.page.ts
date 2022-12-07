@@ -94,6 +94,7 @@ export class IngresosInventario implements OnInit {
       ]
       this.LoadDatos('inventarioProSemi/terminado/documents');
     }
+
     if(this.response == false){
       this.cols = [
         {
@@ -105,18 +106,8 @@ export class IngresosInventario implements OnInit {
           prop: 'nombre'
         },
         {
-          name: 'Materia Prima',
-          prop: 'nombreMp'
-        },
-        {
           name: 'Lote',
           prop: 'lote'
-        },
-        {
-          cellTemplate: this.editTmpl,
-          headerTemplate: this.hdrTpl,
-          name: 'Peso MP',
-          prop: 'pesoMp'
         },
         {
           name: 'Lote MP',
