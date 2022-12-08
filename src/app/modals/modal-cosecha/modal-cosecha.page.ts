@@ -96,6 +96,7 @@ export class ModalCosechaPage implements OnInit {
     this.formulario = this.formRegistro.value;
 
     let loteCalculado = new Date().getMonth() + 1;
+    //let loteCalculado = 12;
 
     const hist={
       ingreso: this.formulario.peso * 1000,

@@ -112,29 +112,17 @@ export class FabricacionPage implements OnInit {
   }
 
   fabricarProducto(producto: any, materiaPrima: any) {
-    if (this.showSemi == true) {
-      this.proveedor
-        .obtenerDocumentosPorId('alimentos/documents/', producto.materiaPrima)
+  
+    //Busca los documentos vinculados con l amateria prima del producto 
+    this.proveedor.InsertarDocumento('alimentos/validate/get',materiaPrima)
         .then((data) => {
           let response = data;
+          console.log(response);
           this.openModal(producto, response);
         })
         .catch((data) => {
           console.log(data);
         });
-    }
-    if (this.showFinal == true) {
-      let id = materiaPrima.categoria + '/' + materiaPrima.producto;
-      this.proveedor
-        .obtenerDocumentosPorId('productoSemi/', id)
-        .then((data) => {
-          let response = data;
-          this.openModal(producto, response);
-        })
-        .catch((data) => {
-          console.log(data);
-        });
-    }
   }
 
   async openModal(producto: any, materiaPrima: any) {

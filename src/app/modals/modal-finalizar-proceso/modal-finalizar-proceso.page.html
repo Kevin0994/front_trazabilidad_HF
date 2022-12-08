@@ -10,6 +10,7 @@
 </ion-header>
 
 <ion-content>
+<<<<<<< HEAD
   <div class="container">
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="actualizarProducto()" id="formFa">
       <div class="mb-2 mt-3">
@@ -20,6 +21,14 @@
         <label class="form-label">Peso final</label>
         <ion-input formControlName="peso" type="number" class="form-input"></ion-input>
       </div>
+=======
+  <div class="container" >
+    <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="actualizarProducto()"  id="formFa">
+      <ion-item>
+        <ion-label position="floating">Numero de unidades</ion-label>
+        <ion-input formControlName="fundas" type="number"></ion-input>
+      </ion-item>
+>>>>>>> 63f83e8baff6ae65201a7fcb90f50e83514ee51d
       <br>
       <ion-button type="submit" expand="block" shape="round">
         <ion-icon name="save"></ion-icon> Guardar

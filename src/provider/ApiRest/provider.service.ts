@@ -8,7 +8,7 @@ export class ProviderService {
   public status: any = false;
   public error: any;
   private API_URL =
-    'https://heavy-sites-dance-179-49-30-3.loca.lt/hf-trazabilidad-89c0e/us-central1/app/';
+    'http://127.0.0.1:5001/hf-trazabilidad-89c0e/us-central1/app/';
 
   constructor(public http: HttpClient) {}
 

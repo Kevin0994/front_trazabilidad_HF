@@ -100,3 +100,26 @@ ion-action-sheet.my-custom-class ion-backdrop {
   opacity: 0.6;
   text-align: center;
 }
+
+// sc-ion-select-popover-md md list-md hydrated
+ion-list.sc-ion-select-popover-md {
+  background-color: white;
+}
+
+ion-item.select-interface-option {
+  // background-color: white;
+  --background: white;
+  color: #000000;
+}
+
+ion-item.select-interface-option.ion-focused {
+  --background: rgb(243, 243, 243);
+  --color-focused: black;
+  --color: white;
+  --background-focused: black;
+}
+
+ion-item.select-interface-option.ion-activatable {
+  --background: rgb(247, 247, 247);
+  --color: #000000;
+}

@@ -20,6 +20,7 @@
       FINAL
     </ion-button>
   </div>
+<<<<<<< HEAD
   <div *ngIf="!showButtons" class="container">
     <div class="w-100 d-flex align-items-center justify-content-center mt-4 mb-4 p-0">
       <input type="text" placeholder="Type to filter the name column..." (keyup)="updateFilter($event)"
@@ -35,6 +36,23 @@
           Ingresos
         </ion-button>
       </div>
+=======
+  <div *ngIf="!showButtons">
+    <div class="d-flex flex-row-reverse mb-3">
+      <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
+        Regresar
+      </ion-button>
+      <ion-button class="btn-add" (click)="ingresosGet()" [routerLink]="['/ingresos-inventario']">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Ingresos
+      </ion-button>
+      <input
+        type="text"
+        style="margin-left:10px;margin-right:auto;width:30%;"
+        placeholder="Type to filter the name column..."
+        (keyup)="updateFilter($event)"
+      />
+>>>>>>> 63f83e8baff6ae65201a7fcb90f50e83514ee51d
     </div>
 
     <ngx-datatable #table class="material" [columns]="cols" [columnMode]="ColumnMode.force" [headerHeight]="50"

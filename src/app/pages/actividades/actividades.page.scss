@@ -15,3 +15,66 @@ ion-toolbar {
     font-size: 1.5rem;
   }
 }
+
+ion-searchbar {
+  width: 95%;
+  margin: 1rem auto 0.5rem auto;
+  padding: 0;
+  --background: white;
+  color: black;
+}
+
+ion-list {
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  ion-item {
+    --background: white;
+    --color: black;
+    --border-style: initial;
+  }
+}
+
+.input-name {
+  border-radius: 1.5rem;
+  padding: 0;
+  --background: white;
+  color: black;
+}
+
+.modal-body {
+  --background: white;
+}
+
+// input[type="file"]::file-selector-button {
+//   margin-right: 0.5rem;
+//   border: none;
+//   background: #084cdf;
+//   padding: 10px 20px;
+//   border-radius: 10px;
+//   color: #fff;
+//   cursor: pointer;
+//   transition: background 0.2s ease-in-out;
+// }
+// input[type="file"] {
+//   color: black;
+//   width: 100%;
+// }
+
+.item-actividad {
+  width: 95%;
+  margin: auto;
+  --background: white;
+  --color: black;
+  --border-style: initial;
+  border: 1px solid rgb(214, 214, 214);
+  ion-label {
+    h2 {
+      color: rgb(2, 167, 65);
+      font-weight: 600;
+    }
+    p {
+      color: black;
+    }
+  }
+}

@@ -26,7 +26,7 @@
           <ion-slides [options]="categoriaSlides">
             <ion-slide class="categorias" *ngFor="let categoria of categorias">
               <ion-card (click)="openProduct(categoria.id)" type="button">
-                <img style="width: 600px; height: 180px" [src]="categoria.img">
+                <img style="width: 600px; height: 180px" [src]="categoria.img.url">
                 <ion-card-content>
                   <h3>{{categoria.nombre}}</h3>
                 </ion-card-content>
@@ -44,7 +44,7 @@
             <ion-slides [options]="categoriaSlides">
               <ion-slide class="categorias" *ngFor="let producto of productos">
                 <ion-card (click)="fabricarProducto(producto,producto.materiaPrima)" type="button">
-                  <img style="width: 600px; height: 180px" [src]="producto.img">
+                  <img style="width: 600px; height: 180px" [src]="producto.img.url">
                   <ion-card-content>
                     <h3>{{producto.nombre}}</h3>
                   </ion-card-content>

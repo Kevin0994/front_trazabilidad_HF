@@ -8,5 +8,54 @@
 </ion-header>
 
 <ion-content>
+  <div class="d-flex">
+    <ion-button (click)="agregarAcitivdad" id="open-modal">Agregar</ion-button>
+    <ion-list>
+      <ion-item>
+        <ion-select interface="popover" placeholder="Seleccionar" (ionChange)="filtrarTipo($event)">
+          <ion-select-option value="todos">Todos</ion-select-option>
+          <ion-select-option value="fabrica">Fábrica</ion-select-option>
+          <ion-select-option value="campo">Campo</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </div>
+  <ion-searchbar (ionChange)="buscarActividad($event)" placeholder="Buscar" animated></ion-searchbar>
+  <ion-item *ngFor="let actividad of listaActividades" class="item-actividad">
+    <ion-label>
+      <h2>{{actividad.nombre}}</h2>
+      <p>{{actividad.tipo}}</p>
+    </ion-label>
+  </ion-item>
 
+  <ion-modal #modal trigger="open-modal" [canDismiss]="canDismiss" [presentingElement]="presentingElement">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Modal</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="modal.dismiss()">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="modal-body">
+        <div class="w-100">
+          <ion-item class="input-name">
+            <ion-label position="floating">Nombre</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+          <ion-list>
+            <ion-item>
+              <ion-select interface="popover" placeholder="Seleccionar" (ionChange)="filtrarTipo($event)">
+                <ion-select-option value="todos">Todos</ion-select-option>
+                <ion-select-option value="fabrica">Fábrica</ion-select-option>
+                <ion-select-option value="campo">Campo</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+        </div>
+        <ion-button expand="full">Aceptar</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
