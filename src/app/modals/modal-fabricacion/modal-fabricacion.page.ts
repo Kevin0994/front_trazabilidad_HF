@@ -20,6 +20,8 @@ export class ModalFabricacionPage implements OnInit {
   private formulario:any;
   private loteMateriaPrima:any;
   private inventario:any;
+  public recetaProducto:any;
+  public presentacion:number;
 
   constructor(private providerMensajes:ProviderMensajes,
     public proveedor: ProviderService,
@@ -37,7 +39,7 @@ export class ModalFabricacionPage implements OnInit {
   }
 
   ionViewWillEnter() {
-
+    
   }
 
   closeModal(){
@@ -57,15 +59,16 @@ export class ModalFabricacionPage implements OnInit {
       return;
     }
 
-    let form = this.formulario;
-
-    this.MateriaPrima.map(function(doc,index,array){
-      array[index]['peso'] = form.materiaPrimaForm[index];
-    })
-
-    console.log(this.MateriaPrima);
 
     if(this.showSemi == true){
+      let form = this.formulario;
+
+      this.MateriaPrima.map(function(doc,index,array){
+        array[index]['peso'] = form.materiaPrimaForm[index];
+      })
+
+      console.log(this.MateriaPrima);
+
       this.proveedor.InsertarDocumento('inventarioProducto/stock/',this.MateriaPrima).then(data => {
         console.log('entroo');
         this.loteMateriaPrima = data;
@@ -87,7 +90,7 @@ export class ModalFabricacionPage implements OnInit {
           console.table(this.inventario);
           console.table(this.loteMateriaPrima);
 
-          this.proveedor.InsertarDocumento('inventarioProductoSemifinal/post',this.inventario).then(data => {
+         this.proveedor.InsertarDocumento('inventarioProductoSemifinal/post',this.inventario).then(data => {
             console.log(data);
             if(this.proveedor.status){
               this.MensajeServidor();
@@ -97,36 +100,49 @@ export class ModalFabricacionPage implements OnInit {
             }
           }).catch(data => {
             console.log(data);
-          }); 
+          });
         }else{
           this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.loteMateriaPrima.error.messege);
           return; 
         }
       }).catch(data => {
         console.log(data);
-      }); 
+      });
     }
 
+
     if(this.showFinal == true){
-      this.proveedor.actualizarDocumento('inventarioProductoSemifinales/stock/',this.MateriaPrima.id,'peticion').then(data => {
+
+      this.recetaProducto.map(function(doc,index,array){
+        array[index]['peso'] = parseFloat((<HTMLInputElement>document.getElementById(index)).value);
+      })
+
+      console.log(this.recetaProducto);
+
+      this.proveedor.InsertarDocumento('inventarioProducto/stock/',this.recetaProducto).then(data => {
         this.loteMateriaPrima = data;
+        console.table(this.loteMateriaPrima);
         if(this.proveedor.status){
+          let pesoMp = 0;
+          this.recetaProducto.forEach(function(doc){
+            pesoMp += doc.peso;
+          })
           this.inventario = {
             codigo: this.Producto.id,
             n_proceso: this.formulario.proceso,
-            nombre_mp: this.MateriaPrima.nombre, //nombre matria prima
+            materiaPrima: this.recetaProducto.map(doc=>(doc.id)), //nombre matria prima
             nombre: this.Producto.nombre, //nombre producto semifinal
             lote_mp: this.loteMateriaPrima, //lote materia prima
             lote: new Date().getMonth() + 1, //lote producto semifinal
-            peso_mp: this.formulario.pesoMateriaPrima, //peso materia prima
             unidades:this.formulario.unidades,
             pesoFinal: this.formulario.pesoFinal,
             fechaEntrada: new Date(),
             responsable: localStorage.getItem('Usuario'),
+            conversion: pesoMp/this.formulario.pesoFinal,
             estado: 'Terminado',
-          }
+          } 
 
-          console.table(this.inventario);
+          console.table(this.inventario); 
           console.table(this.loteMateriaPrima);
 
           this.proveedor.InsertarDocumento('inventarioProductoFinal/post',this.inventario).then(data => {
@@ -141,9 +157,9 @@ export class ModalFabricacionPage implements OnInit {
             console.log(data);
           });
         }else{
-          this.providerMensajes.ErrorMensajeServidor(this.loteMateriaPrima.error.messege);
+          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.loteMateriaPrima.error.messege);
           return;
-        }
+        } 
       }).catch(data => {
         console.log(data);
       });
@@ -164,15 +180,15 @@ export class ModalFabricacionPage implements OnInit {
   }
 
   newFormFinal(){
+    this.presentacion = this.MateriaPrima[0].presentacion;
+    this.recetaProducto = this.MateriaPrima[0].materiaPrima;
     this.formRegistro = this.fb.group({
       proceso: ['', [Validators.required]],
       nombre : [this.Producto.nombre, [Validators.required]],
-      materiaPrimaForm : this.fb.array([]),
-      presentacion: ['', [Validators.required]],
+      presentacion: [this.presentacion, [Validators.required]],
       unidades: ['', [Validators.required]],
       pesoFinal: ['', [Validators.required]],
     })
-    this.addMateriaPrima();
   }
 
   get materiaPrimaForm(){
@@ -186,12 +202,27 @@ export class ModalFabricacionPage implements OnInit {
     this.MateriaPrima.forEach(function(doc) {
       form.push(formBuilder.control(doc.peso, [Validators.required]));
     });
+
+  }
+
+  handleChangePresentacion(ev){
+
+    this.presentacion = ev.detail.value;
+    let index;
+    this.MateriaPrima.every(function(doc,i){
+        if(doc.presentacion == ev.detail.value) {
+          index = i;
+          return false;
+        }
+        return true;
+    })
+
+   this.recetaProducto = this.MateriaPrima[index].materiaPrima
   }
 
   handleChangeUnidades(ev){
     let pesoFinal = this.formRegistro.value.presentacion * ev.detail.value;
     this.formRegistro.controls.pesoFinal.setValue(pesoFinal);
-
   }
 
 

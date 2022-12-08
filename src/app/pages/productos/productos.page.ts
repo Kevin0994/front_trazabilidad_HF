@@ -232,7 +232,6 @@ export class ProductosPage implements OnInit {
       id: data.data.id,
       nombre: data.data.nombre,
       img: data.data.img,
-      materiaPrima: data.data.materiaPrima,
       categoriaId: data.data.categoriaId,
       categoria: data.data.categoria,
       status: data.data.status,
@@ -240,12 +239,14 @@ export class ProductosPage implements OnInit {
     console.log(producto);
 
     if (tabla === 'Semi'){
+      producto['materiaPrima']=data.data.materiaPrima;
       this.productoSemi = this.providerMetodosCrud.actualizarDatosTabla(producto,idOld,this.productoSemi);
       this.productosTabla = this.productoSemi;
       this.OrdenarTabla(this.productosTabla);
       console.log('tabla producto');
       console.table(this.productosTabla);
     }else{
+      producto['receta']=data.data.receta;
       this.productoFinal = this.providerMetodosCrud.actualizarDatosTabla(producto,idOld,this.productoFinal);
       this.productosTabla = this.productoFinal;
       this.OrdenarTabla(this.productoFinal);

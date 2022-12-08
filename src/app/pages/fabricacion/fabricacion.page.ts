@@ -111,10 +111,19 @@ export class FabricacionPage implements OnInit {
       });
   }
 
-  fabricarProducto(producto: any, materiaPrima: any) {
-  
+  fabricarProducto(producto: any) {
+    let refMateriaPrima;
+
+    if(producto.materiaPrima != undefined){
+      refMateriaPrima = producto.materiaPrima;
+    }
+
+    if(producto.receta != undefined){
+      refMateriaPrima = producto.receta;
+    }
+
     //Busca los documentos vinculados con l amateria prima del producto 
-    this.proveedor.InsertarDocumento('alimentos/validate/get',materiaPrima)
+    this.proveedor.InsertarDocumento('alimentos/validate/get',refMateriaPrima)
         .then((data) => {
           let response = data;
           console.log(response);

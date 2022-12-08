@@ -12,38 +12,59 @@
 <ion-content>
   <div class="container" >
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="saveProfile()"  id="formFa">
+      <!-------------field N° de proceso---------------->
       <ion-item>
         <ion-label position="floating">N° de proceso</ion-label>
         <ion-input formControlName="proceso" type="number"></ion-input>
       </ion-item>
+      <!-------------field nombre---------------->
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
         <ion-input formControlName="nombre"></ion-input>
       </ion-item>
       <br>
-      <ion-label position="floating" >Materia prima</ion-label>
-      <div formArrayName="materiaPrimaForm">
-          <ng-container *ngFor="let form  of MateriaPrima; let i=index;">
-            <ion-item>
-              <ion-label position="floating">{{form.nombre}}  </ion-label>
-              <ion-input [formControlName]="i" type="number" [disabled]="true" placeholder="Ingresa un numero de presentacion"></ion-input>
-            </ion-item>
-          </ng-container>
+      <div  *ngIf="showSemi == true">
+        <!-------------field Materia Prima ---------------->
+        <ion-label position="floating" >Materia prima</ion-label>
+        <div formArrayName="materiaPrimaForm">
+            <ng-container *ngFor="let form  of MateriaPrima; let i=index;">
+              <ion-item>
+                <ion-label position="floating">{{form.nombre}}  </ion-label>
+                <ion-input [formControlName]="i" type="number" [disabled]="true" placeholder="Ingresa un numero de presentacion"></ion-input>
+              </ion-item>
+            </ng-container>
+        </div>
+        <br>
       </div>
-      <br>
+
       <div *ngIf="showFinal == true">
+      <!-------------field presentacion---------------->
+
         <ion-item>
           <ion-label position="floating">Presentacion</ion-label>
-          <ion-select formControlName="presentacion" placeholder="Seleccione una presentacion">
-            <ion-select-option  *ngFor="let presentacion of Producto.presentacion"  [value]="presentacion">{{presentacion}}</ion-select-option>
+          <ion-select (ionChange)="handleChangePresentacion($event)" [selectedText]="presentacion" formControlName="presentacion" placeholder="Seleccione una presentacion">
+            <ion-select-option  *ngFor="let producto of MateriaPrima" >{{producto.presentacion}}</ion-select-option>
           </ion-select>
         </ion-item>
         <br>
+         <!-------------field Materia Prima ---------------->
+         <ion-label position="floating" >Materia prima</ion-label>
+         <div>
+             <ng-container *ngFor="let receta  of recetaProducto; let i=index;">
+               <ion-item>
+                 <ion-label position="floating">{{receta.nombre}}  </ion-label>
+                 <ion-input [id]="i" type="number" [disabled]="true" [value]="receta.peso"></ion-input>
+               </ion-item>
+             </ng-container>
+         </div>
+         <br>
+        <!-------------field N° de unidades ---------------->
         <ion-item>
           <ion-label position="floating">N° de unidades</ion-label>
           <ion-input (ionChange)="handleChangeUnidades($event)" formControlName="unidades" type="number"></ion-input>
         </ion-item>
         <br>
+        <!-------------field Peso final ---------------->
         <ion-item >
           <ion-label position="floating">Peso final</ion-label>
           <ion-input formControlName="pesoFinal" [disabled]="true" type="number"></ion-input>

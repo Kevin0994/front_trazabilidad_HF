@@ -293,6 +293,14 @@ export class ModalProductoPage implements OnInit {
       return;
     } */
 
+    this.producto = {
+      id: this.formulario.codigo,
+      nombre: this.formulario.nombre,
+      img: this.img,
+      categoriaId: this.categoria.id,
+      status: this.imgCapture,
+    }
+
     let refMateriaPrima = Array();
     let arrayMateriaPrima = this.materiaPrima;
 
@@ -302,6 +310,8 @@ export class ModalProductoPage implements OnInit {
         nombre: doc.nombre,
         peso: parseFloat((<HTMLInputElement>document.getElementById(index)).value)
       }));
+      console.log(refMateriaPrima);
+      this.producto['materiaPrima']=refMateriaPrima;
     }
 
     if(this.tabla === 'Final'){
@@ -317,17 +327,8 @@ export class ModalProductoPage implements OnInit {
         refMateriaPrima.push(recetaForm);
       })
       console.log(refMateriaPrima);
+      this.producto['receta']=refMateriaPrima;
     }
-
-
-    this.producto = {
-      id: this.formulario.codigo,
-      nombre: this.formulario.nombre,
-      img: this.img,
-      materiaPrima: refMateriaPrima,
-      categoriaId: this.categoria.id,
-      status: this.imgCapture,
-    } 
 
     if(this.post === true){
 
