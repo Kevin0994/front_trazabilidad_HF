@@ -55,4 +55,25 @@ export class ProviderMensajes {
     await alert.present();
   }
 
+  async MessegeValiteForm(alertController:AlertController){
+    const alert = await alertController.create({
+      header: 'Datos incompletos',
+      message: 'Tienes que llenar todos los datos',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+    return;
+  }
+
+  async MessegeValiteFormPersonalizado(alertController:AlertController,mensaje:any){
+    const alert = await alertController.create({
+      header: 'Datos incompletos',
+      message: mensaje,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+    return;
+  }
 }

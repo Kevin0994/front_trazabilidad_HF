@@ -31,7 +31,11 @@ export class ModalProductoPage implements OnInit {
   private producto:any;
   public listaMateriaPrima:any=[];
   //public presentacion: any = Array();
-  public materiaPrima: any = [Array({ 
+  public materiaPrima: any = [{ 
+    id:'',
+    nombre: '',
+  }];
+  public receta: any = [Array({ 
     id:'',
     nombre: '',
   })];
@@ -51,8 +55,7 @@ export class ModalProductoPage implements OnInit {
     public sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-    console.log(this.Producto);
-
+    this.cargarDatos();
     if(this.post){
       if(this.tabla === 'Semi'){
         this.newFormSemi();
@@ -68,10 +71,11 @@ export class ModalProductoPage implements OnInit {
         //this.editFormSemi();
       }
     }
+    
   }
 
   ionViewWillEnter() {
-    this.cargarDatos();
+    
   }
 
   cargarDatos(){
@@ -81,16 +85,12 @@ export class ModalProductoPage implements OnInit {
       nombre: this.Producto.categoria
     }
      //obtiene los alimentos y productos semifinales
-     this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
+    this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
       this.listaMateriaPrima = data;
       if(this.type != 'Nuevo Registro'){
-        console.log('Entro');
-        this.materiaPrima = {
-          id: this.Producto.materiaPrima,
-          nombre: this.listaMateriaPrima.filter((alimento) => alimento.id === this.Producto.materiaPrima)[0].nombre
-        }
+        console.log(this.listaMateriaPrima);
+        this.findMateriaPrimaSemi();
       }
-      console.log(this.materiaPrima);
     }).catch(data => {
       console.log(data);
     })
@@ -116,6 +116,7 @@ export class ModalProductoPage implements OnInit {
       })
 
     }
+    return this.Producto.materiaPrima;
   }
 
   handleChangeCategoria(ev) {
@@ -132,9 +133,9 @@ export class ModalProductoPage implements OnInit {
       nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
     }
 
-    this.materiaPrima[i][n]=file;
+    this.receta[i][n]=file;
 
-    console.log(this.materiaPrima);
+    console.log(this.receta);
   }
 
   handleChangeAlimentoSemi(ev,index) {
@@ -201,6 +202,7 @@ export class ModalProductoPage implements OnInit {
   }
   //Elimina un form control al array del formulario cuando se ingreso un producto Semifinal
   deleteMateriaPrimaSemi(index: number){
+    this.materiaPrima.splice(index,1);
     this.materiaPrimaForm.removeAt(index);
   }
 
@@ -209,7 +211,7 @@ export class ModalProductoPage implements OnInit {
     this.materiaPrimaForm.push(this.fb.array([
       this.fb.control('', [Validators.required]),
     ]));
-    this.materiaPrima.push(Array({
+    this.receta.push(Array({
       id:'',
       nombre: '',
     }));
@@ -219,7 +221,7 @@ export class ModalProductoPage implements OnInit {
   addMateriaPrimaFi(index:number){
     let refMateriaPrima = this.materiaPrimaForm.controls[index] as FormArray;
     refMateriaPrima.push(this.fb.control('', [Validators.required]));
-    this.materiaPrima[index].push({
+    this.receta[index].push({
       id:'',
       nombre: '',
     })
@@ -233,12 +235,40 @@ export class ModalProductoPage implements OnInit {
     this.imgURL = this.Producto.img.url;
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
-      'categoria': new FormControl(this.Producto.categoriaId,Validators.required),
-      'codigo': new FormControl(this.Producto.id,Validators.required),
-      'nombre': new FormControl(this.Producto.nombre,Validators.required),
-      'materiaPrima': new FormControl(this.Producto.materiaPrima,Validators.required),
+      categoria: [this.Producto.categoriaId, [Validators.required]],
+      codigo: [this.Producto.id, [Validators.required]],
+      nombre : [this.Producto.nombre, [Validators.required]],
+      materiaPrimaForm : this.fb.array([]),
     })
-    this.categoria.nombre = this.Producto.categoria;
+    
+  }
+
+  async findMateriaPrimaSemi(){
+    let form = this.materiaPrimaForm;
+    let formBuilder = this.fb;
+    let refid;
+    let lmp = this.listaMateriaPrima;
+    let mp = this.materiaPrima;
+
+    this.Producto.materiaPrima.forEach(function(doc,index) {
+      if(doc.id._path.segments.length > 2){
+        refid = doc.id._path.segments[3];
+      }else{
+        refid = doc.id._path.segments[1];
+      }
+      console.log(refid);
+      form.push(formBuilder.control(doc.peso, [Validators.required]));
+      let documento ={
+        id: refid,
+        nombre: lmp.filter((alimento) => alimento.id == refid)[0].nombre,
+      }
+      console.log(documento);
+      if(index != 0){
+        mp.push(documento)
+      }else{
+        mp[index]=documento;
+      }
+    });
 
   }
 
@@ -282,16 +312,10 @@ export class ModalProductoPage implements OnInit {
 
   async saveProfile(){
     this.formulario = this.formRegistro.value;
-    /* if(this.formRegistro.invalid){
-      const alert = await this.alertController.create({
-        header: 'Datos incompletos',
-        message: 'Tienes que llenar todos los datos',
-        buttons: ['OK']
-      });
-
-      await alert.present();
+    if(this.formRegistro.invalid){
+      this.providerMensajes.MessegeValiteForm(this.alertController);
       return;
-    } */
+    }
 
     this.producto = {
       id: this.formulario.codigo,
@@ -302,19 +326,25 @@ export class ModalProductoPage implements OnInit {
     }
 
     let refMateriaPrima = Array();
-    let arrayMateriaPrima = this.materiaPrima;
+    let arrayMateriaPrima;
 
     if(this.tabla === 'Semi'){
+      if(this.materiaPrima[0].id === '' && this.materiaPrima[0].nombre === ''){
+        this.providerMensajes.MessegeValiteFormPersonalizado(this.alertController,'Falta seleccionar la materia prima');
+        return;
+      }
+      arrayMateriaPrima = this.materiaPrima;
       refMateriaPrima = arrayMateriaPrima.map((doc, index) => ({
         id: doc.id,
         nombre: doc.nombre,
-        peso: parseFloat((<HTMLInputElement>document.getElementById(index)).value)
+        peso: this.formulario.materiaPrimaForm[index]
       }));
       console.log(refMateriaPrima);
       this.producto['materiaPrima']=refMateriaPrima;
     }
 
     if(this.tabla === 'Final'){
+      arrayMateriaPrima = this.receta;
       arrayMateriaPrima.forEach(function(form,i){
         let recetaForm = {
             presentacion: parseFloat((<HTMLInputElement>document.getElementById('A'+i)).value),
@@ -331,67 +361,142 @@ export class ModalProductoPage implements OnInit {
     }
 
     if(this.post === true){
-
-      console.table(this.producto.materiaPrima);
-      console.table(this.producto);
-      this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
-        console.log('termino');
-        this.responseImg = data;
-        console.log(this.responseImg);
-        if(this.proveedor.status){
-          this.producto['categoria']=this.categoria.nombre;
-          this.producto['status']=this.responseImg.status;
-
-          if(this.imgCapture){
-            this.producto['img']=this.responseImg.img;
-          }
-
-          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
-        }else{
-          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.responseImg.error);
-          return;
-        } 
-      }).catch(data => {
-        console.log(data);
-        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,data.error);
-
-      });
-
+      this.insertarProducto();
+ 
     }
     if(this.post === false){
-
-      this.producto['materiaPrima']= this.formulario.materiaPrima;
-      this.producto['categoriaIdOld']= this.Producto.categoriaId;
-
-      if(this.imgCapture){
-        this.producto.img['imgOld'] = this.Producto.img;
-      }
-
-      /* if(this.Producto.categoria == this.categoria.nombre &&
-        this.Producto.id == this.producto.id &&
-        this.Producto.img == this.producto.img &&
-        this.Producto.materiaPrima == this.producto.materiaPrima &&
-        this.Producto.nombre == this.producto.nombre){
-          this.closeModal();
-      }else{ */
-        console.log(this.producto);
-        this.proveedor.actualizarDocumento(this.url,this.Producto.id,this.producto).then(data => {
-          this.responseImg = data;
-          console.log(data);
-          if(this.proveedor.status){
-            this.producto['categoria']=this.categoria.nombre;
-            this.producto['status']=this.responseImg.status;
-            this.producto['img']=this.responseImg.img;
-            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
-          }else{
-            this.providerMensajes.ErrorMensajeServidor(this.alertController);
-            return;
-          }
-        }).catch(data => {
-          console.log(data);
-        });
-      //}
+      this.actualizarProductos();
     }
   }
+
+  insertarProducto(){
+    /* if(!this.validarMateriaPrima()){
+      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,'No se puede repetir la materia prima, revise el formulario');
+      return;
+    } */
+
+    console.table(this.producto.materiaPrima);
+    console.table(this.producto);
+    this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
+      console.log('termino');
+      this.responseImg = data;
+      console.log(this.responseImg);
+      if(this.proveedor.status){
+        this.producto['categoria']=this.categoria.nombre;
+        this.producto['status']=this.responseImg.status;
+
+        if(this.imgCapture){
+          this.producto['img']=this.responseImg.img;
+        }
+
+        this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
+      }else{
+        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.responseImg.error);
+        return;
+      }
+    }).catch(data => {
+      console.log(data);
+      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,data.error);
+
+    });
+  }
+
+  actualizarProductos(){
+    this.producto['materiaPrima'] =  this.materiaPrima.map((doc, index) => ({
+      id: doc.id,
+      nombre: doc.nombre,
+      peso: this.formulario.materiaPrimaForm[index]
+    }));;
+    this.producto['oldProduct']= this.Producto;
+
+    if(this.imgCapture){
+      this.producto.img['imgOld'] = this.Producto.img;
+    }
+
+
+    if(this.Producto.categoria == this.categoria.nombre &&
+      this.Producto.id == this.producto.id &&
+      this.Producto.img == this.producto.img &&
+      this.Producto.nombre == this.producto.nombre){
+
+        this.closeModal();
+
+    }else{
+
+      /* if(!this.validarMateriaPrima()){
+        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,'No se puede repetir la materia prima, revise el formulario');
+        return;
+      } */
+
+      console.log(this.producto);
+      this.proveedor.actualizarDocumento(this.url,this.Producto.id,this.producto).then(data => {
+        let response = data as any;
+        console.log(data);
+        if(this.proveedor.status){
+          this.producto['idOld']=this.Producto.id;
+          this.producto['categoria']=this.categoria.nombre;
+          this.producto['materiaPrima']=response.refMateriaPrima;
+          this.producto['status']=response.status;
+          this.producto['img']=response.img;
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
+        }else{
+          this.providerMensajes.ErrorMensajeServidor(this.alertController);
+          return;
+        }
+      }).catch(data => {
+        console.log(data);
+      });
+  }
+ }
+
+ validarMateriaPrimaForm(){
+  let numOldProduct = this.Producto.materiaPrima.length;
+  let numProduct = this.producto.materiaPrima.length;
+  let refProductmp = this.producto.materiaPrima;
+  let status = true;
+  if(numOldProduct ===  numProduct){
+    this.Producto.materiaPrima.every(function(doc,index){
+      let refmp;
+      if(doc.id._path.segments.length > 2){
+        refmp = doc.id._path.segments[3];
+      }else{
+        refmp = doc.id._path.segments[1];
+      }
+
+      if(refmp != refProductmp[index].id || doc.peso != refProductmp[index].peso){
+        status = false;
+        return false;
+      }
+      return true;
+    })
+  }else{
+    return status = false;
+  }
+  return status;
+ }
+
+ validarMateriaPrima(){
+  let refProductmp = this.producto.materiaPrima;
+  let status = true;
+  
+  for(let i = 0; i < refProductmp.length; ++i){
+    refProductmp.every(function(doc,index){
+      if(i === index){
+        return true;
+      }
+      if(refProductmp[i].id === doc.id){
+        status = false;
+        return false;
+      }
+      return true;
+    })
+
+    if(!status){
+      i=refProductmp.length;
+    }
+  }
+  return status;
+ }
+
 
 }

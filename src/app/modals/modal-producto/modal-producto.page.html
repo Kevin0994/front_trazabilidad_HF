@@ -50,13 +50,13 @@
           <ng-container *ngFor="let form  of materiaPrimaForm.controls; let i=index;">
             <ion-item>
               <ion-label position="floating">Materia Prima </ion-label>
-               <ion-select (ionChange)="handleChangeAlimentoSemi($event,i)" [selectedText]="materiaPrima[i].nombre" [formControlName]="i" placeholder="Seleccione un alimento">
+               <ion-select (ionChange)="handleChangeAlimentoSemi($event,i)" [selectedText]="materiaPrima[i].nombre" placeholder="Seleccione un alimento">
                   <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
                </ion-select>
             </ion-item>
             <ion-item>
               <span *ngIf="i != 0" slot="end" type="button" (click)="deleteMateriaPrimaSemi(i)">X</span> 
-              <ion-input [id]="i" type="number" placeholder="Ingreso el monto de la receta"></ion-input>
+              <ion-input [formControlName]="i" type="number" placeholder="Ingreso el monto de la receta"></ion-input>
             </ion-item>
           </ng-container>
       </div>
@@ -84,7 +84,7 @@
             <ng-container *ngFor="let form of formArray.controls ; let n=index;">
               <ion-item>
                 <ion-label position="floating">Materia Prima </ion-label>
-                 <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="materiaPrima[i][n].nombre" placeholder="Seleccione un alimento">
+                 <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="receta[i][n].nombre" placeholder="Seleccione un alimento">
                     <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
                  </ion-select>
               </ion-item>

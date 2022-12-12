@@ -13,7 +13,7 @@
       <div class="d-flex flex-row-reverse mb-3">
         <ion-button class="btn-add" (click)="registerOpenModal()">
           <ion-icon name="add-outline"></ion-icon>
-          Agregar usuario
+          Agregar alimento
         </ion-button>
       </div>
       <table class="table table-white">
@@ -26,7 +26,7 @@
         </thead>
         <tbody class="bg-white">
           <tr *ngFor="let alimento of alimentos">
-            
+
             <td>{{alimento.id}}</td>
             <td>{{alimento.nombre}}</td>
             <td>
