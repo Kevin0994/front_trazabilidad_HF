@@ -1,0 +1,23 @@
+ion-content {
+  --background: white;
+}
+
+.form-input {
+  width: 100%;
+  background-color: #dbdbdb;
+  padding: 1rem;
+  color: black;
+  outline: none;
+  border-radius: 1rem;
+  border: none;
+}
+
+label {
+  color: black;
+}
+
+ion-icon {
+  color: white;
+  --ionicon-stroke-width: 32px;
+}
+/*# sourceMappingURL=modal-finalizar-proceso.page.css.map */

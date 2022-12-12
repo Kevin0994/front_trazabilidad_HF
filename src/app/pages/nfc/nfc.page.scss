@@ -1,0 +1,173 @@
+ion-content {
+  --background: var(--ion-color-green);
+}
+
+ion-toolbar {
+  --background: #668b17;
+  text-align: center;
+}
+
+.segment {
+  &-read {
+    color: black;
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+    }
+  }
+
+  &-write {
+    color: black;
+  }
+}
+
+.segment-nfc {
+  --color: white;
+  --background: #668b17;
+  width: 75%;
+  ion-segment-button {
+    --border-width: 0;
+    --padding-start: 0.6rem;
+    --padding-top: 0.6rem;
+    --padding-end: 0.6rem;
+    --padding-bottom: 0.6rem;
+    --color: white;
+    --background-checked: #8aac40;
+    --indicator-color: transparent !important;
+    --color-checked: #8aac40;
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin: 0;
+    color: white;
+  }
+}
+
+.buttons-read {
+  width: 95%;
+  margin: auto;
+  ion-button {
+    font-size: 1.2rem;
+  }
+}
+
+.product-information {
+  width: 95%;
+}
+
+.logo-nfc {
+  font-size: 8rem;
+  color: black;
+}
+
+.nfc-empty {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+label {
+  font-size: 1.2rem;
+}
+
+ion-searchbar {
+  width: 95%;
+  margin: 1rem auto 0.5rem auto;
+  padding: 0;
+  --background: white;
+  color: black;
+}
+
+.segment-products {
+  --background: #ecf4e9;
+  width: 65%;
+  margin: auto;
+  margin-top: 1.4rem;
+  border: 2px solid #98bb4e;
+  ion-segment-button {
+    --border-width: 0;
+    --padding-start: 0.8rem;
+    --padding-top: 0.8rem;
+    --padding-end: 0.8rem;
+    --padding-bottom: 0.8rem;
+    --background-checked: #98bb4e;
+    --indicator-color: transparent !important;
+    --color-checked: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+ion-item {
+  width: 95%;
+  margin: auto;
+  --background: white;
+  --color: black;
+  --border-style: initial;
+  border: 1px solid rgb(214, 214, 214);
+  ion-label {
+    h2 {
+      color: rgb(2, 167, 65);
+      font-weight: 600;
+    }
+    p {
+      color: black;
+    }
+  }
+}
+
+ion-radio {
+  width: 30px;
+  height: 30px;
+  margin-right: 1rem;
+}
+
+ion-radio::part(container) {
+  border-radius: 1rem;
+  border: 2px solid #98bb4e;
+}
+
+ion-radio::part(mark) {
+  background: none;
+  transition: none;
+  transform: none;
+  border-radius: 0;
+}
+
+ion-radio.radio-checked::part(container) {
+  background: #98bb4e;
+  border-color: transparent;
+}
+
+ion-radio.radio-checked::part(mark) {
+  width: 6px;
+  height: 10px;
+
+  border-width: 0px 2px 2px 0px;
+  border-style: solid;
+  border-color: #fff;
+
+  transform: rotate(45deg);
+}
+
+ion-chip {
+  text-align: center;
+  // --background: var(--ion-color-green);
+  --background: white;
+  --color: black;
+  font-size: 1.2rem;
+  border: 0.2rem solid #8aac40;
+  padding: 1.5rem 1.6rem;
+  font-weight: 600;
+}
+
+ion-list {
+  width: 50%;
+  --background-color: white;
+  ion-item {
+    --background: white;
+  }
+}

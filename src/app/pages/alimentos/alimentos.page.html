@@ -10,39 +10,30 @@
 <ion-content>
   <br>
   <div class="container">
-      <div class="d-flex flex-row-reverse mb-3">
-        <ion-button class="btn-add" (click)="registerOpenModal()">
-          <ion-icon name="add-outline"></ion-icon>
-          Agregar alimento
-        </ion-button>
-      </div>
-      <table class="table table-white">
-        <thead class="table-header text-light">
-          <tr>
-            <th scope="col">id</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white">
-          <tr *ngFor="let alimento of alimentos">
-
-            <td>{{alimento.id}}</td>
-            <td>{{alimento.nombre}}</td>
-            <td>
-              <input type="button" 
-                class="btn btn-warning btn-sm btn-edit me-2"
-                value="Edit"
-                (click)="ModelPresentEdit(alimento)"
-              />
-              <input type="button"
-                class="btn btn-danger btn-sm btn-del"
-                value="Eliminar"
-                (click)="deleteAlimento(alimento.id)"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="d-flex flex-row-reverse mb-3">
+      <ion-button class="btn-add" (click)="registerOpenModal()">
+        <ion-icon name="add-outline"></ion-icon>
+        Agregar usuario
+      </ion-button>
     </div>
+    <table class="table table-white">
+      <thead class="table-header text-light">
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <tr *ngFor="let alimento of alimentos">
+          <td>{{alimento.nombre}}</td>
+          <td>
+            <input type="button" class="btn btn-warning btn-sm btn-edit me-2" value="Edit"
+              (click)="ModelPresentEdit(alimento)" />
+            <input type="button" class="btn btn-danger btn-sm btn-del" value="Eliminar"
+              (click)="deleteAlimento(alimento.id)" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </ion-content>

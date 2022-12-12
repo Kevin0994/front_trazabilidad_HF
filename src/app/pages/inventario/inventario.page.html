@@ -8,31 +8,33 @@
 </ion-header>
 
 <ion-content>
-  <div class="container">
-  </div>
   <div *ngIf="showButtons" class="containerButtons">
-    <ion-button class="buttonSemi" (click)="showSemi=true; showFinal=false; showButtons=false; CargarDatosTabla(); title='Productos SemiFinales'">
+    <ion-button class="buttonSemi"
+      (click)="showSemi=true; showFinal=false; showButtons=false; CargarDatosTabla(); title='Productos SemiFinales'">
       SEMIFINAL
     </ion-button>
-    <ion-button class="buttonFinal" (click)="showFinal=true; showSemi=false; showButtons=false; CargarDatosTabla(); title='Productos Finales';">
+    <ion-button class="buttonFinal"
+      (click)="showFinal=true; showSemi=false; showButtons=false; CargarDatosTabla(); title='Productos Finales';">
       FINAL
     </ion-button>
   </div>
-  <div *ngIf="!showButtons">
-    <div class="d-flex flex-row-reverse mb-3">
-      <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
-        Regresar
-      </ion-button>
-      <ion-button class="btn-add" (click)="ingresosGet()" [routerLink]="['/ingresos-inventario']">
-        <ion-icon name="document-text-outline"></ion-icon>
-        Ingresos
-      </ion-button>
+  <div *ngIf="!showButtons" class="container">
+    <div class="w-100 d-flex align-items-center justify-content-center mt-4 mb-4 p-0">
       <input
         type="text"
-        style="margin-left:10px;margin-right:auto;width:30%;"
-        placeholder="Type to filter the name column..."
+        class="input-filter"
+        placeholder="Buscar"
         (keyup)="updateFilter($event)"
       />
+      <div class="buttons-action">
+        <ion-button color="primary" (click)="showButtons=true; showSemi=false;  title='Productos';">
+          Regresar
+        </ion-button>
+        <ion-button class="btn-add" (click)="ingresosGet()" [routerLink]="['/ingresos-inventario']">
+          <ion-icon name="document-text-outline"></ion-icon>
+          Ingresos
+        </ion-button>
+      </div>
     </div>
 
     <ngx-datatable #table class="material" [columns]="cols" [columnMode]="ColumnMode.force" [headerHeight]="50"

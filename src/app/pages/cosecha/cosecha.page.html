@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-back-button defaultHref="/home" text=""></ion-back-button>
     </ion-buttons>
     <ion-label>Cosecha</ion-label>
   </ion-toolbar>
@@ -10,7 +10,7 @@
 <ion-content>
   <div class="container mt-4">
     <div class="header-inventory">
-      <input type="text" placeholder="Ingrese un nombre de cosecha" class="input-filter"
+      <input type="text" placeholder="Buscar" class="input-filter"
         (keyup)="updateFilter($event)" />
       <div class="buttons-actions">
         <ion-button class="btn-add" (click)="openModal()">

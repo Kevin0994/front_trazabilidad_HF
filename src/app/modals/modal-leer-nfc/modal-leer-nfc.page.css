@@ -1,0 +1,59 @@
+ion-content {
+  --background: white;
+  color: black;
+}
+
+.container-anything {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+}
+
+.container-anything img {
+  width: 50%;
+  height: 50%;
+}
+
+.container-anything h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: black;
+}
+
+.product-information {
+  color: black;
+}
+
+.container-data p {
+  color: black;
+  font-size: 1.2rem;
+}
+
+.container-data label {
+  color: black;
+  font-size: 1.2rem;
+}
+
+ion-icon {
+  color: white;
+}
+
+@media (max-width: 400px) {
+  .container-anything img {
+    width: 50%;
+    height: 30%;
+  }
+}
+/*# sourceMappingURL=modal-leer-nfc.page.css.map */

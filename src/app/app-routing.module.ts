@@ -162,7 +162,11 @@ const routes: Routes = [
       import(
         './pages/ingresos-inventario/ingresos-inventario.module'
       ).then((m) => m.IngresosInventarioSemiPageModule),
+  },  {
+    path: 'nfc',
+    loadChildren: () => import('./pages/nfc/nfc.module').then( m => m.NfcPageModule)
   },
+
 ];
 
 @NgModule({

@@ -27,7 +27,7 @@ export class ModalLeerNFCPage implements OnInit {
   ngOnInit() {
     console.log('All list inventory: ', this.listInventory);
     this.findProduct = this.listInventory.filter(
-      (product) => product.idProducto === this.code
+      (product) => product.codigo === this.code
     );
     this.product = this.findProduct[0];
     // this.readNFC();

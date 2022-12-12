@@ -1,0 +1,75 @@
+ion-content {
+  --background: white;
+}
+
+ion-content .content-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+ion-content .content-button ion-button {
+  --background: linear-gradient(70deg, #7633a4 5%, #4834a6 70%);
+}
+
+ion-content .content-perfil {
+  width: 10rem;
+  margin: auto;
+  border-radius: 0rem 0rem 5rem 5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 2rem 0rem 0rem 0rem;
+  background-color: white;
+}
+
+ion-content .content-perfil ion-avatar {
+  width: 10rem;
+  height: 10rem;
+}
+
+ion-content .content-perfil ion-card {
+  --background: white;
+}
+
+ion-content .content-info ion-item {
+  border-radius: 1.5rem;
+  padding: 0;
+  --background: white;
+  color: black;
+}
+
+ion-content .content-info input[type="file"]::file-selector-button {
+  margin-right: 0.5rem;
+  border: none;
+  background: #084cdf;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  -webkit-transition: background 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out;
+}
+
+ion-content .content-info input[type="file"] {
+  color: black;
+  width: 100%;
+}
+
+ion-content .buttons-action__save {
+  --background: #3f906a;
+}
+
+ion-content .buttons-action__cancel {
+  --background: rgb(207, 121, 121);
+}
+/*# sourceMappingURL=modal-producto.page.css.map */

@@ -1,0 +1,122 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- <ion-title>NFC</ion-title> -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-segment value="read" mode="ios" (ionChange)="handleChange($event)" class="segment-nfc">
+      <ion-segment-button value="read">
+        <ion-label>Leer NFC</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="write">
+        <ion-label>Escribir NFC</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="segment === 'read'; else writeBlock" class="segment-read">
+    <h3 class="text-center">Tipo de inventario:</h3>
+    <!-- <div class="d-flex buttons-read">
+      <ion-button expand="block" class="w-50" (click)="testNFCsemi()">Producto Semifinal</ion-button>
+      <ion-button expand="block" class="w-50" (click)="testNFCfinal()">Producto final</ion-button>
+    </div> -->
+    <div class="d-flex m-auto justify-content-center">
+      <ion-radio-group (ionChange)="radioGroupChange($event)" value="semifinal" [(ngModel)]="radioGroupValue">
+        <ion-chip>
+          <ion-radio value="semifinal"></ion-radio>
+          <ion-label>Semifinal</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-radio value="final">Final</ion-radio>
+          <ion-label>Final</ion-label>
+        </ion-chip>
+      </ion-radio-group>
+    </div>
+    <ion-button expand="block" class="w-50 m-auto mt-4 mb-4" (click)="readNFC()">Escanear</ion-button>
+    <div class="nfc-empty" *ngIf="findProduct === false; else notFound">
+      <ion-icon name="radio-outline" class="logo-nfc">
+      </ion-icon>
+      <label>Sin resultados</label>
+    </div>
+    <ng-template #notFound>
+      <div class="product-information m-auto mt-4 bg-white p-3 border border-1 shadow-sm bg-body rounded">
+        <h3 class="text-center fw-bold mt-4">{{product.nombre}}</h3>
+        <div class="d-flex flex-row align-items-center container-data mb-3">
+          <label class="fw-bold">Id: </label>&nbsp;
+          <p class="m-0">{{product.idProducto}}</p>
+        </div>
+        <div class="d-flex flex-row align-items-center container-data mb-3">
+          <label class="fw-bold">Estado: </label>
+          <p class="m-0">{{product.estado}}</p>
+        </div>
+        <div class="d-flex flex-row align-items-center container-data mb-3">
+          <label class="fw-bold">Fecha entrada: </label>&nbsp;
+          <p class="m-0">{{product.fechaEntrada}}</p>
+        </div>
+        <div class="d-flex flex-row align-items-center container-data mb-3" *ngIf="product.fechaSalida !== undefined">
+          <label class="fw-bold">Fecha salida: </label>&nbsp;
+          <p class="m-0">{{product.fechaSalida}}</p>
+        </div>
+        <div class="d-flex flex-row align-items-center container-data mb-3">
+          <label class="fw-bold">Lote: </label>&nbsp;
+          <p class="m-0">{{product.loteMp[0].lote}}, {{product.loteMp[0].salida}}</p>
+        </div>
+        <div class="d-flex flex-row align-items-center container-data mb-3">
+          <label class="fw-bold">Nombre: </label>&nbsp;
+          <p class="m-0">{{product.nombre}}</p>
+        </div>
+        <div class="d-flex flex-row align-items-center container-data mb-3">
+          <label class="fw-bold">Peso final: </label>&nbsp;
+          <p class="m-0">{{product.pesoFinal}}</p>
+        </div>
+        <div class="d-flex flex-row align-items-center container-data mb-3">
+          <label class="fw-bold">Stock: </label>&nbsp;
+          <p class="m-0">{{product.stock}}</p>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <ng-template #writeBlock>
+    <div class="segment-write">
+      <!-- <h3 class="text-center mt-2 mb-2 fw-bold">Escribir etiqueta NFC</h3> -->
+      <ion-segment value="productoSemiFinal" mode="ios" (ionChange)="handleInventory($event)" class="segment-products"
+        [(ngModel)]="segmentInventory">
+        <ion-segment-button value="productoSemiFinal" class="productoSemifinal">
+          <ion-label>Producto semifinal</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="productoFinal" class="productofinal">
+          <ion-label>Producto final</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+    <div *ngIf="segmentInventory !== 'productoFinal'; else finalBlock">
+      <ion-searchbar (ionChange)="searchSemiFinal($event)" placeholder="Buscar" animated></ion-searchbar>
+      <ion-item *ngFor="let product of searchedSemiFinal">
+        <ion-label>
+          <h2>{{product.nombre}}</h2>
+          <p>{{product.fechaEntrada}}</p>
+        </ion-label>
+        <ion-button slot="end" size="default" (click)="writeNFC(product.codigo)">
+          Escribir
+        </ion-button>
+      </ion-item>
+    </div>
+    <ng-template #finalBlock>
+      <ion-searchbar (ionChange)="searchFinal($event)" placeholder="Buscar" showClearButton="focus" animated>
+      </ion-searchbar>
+      <ion-item *ngFor="let product of searchedFinal">
+        <ion-label>
+          <h2>
+            {{product.nombre}}
+          </h2>
+          <p>{{product.fechaEntrada}}</p>
+        </ion-label>
+        <ion-button slot="end" size="default" (click)="writeNFC(product.codigo)">
+          Escribir
+        </ion-button>
+      </ion-item>
+    </ng-template>
+  </ng-template>
+</ion-content>

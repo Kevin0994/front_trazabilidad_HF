@@ -1,0 +1,50 @@
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+.menu {
+  --background: #668b17;
+  text-align: center;
+}
+
+.menu ion-title {
+  font-size: 1.4rem;
+}
+
+ion-content {
+  --background: #ecf4e9;
+}
+
+ion-menu {
+  --background: #668b17;
+}
+
+.option-label-menu ion-label {
+  font-size: 1.2rem;
+}
+
+.option-label-menu .menu-subsection {
+  font-size: 1.2rem;
+  font-weight: bold;
+  background: #668b17;
+  color: white;
+  width: 100%;
+  display: block;
+  padding: 0.2rem;
+}
+
+.content-menu {
+  --background: #ECF4E9;
+  --color: #668b17;
+}
+
+.menu-items-option {
+  --background: #ecf4e9;
+  --color: #445C0F;
+  font-size: 1.2rem;
+}
+
+.menu-items {
+  background: #ecf4e9;
+}
+/*# sourceMappingURL=app.component.css.map */

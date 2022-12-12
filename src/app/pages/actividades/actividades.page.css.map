@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,WAAW,CAAC;EACV,YAAY,CAAA,uBAAC;CACd;;AAED,AAAA,WAAW,CAAC;EACV,YAAY,CAAA,QAAC;EACb,UAAU,EAAE,MAAM;CAUnB;;AAZD,AAIE,WAJS,CAIT,eAAe,CAAC;EACd,OAAO,CAAA,MAAC;EACR,SAAS,EAAE,MAAM;CAClB;;AAPH,AASE,WATS,CAST,SAAS,CAAC;EACR,SAAS,EAAE,MAAM;CAClB",
+    "sources": [
+        "actividades.page.scss"
+    ],
+    "names": [],
+    "file": "actividades.page.css"
+}

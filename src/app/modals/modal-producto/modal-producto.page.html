@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>{{ type }}</ion-title>
-    <ion-buttons slot="primary" slot="start" >
+    <ion-buttons slot="primary" slot="start">
       <ion-button (click)="closeModal()">
         <ion-icon name="arrow-back-circle-outline"></ion-icon>
       </ion-button>
@@ -10,8 +10,8 @@
 </ion-header>
 
 <ion-content>
-  <div class="container" >
-    
+  <div class="container">
+
     <div class="content-perfil">
       <ion-card>
         <ion-img [src]=imgURL></ion-img>
@@ -27,21 +27,23 @@
       <!-------------field categoria---------------->
       <ion-item>
         <ion-label position="floating">Categoria</ion-label>
-        <ion-select (ionChange)="handleChangeCategoria($event)" [selectedText]="this.categoria.nombre" formControlName="categoria" placeholder="Seleccione una categoria">
-          <ion-select-option  *ngFor="let categoria of listaCategorias"  [value]="categoria.id">{{categoria.nombre}}</ion-select-option>
+        <ion-select (ionChange)="handleChangeCategoria($event)" [selectedText]="this.categoria.nombre"
+          formControlName="categoria" placeholder="Seleccione una categoria">
+          <ion-select-option *ngFor="let categoria of listaCategorias" [value]="categoria.id">{{categoria.nombre}}
+          </ion-select-option>
         </ion-select>
       </ion-item>
       <br>
       <!-------------field codigo---------------->
       <ion-item>
         <ion-label position="floating">Codigo</ion-label>
-        <ion-input formControlName="codigo" ></ion-input>
+        <ion-input formControlName="codigo"></ion-input>
       </ion-item>
       <br>
       <!-------------field nombre---------------->
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
-        <ion-input formControlName="nombre" ></ion-input>
+        <ion-input formControlName="nombre"></ion-input>
       </ion-item>
       <br>
       <!-------------field Materia Prima de Productos Semifinales---------------->
@@ -102,9 +104,9 @@
       </ion-button>
     </form>
     <div class="content-info">
-      <ion-button  type="submit"  expand="block" shape="round"(click)="closeModal()">
+      <ion-button type="submit" expand="block" shape="round" (click)="closeModal()">
         <ion-icon name="close"></ion-icon> Cancelar
-      </ion-button> 
+      </ion-button>
     </div>
 
   </div>

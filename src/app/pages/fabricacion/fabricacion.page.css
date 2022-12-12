@@ -1,0 +1,132 @@
+ion-content {
+  --background: var(--ion-color-green);
+}
+
+ion-content .containerButtons {
+  text-align: center;
+  width: 100%;
+  height: 90vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+ion-content .containerButtons ion-button {
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+ion-content .containerButtons .buttonSemi {
+  --background: #678b17;
+  --border-radius: 41px;
+  color: white;
+  width: 300px;
+  height: 302px;
+}
+
+ion-content .containerButtons .buttonFinal {
+  --background: #fda92a;
+  --border-radius: 41px;
+  color: white;
+  width: 300px;
+  height: 302px;
+}
+
+ion-content ion-slide .categorias {
+  padding: 0.5rem;
+}
+
+ion-toolbar {
+  --background: #668b17;
+  text-align: center;
+}
+
+ion-toolbar ion-back-button {
+  --color: white;
+  font-size: 1.3rem;
+}
+
+ion-toolbar ion-title {
+  font-size: 1.5rem;
+}
+
+.title {
+  color: black;
+  font-weight: bold;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+ion-card {
+  border-radius: 1rem;
+  margin: 0.5rem;
+  -webkit-box-shadow: -6px 7px 13px rgba(0, 0, 0, 0.25);
+          box-shadow: -6px 7px 13px rgba(0, 0, 0, 0.25);
+}
+
+ion-card ion-card-content {
+  color: white;
+  background: #fda92a;
+  padding: 1rem 00rem;
+  height: 3.5rem;
+}
+
+ion-card ion-card-content h3 {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  ion-back-button {
+    --icon-font-size: 1.5rem;
+  }
+  ion-title {
+    font-size: 1.4rem !important;
+  }
+  .containerButtons {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin: 0;
+    width: 100%;
+  }
+  .containerButtons ion-button {
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  .containerButtons .buttonSemi,
+  .containerButtons .buttonFinal {
+    --border-radius: 1.2rem;
+    color: white;
+    width: 200px !important;
+    height: 200px !important;
+  }
+  .containerButtons .buttonSemi {
+    --background: #678b17;
+  }
+  .containerButtons .buttonFinal {
+    --background: #fda92a;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 640px) {
+  ion-card-content {
+    height: 4rem;
+    font-size: 0.4rem;
+  }
+}
+/*# sourceMappingURL=fabricacion.page.css.map */

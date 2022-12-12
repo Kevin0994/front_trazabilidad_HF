@@ -1,0 +1,79 @@
+ion-content {
+  --background: var(--ion-color-green);
+}
+
+ion-content .containerButtons {
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  top: 30%;
+}
+
+ion-content .containerButtons ion-button {
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+ion-content .containerButtons .buttonSemi {
+  --background: #678B17;
+  --border-radius: 41px;
+  color: white;
+  width: 262px;
+  height: 302px;
+}
+
+ion-content .containerButtons .buttonFinal {
+  --background: #FDA92A;
+  --border-radius: 41px;
+  color: white;
+  width: 262px;
+  height: 302px;
+}
+
+ion-content ion-slide .categorias {
+  padding: 0.5rem;
+}
+
+ion-toolbar {
+  --background: #668B17;
+  text-align: center;
+}
+
+ion-toolbar ion-title {
+  font-size: 3em;
+}
+
+.table-header {
+  background-color: #668B17;
+}
+
+.btn-add {
+  --background: #4A7AA6;
+}
+
+th {
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}
+
+ion-card {
+  border-radius: 1rem;
+  margin: 0.5rem;
+  -webkit-box-shadow: -6px 7px 13px rgba(0, 0, 0, 0.25);
+          box-shadow: -6px 7px 13px rgba(0, 0, 0, 0.25);
+}
+
+ion-card ion-card-content {
+  color: rgba(0, 0, 0, 0.745);
+}
+
+ion-card ion-card-content h3 {
+  text-align: center;
+  font-size: 1rem;
+}
+/*# sourceMappingURL=productos.page.css.map */

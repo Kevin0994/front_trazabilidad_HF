@@ -1,0 +1,22 @@
+ion-content {
+  --background: white;
+}
+
+.form-input {
+  width: 100%;
+  background-color: rgb(219, 219, 219);
+  padding: 1rem;
+  color: black;
+  outline: none;
+  border-radius: 1rem;
+  border: none;
+}
+
+label {
+  color: black;
+}
+
+ion-icon {
+  color: white;
+  --ionicon-stroke-width: 32px;
+}
