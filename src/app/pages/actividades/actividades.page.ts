@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, ɵpatchComponentDefWithScope  } from '@angular/core';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
-import { IonModal } from '@ionic/angular';
+import { AlertController, IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-actividades',
@@ -11,13 +12,20 @@ import { OverlayEventDetail } from '@ionic/core/components';
 export class ActividadesPage implements OnInit {
   @ViewChild(IonModal) modal: IonModal;
   listaActividades: any = [];
+  form: FormGroup;
+  formulario: any;
   lista: any = [];
   message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
   name: string;
 
   constructor(
+    private alertController: AlertController,
     private proveedor: ProviderService,
-  ) { }
+    private fb: FormBuilder,
+  ) { 
+    this.newForm();
+
+  }
 
   ngOnInit() {
   }
@@ -27,7 +35,22 @@ export class ActividadesPage implements OnInit {
     this.proveedor.InsertarDocumento('actividad/post', object);
   }
 
+  newForm() {
+    this.form = this.fb.group({
+      'nombre': new FormControl("", Validators.required),
+      'tipo': new FormControl("", Validators.required),
+    })
+  }
+
+  formWithData(actividad: any) {
+    this.form = this.fb.group({
+      'nombre': new FormControl(actividad.nombre, Validators.required),
+      'tipo': new FormControl(actividad.tipo, Validators.required),
+    })
+  }
+
   cancel() {
+    this.form.reset();
     this.modal.dismiss(null, 'cancel');
   }
 
@@ -76,5 +99,43 @@ export class ActividadesPage implements OnInit {
       .catch((data) => {
         console.log(data);
       });
+  }
+
+  async handleSubmit() {
+    this.formulario = this.form.value;
+    if (this.form.invalid) {
+      const alert = await this.alertController.create({
+        header: '¡Datos incompletos',
+        message: 'Rellene todos los campos',
+        buttons: ['OK']
+      });
+
+      await alert.present();
+      return;
+    }
+    this.proveedor.InsertarDocumento('actividades/post', this.formulario)
+    .then(res => {
+      this.ionViewWillEnter();
+      this.cancel();
+    }).catch(err => console.log(err));
+  }
+
+  actualizarActividad(actividad: any) {
+    this.formWithData(actividad);
+  }
+
+  eliminarDato(id) {
+    console.log(id);
+    let status: any = false;
+    this.proveedor.eliminarDocumento('actividades/documents/', id).subscribe(
+      (data) => {
+        console.log(data);
+        this.ionViewWillEnter();
+      },
+      (err) => {
+        console.log(err);
+        
+      }
+    ).closed;
   }
 }

@@ -119,9 +119,12 @@ td {
         display: flex;
         margin-top: 1rem;
         flex-direction: row;
-        justify-content: center;
         align-items: center;
-      }
+        width: 100%;
+        ion-button {
+          width: 50% !important;
+        }
+    }
     }
   }
 }

@@ -8,8 +8,12 @@
 </ion-header>
 
 <ion-content>
-  <div class="d-flex">
-    <ion-button (click)="agregarAcitivdad" id="open-modal">Agregar</ion-button>
+  <div class="d-flex align-items-center p-3">
+    <ion-button id="open-modal">
+      <ion-icon name="add-outline"></ion-icon> &nbsp;
+      Agregar actividad
+    </ion-button>
+    <label class="text-dark me-1 ms-4 fw-bold fs-5">Filtrar: &nbsp;</label>
     <ion-list>
       <ion-item>
         <ion-select interface="popover" placeholder="Seleccionar" (ionChange)="filtrarTipo($event)">
@@ -26,6 +30,12 @@
       <h2>{{actividad.nombre}}</h2>
       <p>{{actividad.tipo}}</p>
     </ion-label>
+    <ion-button slot="end" size="small" (click)="actualizarActividad(actividad)" id="open-modal">
+      <ion-icon name="create-outline"></ion-icon>
+    </ion-button>
+    <ion-button slot="end" size="small" color="danger" (click)="eliminarDato(actividad.id)">
+      <ion-icon name="trash-outline"></ion-icon>
+    </ion-button>
   </ion-item>
 
   <ion-modal #modal trigger="open-modal" [canDismiss]="canDismiss" [presentingElement]="presentingElement">
@@ -34,27 +44,36 @@
         <ion-toolbar>
           <ion-title>Modal</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="modal.dismiss()">Close</ion-button>
+            <ion-button (click)="cancel()">Close</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content class="modal-body">
-        <div class="w-100">
-          <ion-item class="input-name">
-            <ion-label position="floating">Nombre</ion-label>
-            <ion-input></ion-input>
-          </ion-item>
-          <ion-list>
-            <ion-item>
-              <ion-select interface="popover" placeholder="Seleccionar" (ionChange)="filtrarTipo($event)">
-                <ion-select-option value="todos">Todos</ion-select-option>
-                <ion-select-option value="fabrica">Fábrica</ion-select-option>
-                <ion-select-option value="campo">Campo</ion-select-option>
-              </ion-select>
+        <form class="w-100 mt-3" [formGroup]="form" (ngSubmit)="handleSubmit()" id="form">
+            <ion-item class="input-name">
+              <ion-label position="floating">Nombre</ion-label>
+              <ion-input formControlName="nombre"></ion-input>
             </ion-item>
-          </ion-list>
-        </div>
-        <ion-button expand="full">Aceptar</ion-button>
+            <div class="d-flex align-items-center text-dark w-100 px-3 mt-2">
+              <label>Tipo: </label>
+              <ion-list>
+                <ion-item>
+                  <ion-select 
+                  interface="popover" 
+                  placeholder="Seleccionar" 
+                  (ionChange)="filtrarTipo($event)"
+                  formControlName="tipo"
+                  >
+                    <ion-select-option value="fabrica">Fábrica</ion-select-option>
+                    <ion-select-option value="campo">Campo</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-list>
+            </div>
+            <div class="mt-4 px-3">
+              <ion-button type="submit" expand="block">Aceptar</ion-button>
+            </div>
+          </form>
       </ion-content>
     </ng-template>
   </ion-modal>

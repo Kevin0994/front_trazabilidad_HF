@@ -106,6 +106,8 @@ ion-list.sc-ion-select-popover-md {
   background-color: white;
 }
 
+
+// Estilos para combobox
 ion-item.select-interface-option {
   // background-color: white;
   --background: white;
@@ -122,4 +124,18 @@ ion-item.select-interface-option.ion-focused {
 ion-item.select-interface-option.ion-activatable {
   --background: rgb(247, 247, 247);
   --color: #000000;
+}
+
+// Estilos para modales de selección
+.alert-wrapper {
+  background-color: white;
+  --background: white;
+  --color: #000000;
+  .alert-radio-group {
+    --color: #000000;
+  }
+}
+
+.alert-radio-label {
+  color: #000000 !important;
 }
