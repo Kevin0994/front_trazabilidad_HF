@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild, ɵpatchComponentDefWithScope  } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
-import { AlertController, IonModal } from '@ionic/angular';
-import { OverlayEventDetail } from '@ionic/core/components';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AlertController, ModalController } from '@ionic/angular';
+import { ModalActividadesPage } from '../../modals/modal-actividades/modal-actividades.page'
 
 @Component({
   selector: 'app-actividades',
@@ -10,59 +9,31 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
   styleUrls: ['./actividades.page.scss'],
 })
 export class ActividadesPage implements OnInit {
-  @ViewChild(IonModal) modal: IonModal;
   listaActividades: any = [];
-  form: FormGroup;
-  formulario: any;
   lista: any = [];
-  message = 'This modal example uses triggers to automatically open a modal when the button is clicked.';
-  name: string;
-
   constructor(
-    private alertController: AlertController,
     private proveedor: ProviderService,
-    private fb: FormBuilder,
-  ) { 
-    this.newForm();
-
-  }
+    public modalController: ModalController ,
+    private alertController: AlertController,
+  ) { }
 
   ngOnInit() {
   }
 
-  agregarActividad() {
-    let object = {};
-    this.proveedor.InsertarDocumento('actividad/post', object);
-  }
+  async abrirModal(tipo: any, dato: any) {
+    const modal = await this.modalController.create({
+      component: ModalActividadesPage,
+      cssClass: 'customClass',
+      componentProps: {
+        type: tipo,
+        actividad: dato
+      },
+    });
 
-  newForm() {
-    this.form = this.fb.group({
-      'nombre': new FormControl("", Validators.required),
-      'tipo': new FormControl("", Validators.required),
-    })
-  }
-
-  formWithData(actividad: any) {
-    this.form = this.fb.group({
-      'nombre': new FormControl(actividad.nombre, Validators.required),
-      'tipo': new FormControl(actividad.tipo, Validators.required),
-    })
-  }
-
-  cancel() {
-    this.form.reset();
-    this.modal.dismiss(null, 'cancel');
-  }
-
-  confirm() {
-    this.modal.dismiss(this.name, 'confirm');
-  }
-
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      this.message = `Hello, ${ev.detail.data}!`;
-    }
+    modal.onDidDismiss().then((data) => {
+      this.ionViewWillEnter();
+    });
+    return await modal.present();
   }
 
   filtrarTipo(event) {
@@ -89,6 +60,28 @@ export class ActividadesPage implements OnInit {
     }
   }
 
+  async presentAlert(id: any) {
+    const alert = await this.alertController.create({
+      header: '¿Está seguro de eliminar el dato?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Aceptar',
+          role: 'confirm',
+        },
+      ],
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+    if(role === 'confirm')
+      this.eliminarDato(id);
+  }
+
   ionViewWillEnter() {
     this.proveedor
       .obtenerDocumentos('actividades/documents')
@@ -101,32 +94,7 @@ export class ActividadesPage implements OnInit {
       });
   }
 
-  async handleSubmit() {
-    this.formulario = this.form.value;
-    if (this.form.invalid) {
-      const alert = await this.alertController.create({
-        header: '¡Datos incompletos',
-        message: 'Rellene todos los campos',
-        buttons: ['OK']
-      });
-
-      await alert.present();
-      return;
-    }
-    this.proveedor.InsertarDocumento('actividades/post', this.formulario)
-    .then(res => {
-      this.ionViewWillEnter();
-      this.cancel();
-    }).catch(err => console.log(err));
-  }
-
-  actualizarActividad(actividad: any) {
-    this.formWithData(actividad);
-  }
-
   eliminarDato(id) {
-    console.log(id);
-    let status: any = false;
     this.proveedor.eliminarDocumento('actividades/documents/', id).subscribe(
       (data) => {
         console.log(data);

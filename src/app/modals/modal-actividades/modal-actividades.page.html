@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="closeModal()">
+        <ion-icon name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title *ngIf="type === 'nuevo'; else editTopic">Nuevo Registro</ion-title>
+    <ng-template #editTopic>
+      <ion-title>Editar Registro</ion-title>
+    </ng-template>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-body">
+  <form class="w-100 mt-3" [formGroup]="form" (ngSubmit)="handleSubmit()" id="form">
+    <ion-item class="input-name">
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input formControlName="nombre"></ion-input>
+    </ion-item>
+    <div class="d-flex align-items-center text-dark w-100 px-3 mt-2">
+      <label>Tipo: </label>
+      <ion-list>
+        <ion-item>
+          <ion-select 
+          interface="popover" 
+          placeholder="Seleccionar" 
+          formControlName="tipo"
+          >
+            <ion-select-option value="fabrica">Fábrica</ion-select-option>
+            <ion-select-option value="campo">Campo</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div class="mt-4 px-3">
+      <ion-button type="submit" expand="block">Aceptar</ion-button>
+    </div>
+  </form>
+</ion-content>
