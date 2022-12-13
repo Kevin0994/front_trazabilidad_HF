@@ -166,6 +166,10 @@ const routes: Routes = [
     path: 'nfc',
     loadChildren: () => import('./pages/nfc/nfc.module').then( m => m.NfcPageModule)
   },
+  {
+    path: 'modal-actividades',
+    loadChildren: () => import('./modals/modal-actividades/modal-actividades.module').then( m => m.ModalActividadesPageModule)
+  },
 
 ];
 

@@ -1,0 +1,21 @@
+ion-list {
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  ion-item {
+    --background: white;
+    --color: black;
+    --border-style: initial;
+  }
+}
+
+.input-name {
+  border-radius: 1.5rem;
+  padding: 0;
+  --background: white;
+  color: black;
+}
+
+.modal-body {
+  --background: white;
+}
