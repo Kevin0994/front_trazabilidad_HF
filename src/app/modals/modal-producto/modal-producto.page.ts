@@ -68,7 +68,7 @@ export class ModalProductoPage implements OnInit {
         this.editFormSemi();
       }
       if(this.tabla === 'Final'){
-        //this.editFormSemi();
+        this.editFormFinal();
       }
     }
     
@@ -88,8 +88,14 @@ export class ModalProductoPage implements OnInit {
     this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
       this.listaMateriaPrima = data;
       if(this.type != 'Nuevo Registro'){
-        console.log(this.listaMateriaPrima);
-        this.findMateriaPrimaSemi();
+
+        if(this.tabla === 'Semi'){
+          console.log(this.listaMateriaPrima);
+          this.findMateriaPrimaSemi();
+        }else{
+          this.findMateriaPrimaFinal();
+        }
+        
       }
     }).catch(data => {
       console.log(data);
@@ -270,6 +276,71 @@ export class ModalProductoPage implements OnInit {
       }
     });
 
+  }
+
+  editFormFinal(){
+    this.imgURL = this.Producto.img.url;
+    this.img = this.Producto.img;
+    this.formRegistro =  this.fb.group({
+      categoria: [this.Producto.categoriaId, [Validators.required]],
+      codigo: [this.Producto.id, [Validators.required]],
+      nombre : [this.Producto.nombre, [Validators.required]],
+      recetaForm: this.fb.array([]),
+      materiaPrimaForm : this.fb.array([]),
+
+    })
+    console.log(this.formRegistro);
+  }
+
+  get recetaForm(){
+    return this.formRegistro.get('recetaForm') as FormArray;
+  }
+
+
+ async findMateriaPrimaFinal(){
+    let formMp = this.materiaPrimaForm;
+    let formRe = this.recetaForm;
+    let formBuilder = this.fb;
+    let refid;
+    let lmp = this.listaMateriaPrima;
+    let re = this.receta;
+
+    console.log(this.formRegistro);
+
+    this.Producto.receta.forEach(function(rec,i) {
+      if(i != 0){
+        formRe.push(formBuilder.control(rec.presentacion, [Validators.required]));
+      }else{
+        formRe.controls[0] = formBuilder.control(rec.presentacion, [Validators.required]);
+      }
+      rec.materiaPrima.forEach(function(doc,n){
+        if(doc.id._path.segments.length > 2){
+          refid = doc.id._path.segments[3];
+        }else{
+          refid = doc.id._path.segments[1];
+        }
+
+        if(n != 0){
+          let ref = formMp.controls[i] as FormArray;
+          ref.controls.push(formBuilder.control(doc.peso, [Validators.required]));
+        }else{
+          formMp.controls.push(formBuilder.array([formBuilder.control(doc.peso, [Validators.required])]));
+        }
+
+        let documento ={
+          id: refid,
+          nombre: lmp.filter((alimento) => alimento.id == refid)[0].nombre,
+        }
+
+        if(n != 0){
+          re.push(Array(documento))
+        }else{
+          re[i][n]=documento;
+        }
+      })
+    });
+    console.log(re);
+    console.log(this.formRegistro);
   }
 
   extraerBase64 = async ($event: any) => new Promise((resolve, reject) => {

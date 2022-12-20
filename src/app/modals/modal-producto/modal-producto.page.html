@@ -63,39 +63,45 @@
           </ng-container>
       </div>
       <!-------------field Materia Prima de Productos Finales---------------->
-      <div  *ngIf="tabla === 'Final'" formArrayName="materiaPrimaForm">
+      <div  *ngIf="tabla === 'Final'" >
         <ion-label position="floating">Recetas</ion-label>
         <button (click)="addReceta()" type="button"> + </button>
           <!-------------field array Receta---------------->
-          <ng-container *ngFor="let formArray of materiaPrimaForm.controls; let i=index;">
-            <ion-item-divider color="primary">
-              <ion-label>
-                Receta {{i + 1}}
-              </ion-label>
-            </ion-item-divider>
-            <ion-item>
-              <ion-label position="floating">Presentacion</ion-label>
-              <ion-input [id]="'A'+i"  type="number" placeholder="Ingresa un numero de presentacion"></ion-input>
-            </ion-item>
-            <ion-buttons slot="primary" slot="start" >
-              <ion-button (click)="addMateriaPrimaFi(i)">
-                <ion-icon name="add-outline"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-            <!-------------field array Materia Prima---------------->
-            <ng-container *ngFor="let form of formArray.controls ; let n=index;">
+          <div formArrayName="recetaForm">
+            <ng-container *ngFor="let formRe of recetaForm.controls; let i=index;">
+              <ion-item-divider color="primary">
+                <ion-label>
+                  Receta {{i + 1}}
+                </ion-label>
+              </ion-item-divider>
               <ion-item>
-                <ion-label position="floating">Materia Prima </ion-label>
-                 <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="receta[i][n].nombre" placeholder="Seleccione un alimento">
-                    <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
-                 </ion-select>
+                <ion-label position="floating">Presentacion</ion-label>
+                <ion-input [formControlName]="i" type="number" placeholder="Ingresa un numero de presentacion"></ion-input><!--  [id]="'A'+i" -->
               </ion-item>
-              <ion-item>
-                <span *ngIf="n != 0" slot="end" type="button" (click)="deleteMateriaPrimaFi(n)">X</span> 
-                <ion-input [id]="'B'+i+n" type="number" placeholder="Ingreso el monto de la receta"></ion-input>
-              </ion-item>
+              <ion-buttons slot="primary" slot="start" >
+                <ion-button (click)="addMateriaPrimaFi(i)">
+                  <ion-icon name="add-outline"></ion-icon>
+                </ion-button>
+              </ion-buttons>
             </ng-container>
-          </ng-container>
+          </div>
+            <!-------------field array Materia Prima---------------->
+          <div formArrayName="materiaPrimaForm">
+            <ng-container *ngFor="let formMp of materiaPrimaForm.controls ; let n=index;">
+              <ng-container *ngFor="let form of formMp.controls; let m=index;">
+                <ion-item>
+                  <ion-label position="floating">Materia Prima </ion-label>
+                    <ion-select (ionChange)="handleChangeAlimentoFinal($event,n,m)" [selectedText]="receta[n][m].nombre" placeholder="Seleccione un alimento">
+                      <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                  <span *ngIf="n != 0" slot="end" type="button" (click)="deleteMateriaPrimaFi(n)">X</span> 
+                  <ion-input [formControlName]="m" type="number" placeholder="Ingreso el monto de la receta"></ion-input> <!-- [id]="'B'+i+n" -->
+                </ion-item>
+              </ng-container>
+            </ng-container>
+          </div>
       </div>
       
         <br>
