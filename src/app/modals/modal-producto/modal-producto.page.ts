@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Form, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Observable, Observer } from 'rxjs';
@@ -35,10 +35,13 @@ export class ModalProductoPage implements OnInit {
     id:'',
     nombre: '',
   }];
-  public receta: any = [Array({ 
-    id:'',
-    nombre: '',
-  })];
+  public receta: any = [{
+    presentacion: '',
+    materiaPrima: Array({
+      id:'',
+      nombre: '',
+    }),
+  }];
   public img: any;
   public imgURL: any = 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000';
   public imgCapture: any = false;
@@ -55,7 +58,6 @@ export class ModalProductoPage implements OnInit {
     public sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-    this.cargarDatos();
     if(this.post){
       if(this.tabla === 'Semi'){
         this.newFormSemi();
@@ -174,6 +176,8 @@ export class ModalProductoPage implements OnInit {
         this.fb.control('', [Validators.required]),
       ]),
     });
+
+    this.cargarDatos();
   }
 
   newFormFinal(){
@@ -192,6 +196,8 @@ export class ModalProductoPage implements OnInit {
       ]),
     });
     console.log(this.materiaPrimaForm.controls[0]);
+
+    this.cargarDatos();
   }
 
   get materiaPrimaForm(){
@@ -247,6 +253,7 @@ export class ModalProductoPage implements OnInit {
       materiaPrimaForm : this.fb.array([]),
     })
     
+    this.cargarDatos();
   }
 
   async findMateriaPrimaSemi(){
@@ -278,24 +285,41 @@ export class ModalProductoPage implements OnInit {
 
   }
 
-  editFormFinal(){
+  async editFormFinal(){
     this.imgURL = this.Producto.img.url;
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
       categoria: [this.Producto.categoriaId, [Validators.required]],
       codigo: [this.Producto.id, [Validators.required]],
       nombre : [this.Producto.nombre, [Validators.required]],
-      recetaForm: this.fb.array([]),
-      materiaPrimaForm : this.fb.array([]),
+      recetaForm: this.fb.array([
+        this.fb.control('', [Validators.required])
+      ]),
+      materiaPrimaForm : this.fb.array([
+
+      ]),
 
     })
-    console.log(this.formRegistro);
+
+    await this.cargarformulario();
+    this.cargarDatos();
   }
 
   get recetaForm(){
     return this.formRegistro.get('recetaForm') as FormArray;
   }
 
+
+ async cargarformulario(){
+
+  let formMp = this.materiaPrimaForm;
+  let formBuilder = this.fb;
+  console.log(this.Producto.receta.length);
+
+  await Promise.all(this.Producto.receta.map(async function (doc){
+    await formMp.controls.push(formBuilder.array([]));
+  }));
+}
 
  async findMateriaPrimaFinal(){
     let formMp = this.materiaPrimaForm;
@@ -308,39 +332,54 @@ export class ModalProductoPage implements OnInit {
     console.log(this.formRegistro);
 
     this.Producto.receta.forEach(function(rec,i) {
+      console.log(re);
       if(i != 0){
-        formRe.push(formBuilder.control(rec.presentacion, [Validators.required]));
+        formRe.controls.push(formBuilder.control(rec.presentacion, [Validators.required]));
+        re.push({
+          presentacion: rec.presentacion,
+          materiaPrima: Array({
+            id:'',
+            nombre: '',
+          }),
+        })
+        console.log('entro i != 0');
+        console.log(re);
       }else{
-        formRe.controls[0] = formBuilder.control(rec.presentacion, [Validators.required]);
+        formRe.controls[0].setValue(rec.presentacion);
+        re[0].presentacion = rec.presentacion;
+        console.log('entro i == 0');
+        console.log(re);
       }
+
       rec.materiaPrima.forEach(function(doc,n){
+        console.log(doc.peso);
         if(doc.id._path.segments.length > 2){
           refid = doc.id._path.segments[3];
         }else{
           refid = doc.id._path.segments[1];
         }
 
-        if(n != 0){
-          let ref = formMp.controls[i] as FormArray;
-          ref.controls.push(formBuilder.control(doc.peso, [Validators.required]));
-        }else{
-          formMp.controls.push(formBuilder.array([formBuilder.control(doc.peso, [Validators.required])]));
-        }
-
         let documento ={
           id: refid,
+          peso: doc.peso,
           nombre: lmp.filter((alimento) => alimento.id == refid)[0].nombre,
         }
 
+        let ref = formMp.controls[i] as FormArray;
+        ref.controls.push(formBuilder.control(doc.peso, [Validators.required]));
+
         if(n != 0){
-          re.push(Array(documento))
+          re[i].materiaPrima.push(documento)
         }else{
-          re[i][n]=documento;
+          re[i].materiaPrima[0] = documento;
         }
       })
     });
+    console.log('terminado')
     console.log(re);
-    console.log(this.formRegistro);
+    let ref = this.materiaPrimaForm.controls[0] as FormArray;
+    console.log(ref.controls[0]);
+    //console.log(this.materiaPrimaForm);
   }
 
   extraerBase64 = async ($event: any) => new Promise((resolve, reject) => {
