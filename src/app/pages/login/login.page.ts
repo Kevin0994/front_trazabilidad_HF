@@ -37,10 +37,11 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {}
 
-  async ingresar() {
-    if (this.Usuario.length != 0) {
-      this.cookieService.set('idUsuario', this.Usuario[0].id, 5, '/');
-      localStorage.setItem('Usuario', this.Usuario[0].UserName);
+  async ingresar(token) {
+    if (this.Usuario) {
+      this.cookieService.set('idUsuario', this.Usuario.id, 5, '/');
+      this.cookieService.set('token', token)
+      localStorage.setItem('Usuario', this.Usuario.UserName);
       this.navCtrl.navigateRoot('/home');
     } else {
       Swal.fire({
@@ -56,7 +57,7 @@ export class LoginPage implements OnInit {
   }
 
   async ValidarUsuario() {
-    var form = this.formLogin.value;
+    let form = this.formLogin.value;
     if (this.formLogin.invalid) {
       Swal.fire({
         icon: 'warning',
@@ -68,15 +69,25 @@ export class LoginPage implements OnInit {
       });
       return;
     } else {
-      this.proveedor
-        .validarUsuario('usuario', form.email, form.password)
+      console.log(form);
+      this.proveedor.InsertarDocumento('usuario/login', form)
         .then((data) => {
-          this.Usuario = data;
-          console.log(this.Usuario);
-          this.ingresar();
+          let userAuth:any = data;
+          console.log('data: ', data);
+          this.Usuario = userAuth.user;
+          // console.log(this.Usuario);
+          // console.log(data);
+          this.ingresar(userAuth.token);
         })
         .catch((data) => {
-          console.log(data);
+          Swal.fire({
+            icon: 'error',
+            title: 'Usuario no encontrado',
+            text: 'Correo o contraseña incorrectos',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#91bb35',
+            heightAuto: false,
+          });
         });
     }
   }

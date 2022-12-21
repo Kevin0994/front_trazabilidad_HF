@@ -141,6 +141,15 @@ ion-item.select-interface-option.ion-activatable {
   --color: #000;
 }
 
+.alert-title.sc-ion-alert-md {
+  color: #000;
+}
+
 .alert-radio-label {
   color: #000000 !important;
+}
+
+.alert-message.sc-ion-alert-ios {
+  color: black;
+  font-size: 1.1rem
 }

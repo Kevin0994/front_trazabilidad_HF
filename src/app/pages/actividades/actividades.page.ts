@@ -63,6 +63,7 @@ export class ActividadesPage implements OnInit {
   async presentAlert(id: any) {
     const alert = await this.alertController.create({
       header: '¿Está seguro de eliminar el dato?',
+      mode: 'ios',
       buttons: [
         {
           text: 'Cancelar',

@@ -78,6 +78,7 @@ export class HomePage implements OnInit{
           handler: () => {
             this.cookieService.delete('idUsuario');
             localStorage.clear();
+            this.cookieService.deleteAll();
             this.navCtrl.navigateRoot('login');
           }
         }
