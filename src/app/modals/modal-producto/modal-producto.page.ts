@@ -22,6 +22,7 @@ export class ModalProductoPage implements OnInit {
   @Input() tabla: any; //Especifica el tipo de producto que entra, semifinal o final
 
   public formRegistro: FormGroup;
+  public formRegistroMP: FormGroup;
   private formulario:any;
   public listaCategorias:any; 
   public categoria:any={ //Guarda los datos especificos de la categoria escogida por el usuario
@@ -30,7 +31,6 @@ export class ModalProductoPage implements OnInit {
   };
   private producto:any;
   public listaMateriaPrima:any=[];
-  //public presentacion: any = Array();
   public materiaPrima: any = [{ 
     id:'',
     nombre: '',
@@ -95,7 +95,7 @@ export class ModalProductoPage implements OnInit {
           console.log(this.listaMateriaPrima);
           this.findMateriaPrimaSemi();
         }else{
-          this.findMateriaPrimaFinal();
+          this.rellenarArrayReceta();
         }
         
       }
@@ -286,56 +286,75 @@ export class ModalProductoPage implements OnInit {
   }
 
   async editFormFinal(){
+
     this.imgURL = this.Producto.img.url;
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
       categoria: [this.Producto.categoriaId, [Validators.required]],
       codigo: [this.Producto.id, [Validators.required]],
       nombre : [this.Producto.nombre, [Validators.required]],
-      recetaForm: this.fb.array([
-        this.fb.control('', [Validators.required])
-      ]),
-      materiaPrimaForm : this.fb.array([
-
-      ]),
+      recetaForm: this.fb.array([]),
 
     })
-
+    await this.cargarDatos();
+    await this.initRecetaForm();
     await this.cargarformulario();
-    this.cargarDatos();
+    
   }
 
   get recetaForm(){
     return this.formRegistro.get('recetaForm') as FormArray;
   }
 
+  get materiaPrimaFormPF(){
+    return this.formRegistroMP.get('materiaPrimaForm') as FormArray;
+  }
 
- async cargarformulario(){
+  async addRecetaForm(presentacion:number) {
+    this.formRegistroMP = this.fb.group({
+      presentacion : [presentacion, [Validators.required]],
+      materiaPrimaForm: this.fb.array([]),
+    });
+  }
 
-  let formMp = this.materiaPrimaForm;
-  let formBuilder = this.fb;
-  console.log(this.Producto.receta.length);
+  async initRecetaForm() {
+    this.formRegistroMP = this.fb.group({
+      presentacion : ['', [Validators.required]],
+      materiaPrimaForm: this.fb.array([]),
+    });
+  }
 
-  await Promise.all(this.Producto.receta.map(async function (doc){
-    await formMp.controls.push(formBuilder.array([]));
-  }));
-}
+  cargarformulario(){
 
- async findMateriaPrimaFinal(){
-    let formMp = this.materiaPrimaForm;
-    let formRe = this.recetaForm;
-    let formBuilder = this.fb;
-    let refid;
-    let lmp = this.listaMateriaPrima;
-    let re = this.receta;
+    let self = this;
+    console.log(this.formRegistroMP);
 
+    this.Producto.receta.map( function (re,i){
+
+      self.formRegistroMP.controls.presentacion.setValue(re.presentacion);
+
+      re.materiaPrima.map( function (mp, n){
+
+        self.materiaPrimaFormPF.push(self.fb.control(mp.peso, [Validators.required]))
+
+      })
+      self.recetaForm.push(self.formRegistroMP);
+      self.initRecetaForm();
+    });
     console.log(this.formRegistro);
+  }
 
-    this.Producto.receta.forEach(function(rec,i) {
-      console.log(re);
+
+
+/* rellenarArrayReceta(){
+
+    let refid;
+    let self = this;
+
+    this.Producto.receta.map(function(rec,i) {
+      console.log(self.receta);
       if(i != 0){
-        formRe.controls.push(formBuilder.control(rec.presentacion, [Validators.required]));
-        re.push({
+        self.receta.push({
           presentacion: rec.presentacion,
           materiaPrima: Array({
             id:'',
@@ -343,12 +362,11 @@ export class ModalProductoPage implements OnInit {
           }),
         })
         console.log('entro i != 0');
-        console.log(re);
+        console.log(self.receta);
       }else{
-        formRe.controls[0].setValue(rec.presentacion);
-        re[0].presentacion = rec.presentacion;
+        self.receta[0].presentacion = rec.presentacion;
         console.log('entro i == 0');
-        console.log(re);
+        console.log(self.receta);
       }
 
       rec.materiaPrima.forEach(function(doc,n){
@@ -362,25 +380,19 @@ export class ModalProductoPage implements OnInit {
         let documento ={
           id: refid,
           peso: doc.peso,
-          nombre: lmp.filter((alimento) => alimento.id == refid)[0].nombre,
+          nombre: self.listaMateriaPrima.filter((alimento) => alimento.id == refid)[0].nombre,
         }
-
-        let ref = formMp.controls[i] as FormArray;
-        ref.controls.push(formBuilder.control(doc.peso, [Validators.required]));
 
         if(n != 0){
-          re[i].materiaPrima.push(documento)
+          self.receta[i].materiaPrima.push(documento)
         }else{
-          re[i].materiaPrima[0] = documento;
+          self.receta[i].materiaPrima[0] = documento;
         }
       })
-    });
+    })
     console.log('terminado')
-    console.log(re);
-    let ref = this.materiaPrimaForm.controls[0] as FormArray;
-    console.log(ref.controls[0]);
-    //console.log(this.materiaPrimaForm);
-  }
+    console.log(self.receta[0].materiaPrima[0]);
+  } */
 
   extraerBase64 = async ($event: any) => new Promise((resolve, reject) => {
     try {
