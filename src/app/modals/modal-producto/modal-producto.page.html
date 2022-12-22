@@ -67,12 +67,17 @@
         <ion-label position="floating">Recetas</ion-label>
         <button (click)="addReceta()" type="button"> + </button>
           <!-------------field array Receta---------------->
-          <div *ngFor="let receta of recetaForm.controls; let i=index;">
-            <ng-container [formGroup]="receta">
+          <div *ngFor="let rec of recetaForm.controls; let i=index;">
+            <ng-container [formGroup]="rec">
               <ion-item-divider color="primary">
                 <ion-label>
                   Receta {{i + 1}}
                 </ion-label>
+                <ion-buttons *ngIf="i != 0" slot="primary" slot="end" >
+                  <ion-button (click)="deleteRecetaFi(i)">
+                    <ion-icon name="close-circle-outline"></ion-icon>
+                  </ion-button>
+                </ion-buttons>
               </ion-item-divider>
               <ion-item>
                 <ion-label position="floating">Presentacion</ion-label>
@@ -85,15 +90,15 @@
               </ion-buttons>
                 <!-------------field array Materia Prima---------------->
               <ng-container formArrayName="materiaPrimaForm">
-                <div *ngFor="let mp of Producto.receta[i].materiaPrima let n=index;">
+                <div *ngFor="let mp of rec.controls.materiaPrimaForm.controls; let n=index;">
                   <ion-item>
                     <ion-label position="floating">Materia Prima </ion-label>
-                      <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="" placeholder="Seleccione un alimento">
+                      <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="receta[i].materiaPrima[n].nombre" placeholder="Seleccione un alimento">
                         <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
                       </ion-select>
                   </ion-item>
                   <ion-item>
-                    <span *ngIf="n != 0" slot="end" type="button" (click)="deleteMateriaPrimaFi(n)">X</span> 
+                    <span *ngIf="n != 0" slot="end" type="button" (click)="deleteMateriaPrimaFi(i,n)">X</span> 
                     <ion-input [formControlName]="n"  type="number" placeholder="Ingreso el monto de la receta"></ion-input> 
                   </ion-item>
                 </div>

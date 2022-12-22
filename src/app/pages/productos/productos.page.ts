@@ -100,24 +100,49 @@ export class ProductosPage implements OnInit {
   registroProducto(){
 
     let producto = this.validateDataPost();
+    let listaMateriaPrima;
 
-    if (this.showSemi == true) {
-      return this.registroProductoModal(producto['url'],producto['tabla']);
-    }
+    this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
+      listaMateriaPrima = data;
+      
+      if (this.showSemi == true) {
 
-    if(this.showFinal == true){
+        let materiaPrima = Array({
+          id:'',
+          nombre:'',
+        });
 
-      return this.registroProductoModal(producto['url'],producto['tabla']);
-    }
+        this.registroProductoModal(producto['url'],listaMateriaPrima, '' , materiaPrima , producto['tabla']);
+      }
+
+      if(this.showFinal == true){
+
+        let receta = [{
+          presentacion: '',
+          materiaPrima: Array({
+            id:'',
+            nombre:'',
+          })
+        }]
+
+        this.registroProductoModal(producto['url'],listaMateriaPrima, receta , '',producto['tabla']);
+      }
+    }).catch(data => {
+      console.log(data);
+    })
+
   }
 
 
-  async registroProductoModal(url:string,tabla:any){
+  async registroProductoModal(url:string,listaMp:any,receta:any ,materiaPrima:any, tabla:any){
     const modal = await this.modalController.create({
       component: ModalProductoPage,
       cssClass: 'modalCosecha',
       componentProps:{
         'url': url,
+        'receta': receta,
+        'materiaPrima': materiaPrima,
+        'listaMateriaPrima': listaMp,
         'type':'Nuevo Registro',
         'post':true,
         'tabla':tabla,
@@ -151,28 +176,47 @@ export class ProductosPage implements OnInit {
     }
   }
 
-  editCategoria(producto:any){
+  editProducto(producto:any){
 
     let datos = this.validateDataPut();
 
     if (this.showSemi == true) {
 
-      return this.editOpenModal(datos['url'] ,producto ,datos['tabla']);
+      this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
+        let listaMateriaPrima = data;
+        let materiaPrima = this.rellenarArrayMateriaPrima(producto,listaMateriaPrima);
+        console.log(materiaPrima);
+        this.editOpenModal(datos['url'] ,producto, '' ,materiaPrima,listaMateriaPrima ,datos['tabla']);
+
+      }).catch(data => {
+        console.log(data);
+      })
     }
 
     if(this.showFinal == true){
+      this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
+        let listaMateriaPrima = data;
+        let receta = this.rellenarArrayReceta(producto,listaMateriaPrima);
+        console.log(receta);
+        this.editOpenModal(datos['url'] ,producto ,receta, '',listaMateriaPrima, datos['tabla']);
 
-      return this.editOpenModal(datos['url'] ,producto ,datos['tabla']);
+      }).catch(data => {
+        console.log(data);
+      })
+
     }
   }
 
-  async editOpenModal(url:string,producto:any,tabla:any){
+  async editOpenModal(url:string,producto:any, receta:any, materiaPrima:any , listaMp ,tabla:any){
 
     const modal = await this.modalController.create({
       component: ModalProductoPage,
       cssClass: 'modalCosecha',
       componentProps:{
         'Producto': producto,
+        'receta': receta,
+        'materiaPrima': materiaPrima,
+        'listaMateriaPrima': listaMp,
         'url': url,
         'type':'Editar Registro',
         'post':false,
@@ -188,6 +232,67 @@ export class ProductosPage implements OnInit {
 
     return await modal.present();
   }
+
+  rellenarArrayMateriaPrima(producto,listaMp){
+
+    let refid;
+    let mp = Array();
+
+    producto.materiaPrima.forEach(function(doc,index) {
+      if(doc.id._path.segments.length > 2){
+        refid = doc.id._path.segments[3];
+      }else{
+        refid = doc.id._path.segments[1];
+      }
+      console.log(refid);
+      let documento ={
+        id: refid,
+        nombre: listaMp.filter((alimento) => alimento.id == refid)[0].nombre,
+      }
+      console.log(documento);
+      mp.push(documento)
+    });
+
+    return mp;
+
+  }
+
+
+
+  rellenarArrayReceta(producto,listaMp){
+
+    let refid;
+    let receta = Array();
+
+    producto.receta.map(function(rec,i) {
+      console.log(receta);
+        receta.push({
+          presentacion: rec.presentacion,
+          materiaPrima: Array(),
+        })
+        console.log('entro');
+        console.log(receta);
+
+      rec.materiaPrima.forEach(function(doc,n){
+        console.log(doc.peso);
+        if(doc.id._path.segments.length > 2){
+          refid = doc.id._path.segments[3];
+        }else{
+          refid = doc.id._path.segments[1];
+        }
+
+        let documento ={
+          id: refid,
+          nombre: listaMp.filter((alimento) => alimento.id == refid)[0].nombre,
+        }
+        
+        receta[i].materiaPrima.push(documento)
+      })
+    })
+    console.log('terminado')
+    console.log(receta[0].materiaPrima[0]);
+    return receta;
+  } 
 
   async DeleteProducto(producto:any){
     const alert = await this.alertController.create({

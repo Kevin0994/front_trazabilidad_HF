@@ -20,6 +20,10 @@ export class ModalProductoPage implements OnInit {
   @Input() type: any; //titulo de la operacion a realizar como insertar o editar
   @Input() post: boolean; //ariable que se utiliza para validar que accion se va a realizar (post, put)
   @Input() tabla: any; //Especifica el tipo de producto que entra, semifinal o final
+  @Input() receta: any; 
+  @Input() materiaPrima: any;
+  @Input() listaMateriaPrima: any;
+
 
   public formRegistro: FormGroup;
   public formRegistroMP: FormGroup;
@@ -30,22 +34,9 @@ export class ModalProductoPage implements OnInit {
     nombre: '',
   };
   private producto:any;
-  public listaMateriaPrima:any=[];
-  public materiaPrima: any = [{ 
-    id:'',
-    nombre: '',
-  }];
-  public receta: any = [{
-    presentacion: '',
-    materiaPrima: Array({
-      id:'',
-      nombre: '',
-    }),
-  }];
   public img: any;
   public imgURL: any = 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000';
   public imgCapture: any = false;
-  private responseImg:any;
   public base64TrimmedURL:any;
   public base64DefaultURL:any;
 
@@ -58,6 +49,7 @@ export class ModalProductoPage implements OnInit {
     public sanitizer: DomSanitizer) { }
 
   ngOnInit() {
+    this.cargarDatos();
     if(this.post){
       if(this.tabla === 'Semi'){
         this.newFormSemi();
@@ -86,23 +78,7 @@ export class ModalProductoPage implements OnInit {
       id: this.Producto.categoriaId,
       nombre: this.Producto.categoria
     }
-     //obtiene los alimentos y productos semifinales
-    this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
-      this.listaMateriaPrima = data;
-      if(this.type != 'Nuevo Registro'){
-
-        if(this.tabla === 'Semi'){
-          console.log(this.listaMateriaPrima);
-          this.findMateriaPrimaSemi();
-        }else{
-          this.rellenarArrayReceta();
-        }
-        
-      }
-    }).catch(data => {
-      console.log(data);
-    })
-
+    
     if(this.tabla === 'Semi'){
       //Obtiene las categorias que existen en firestore
       this.proveedor.obtenerDocumentos('categoriaProductoSemi/documents').then(data => {
@@ -141,7 +117,7 @@ export class ModalProductoPage implements OnInit {
       nombre:  this.listaMateriaPrima.filter((alimento) => alimento.id === ev.detail.value)[0].nombre
     }
 
-    this.receta[i][n]=file;
+    this.receta[i].materiaPrima[n]=file;
 
     console.log(this.receta);
   }
@@ -176,33 +152,12 @@ export class ModalProductoPage implements OnInit {
         this.fb.control('', [Validators.required]),
       ]),
     });
-
-    this.cargarDatos();
-  }
-
-  newFormFinal(){
-    this.img ={
-      url: 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000',
-      name: 'imagenExample',
-    }
-    this.formRegistro = this.fb.group({
-      categoria: ['', [Validators.required]],
-      codigo: ['', [Validators.required]],
-      nombre : ['', [Validators.required]],
-      materiaPrimaForm : this.fb.array([
-        this.fb.array([
-          this.fb.control('', [Validators.required]),
-        ]),
-      ]),
-    });
-    console.log(this.materiaPrimaForm.controls[0]);
-
-    this.cargarDatos();
   }
 
   get materiaPrimaForm(){
     return this.formRegistro.get('materiaPrimaForm') as FormArray;
   }
+
 
   //agrega un form control al array del formulario cuando se ingreso un producto Semifinal
   addMateriaPrimaSemi(){
@@ -218,29 +173,71 @@ export class ModalProductoPage implements OnInit {
     this.materiaPrimaForm.removeAt(index);
   }
 
+  async newFormFinal(){
+    this.img ={
+      url: 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000',
+      name: 'imagenExample',
+    }
+    this.formRegistro = this.fb.group({
+      categoria: ['', [Validators.required]],
+      codigo: ['', [Validators.required]],
+      nombre : ['', [Validators.required]],
+      recetaForm : this.fb.array([
+      ]),
+    });
+
+    await this.initRecetaForm();
+    this.materiaPrimaFormPF.push(this.fb.control('', [Validators.required]))
+    this.recetaForm.push(this.formRegistroMP);
+
+  }
+
+  get recetaForm(){
+    return this.formRegistro.get('recetaForm') as FormArray;
+  }
+
+
   //agrega un Formarray vinculado a una receta del formulario cuando se ingreso un producto Final
   addReceta(){
-    this.materiaPrimaForm.push(this.fb.array([
-      this.fb.control('', [Validators.required]),
-    ]));
-    this.receta.push(Array({
-      id:'',
-      nombre: '',
-    }));
+    this.initRecetaForm();
+    this.materiaPrimaFormPF.push(this.fb.control('', [Validators.required]))
+    this.recetaForm.push(this.formRegistroMP);
+    this.receta.push({
+      presentacion:'',
+      materiaPrima: Array({
+        id:'',
+        nombre: '',
+      })
+    });
+    console.log(this.recetaForm);
   }
 
   //agrega un form control al array del formulario cuando se ingreso un producto Final
   addMateriaPrimaFi(index:number){
-    let refMateriaPrima = this.materiaPrimaForm.controls[index] as FormArray;
-    refMateriaPrima.push(this.fb.control('', [Validators.required]));
-    this.receta[index].push({
+    let refRecetaForm= this.recetaForm.controls[index] as FormGroup;
+    let refMateriaForm = refRecetaForm.controls.materiaPrimaForm as FormArray;
+    refMateriaForm.controls.push(this.fb.control('', [Validators.required]));
+    console.log(this.recetaForm);
+    this.receta[index].materiaPrima.push({
       id:'',
       nombre: '',
     })
+    console.log(this.receta);
   }
   //Elimina un form control al array del formulario cuando se ingreso un producto Semifinal
-  deleteMateriaPrimaFi(index: number){
-    //this.materiaPrimaForm.controls.removeAt(index);
+  deleteRecetaFi(index: number){
+    console.log(this.recetaForm);
+    this.recetaForm.removeAt(index);
+    this.receta.splice(index,1);
+  }
+
+   //Elimina un form control al array del formulario cuando se ingreso un producto Semifinal
+   deleteMateriaPrimaFi(indexRe:number,indexMp: number){
+    let refRecetaForm= this.recetaForm.controls[indexRe] as FormGroup;
+    let refMateriaForm = refRecetaForm.controls.materiaPrimaForm as FormArray;
+    refMateriaForm.removeAt(indexMp);
+    this.receta[indexRe].materiaPrima.splice(indexMp,1);
+    console.log(this.recetaForm);
   }
 
   editFormSemi(){
@@ -253,40 +250,21 @@ export class ModalProductoPage implements OnInit {
       materiaPrimaForm : this.fb.array([]),
     })
     
-    this.cargarDatos();
+    this.cargarformularioSemi();
   }
 
-  async findMateriaPrimaSemi(){
-    let form = this.materiaPrimaForm;
-    let formBuilder = this.fb;
-    let refid;
-    let lmp = this.listaMateriaPrima;
-    let mp = this.materiaPrima;
+  cargarformularioSemi(){
 
+    let self = this;
     this.Producto.materiaPrima.forEach(function(doc,index) {
-      if(doc.id._path.segments.length > 2){
-        refid = doc.id._path.segments[3];
-      }else{
-        refid = doc.id._path.segments[1];
-      }
-      console.log(refid);
-      form.push(formBuilder.control(doc.peso, [Validators.required]));
-      let documento ={
-        id: refid,
-        nombre: lmp.filter((alimento) => alimento.id == refid)[0].nombre,
-      }
-      console.log(documento);
-      if(index != 0){
-        mp.push(documento)
-      }else{
-        mp[index]=documento;
-      }
+      self.materiaPrimaForm.push(self.fb.control(doc.peso, [Validators.required]))
     });
+
+    console.log(this.formRegistro);
 
   }
 
   async editFormFinal(){
-
     this.imgURL = this.Producto.img.url;
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
@@ -296,26 +274,15 @@ export class ModalProductoPage implements OnInit {
       recetaForm: this.fb.array([]),
 
     })
-    await this.cargarDatos();
     await this.initRecetaForm();
-    await this.cargarformulario();
-    
-  }
+    await this.cargarformularioFinal();
 
-  get recetaForm(){
-    return this.formRegistro.get('recetaForm') as FormArray;
   }
 
   get materiaPrimaFormPF(){
     return this.formRegistroMP.get('materiaPrimaForm') as FormArray;
   }
 
-  async addRecetaForm(presentacion:number) {
-    this.formRegistroMP = this.fb.group({
-      presentacion : [presentacion, [Validators.required]],
-      materiaPrimaForm: this.fb.array([]),
-    });
-  }
 
   async initRecetaForm() {
     this.formRegistroMP = this.fb.group({
@@ -324,7 +291,7 @@ export class ModalProductoPage implements OnInit {
     });
   }
 
-  cargarformulario(){
+  cargarformularioFinal(){
 
     let self = this;
     console.log(this.formRegistroMP);
@@ -344,55 +311,6 @@ export class ModalProductoPage implements OnInit {
     console.log(this.formRegistro);
   }
 
-
-
-/* rellenarArrayReceta(){
-
-    let refid;
-    let self = this;
-
-    this.Producto.receta.map(function(rec,i) {
-      console.log(self.receta);
-      if(i != 0){
-        self.receta.push({
-          presentacion: rec.presentacion,
-          materiaPrima: Array({
-            id:'',
-            nombre: '',
-          }),
-        })
-        console.log('entro i != 0');
-        console.log(self.receta);
-      }else{
-        self.receta[0].presentacion = rec.presentacion;
-        console.log('entro i == 0');
-        console.log(self.receta);
-      }
-
-      rec.materiaPrima.forEach(function(doc,n){
-        console.log(doc.peso);
-        if(doc.id._path.segments.length > 2){
-          refid = doc.id._path.segments[3];
-        }else{
-          refid = doc.id._path.segments[1];
-        }
-
-        let documento ={
-          id: refid,
-          peso: doc.peso,
-          nombre: self.listaMateriaPrima.filter((alimento) => alimento.id == refid)[0].nombre,
-        }
-
-        if(n != 0){
-          self.receta[i].materiaPrima.push(documento)
-        }else{
-          self.receta[i].materiaPrima[0] = documento;
-        }
-      })
-    })
-    console.log('terminado')
-    console.log(self.receta[0].materiaPrima[0]);
-  } */
 
   extraerBase64 = async ($event: any) => new Promise((resolve, reject) => {
     try {
@@ -434,6 +352,7 @@ export class ModalProductoPage implements OnInit {
 
   async saveProfile(){
     this.formulario = this.formRegistro.value;
+    console.log(this.formulario);
     if(this.formRegistro.invalid){
       this.providerMensajes.MessegeValiteForm(this.alertController);
       return;
@@ -466,20 +385,22 @@ export class ModalProductoPage implements OnInit {
     }
 
     if(this.tabla === 'Final'){
-      arrayMateriaPrima = this.receta;
-      arrayMateriaPrima.forEach(function(form,i){
-        let recetaForm = {
-            presentacion: parseFloat((<HTMLInputElement>document.getElementById('A'+i)).value),
-            materiaPrima: form.map((doc, n) => ({
-              id: doc.id,
-              nombre: doc.nombre,
-              peso: parseFloat((<HTMLInputElement>document.getElementById('B'+i+n)).value)
-            })),
-        }
-        refMateriaPrima.push(recetaForm);
+
+      let self=this;
+      let refReceta;
+      let refMp;
+      
+      this.receta.forEach(function (doc,i,receta){
+        refReceta = self.recetaForm.controls[i] as FormGroup;
+        receta[i].presentacion = refReceta.controls.presentacion.value;
+        doc.materiaPrima.forEach(function (doc,n,recetaMp){
+          refMp = refReceta.controls.materiaPrimaForm as FormArray;
+          recetaMp[n]['peso'] = refMp.controls[n].value;
+        })
       })
-      console.log(refMateriaPrima);
-      this.producto['receta']=refMateriaPrima;
+      
+      this.producto['receta']=this.receta;
+      console.log(this.producto);
     }
 
     if(this.post === true){
@@ -497,23 +418,29 @@ export class ModalProductoPage implements OnInit {
       return;
     } */
 
-    console.table(this.producto.materiaPrima);
     console.table(this.producto);
     this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
       console.log('termino');
-      this.responseImg = data;
-      console.log(this.responseImg);
+      let response = data as any;
+      console.log(response);
       if(this.proveedor.status){
         this.producto['categoria']=this.categoria.nombre;
-        this.producto['status']=this.responseImg.status;
+        this.producto['status']=response.status;
+        if(this.tabla === 'Semi'){
+          this.producto['materiaPrima']=response.refMateriaPrima;
+        }
+
+        if(this.tabla === 'Final'){
+          this.producto['receta']=response.refMateriaPrima;
+        }
 
         if(this.imgCapture){
-          this.producto['img']=this.responseImg.img;
+          this.producto['img']=response.img;
         }
 
         this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
       }else{
-        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.responseImg.error);
+        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,response.error);
         return;
       }
     }).catch(data => {
@@ -524,26 +451,21 @@ export class ModalProductoPage implements OnInit {
   }
 
   actualizarProductos(){
-    this.producto['materiaPrima'] =  this.materiaPrima.map((doc, index) => ({
-      id: doc.id,
-      nombre: doc.nombre,
-      peso: this.formulario.materiaPrimaForm[index]
-    }));;
+
     this.producto['oldProduct']= this.Producto;
 
     if(this.imgCapture){
       this.producto.img['imgOld'] = this.Producto.img;
     }
 
-
-    if(this.Producto.categoria == this.categoria.nombre &&
+    /* if(this.Producto.categoria == this.categoria.nombre &&
       this.Producto.id == this.producto.id &&
       this.Producto.img == this.producto.img &&
       this.Producto.nombre == this.producto.nombre){
 
         this.closeModal();
 
-    }else{
+    }else{ */
 
       /* if(!this.validarMateriaPrima()){
         this.providerMensajes.ErrorMensajePersonalizado(this.alertController,'No se puede repetir la materia prima, revise el formulario');
@@ -557,8 +479,15 @@ export class ModalProductoPage implements OnInit {
         if(this.proveedor.status){
           this.producto['idOld']=this.Producto.id;
           this.producto['categoria']=this.categoria.nombre;
-          this.producto['materiaPrima']=response.refMateriaPrima;
           this.producto['status']=response.status;
+          if(this.tabla === 'Semi'){
+            this.producto['materiaPrima']=response.refMateriaPrima;
+          }
+  
+          if(this.tabla === 'Final'){
+            this.producto['receta']=response.refMateriaPrima;
+          }
+
           this.producto['img']=response.img;
           this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
         }else{
@@ -569,7 +498,7 @@ export class ModalProductoPage implements OnInit {
         console.log(data);
       });
   }
- }
+ //}
 
  validarMateriaPrimaForm(){
   let numOldProduct = this.Producto.materiaPrima.length;
