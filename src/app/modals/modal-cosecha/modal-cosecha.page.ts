@@ -60,6 +60,7 @@ export class ModalCosechaPage implements OnInit {
     this.formRegistro = this.fb.group({
       'nombre': new FormControl("", Validators.required),
       'codigo': new FormControl("", Validators.required),
+      'fecha': new FormControl("", Validators.required),
       'peso': new FormControl("", Validators.required),
     })
   }

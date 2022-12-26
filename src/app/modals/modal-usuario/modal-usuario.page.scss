@@ -1,5 +1,5 @@
 ion-content {
-  --background: var(--ion-color-background);
+  --background: white;
   .content-button {
     display: flex;
     justify-content: center;
@@ -29,6 +29,13 @@ ion-content {
       border-radius: 1.5rem;
       padding: 0;
     }
+  }
+
+  .form-input {
+    border-radius: 1.5rem;
+    padding: 0;
+    --background: white;
+    color: black;
   }
 
   .buttons-action__save {

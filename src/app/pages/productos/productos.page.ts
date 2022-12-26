@@ -71,7 +71,6 @@ export class ProductosPage implements OnInit {
         if(this.showFinal){
           this.productoFinal = data;
         }
-        console.log( this.productosTabla);
       })
       .catch((data) => {
         console.log(data);

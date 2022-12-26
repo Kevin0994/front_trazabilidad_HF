@@ -78,6 +78,13 @@ ion-card {
   }
 }
 
+.category-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  color: #000;
+}
+
 @media (max-width: 480px) {
   ion-back-button {
     --icon-font-size: 1.5rem;

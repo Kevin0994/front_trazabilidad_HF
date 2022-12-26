@@ -11,8 +11,8 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class HomePage implements OnInit{
 
-  cosechas:any;
-
+  cosechas: any;
+  usuario: any;
   constructor(public proveedor: ProviderService,
     public alertController: AlertController,
     public navCtrl:NavController,
@@ -25,6 +25,8 @@ export class HomePage implements OnInit{
   ngOnInit() {
     this.menu.enable(true);
     this.ValidarRol();
+    this.usuario = localStorage.getItem('Usuario');
+    console.log('usuario', this.usuario);
   }
 
   ngAfterViewInit(){

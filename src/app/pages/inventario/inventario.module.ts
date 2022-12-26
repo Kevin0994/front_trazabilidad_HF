@@ -8,12 +8,14 @@ import { IonicModule } from '@ionic/angular';
 import { InventarioPageRoutingModule } from './inventario-routing.module';
 
 import { InventarioPage } from './inventario.page';
+import { IconsModule } from 'src/app/icons/icons.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    IconsModule,
     InventarioPageRoutingModule,
     NgxDatatableModule,
   ],

@@ -10,10 +10,16 @@
 <ion-content>
   <div *ngIf="showButtons" class="containerButtons">
     <ion-button class="buttonSemi" (click)="showSemi=true; showFinal=false; showButtons=false; ValidarSeleccion(); title='Productos SemiFinales'">
-      SEMIFINAL
+      <div class="d-flex flex-column justify-content-center">
+        <app-milk-icon></app-milk-icon>
+        <label class="mt-3">SEMIFINAL</label>
+      </div>
     </ion-button>
     <ion-button class="buttonFinal" (click)="showFinal=true; showSemi=false; showButtons=false; ValidarSeleccion(); title='Productos Finales';">
-      FINAL
+      <div class="d-flex flex-column justify-content-center">
+        <app-box-icon></app-box-icon>
+        <label class="mt-3">FINAL</label>
+      </div>
     </ion-button>
   </div>
   <div class="container mt-4" *ngIf="!showButtons">
@@ -29,27 +35,29 @@
     <table class="table table-white">
       <thead class="table-header text-light">
         <tr>
-          <th scope="col">Categoria</th>
           <th scope="col">Codigo</th>
           <th scope="col">Nombre</th>
+          <th scope="col">Categoria</th>
           <th scope="col">Acciones</th>
         </tr>
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let producto of productosTabla">
-          <td>{{producto.categoria}}</td>
           <td>{{producto.id}}</td>
-          <td>{{producto.nombre}}</td>
-          <td> <input type="button" style="margin-right: 20px;"
-            class="btn btn-warning btn-sm btn-edit"
-            value="Editar"
-            (click)="editCategoria(producto)"
-          />
-          <input type="button"
-            class="btn btn-danger btn-sm btn-del"
-            value="Eliminar"
-            (click)="DeleteProducto(producto)"
-          /></td>
+          <td class="text-left">{{producto.nombre}}</td>
+          <td>{{producto.categoria}}</td>
+          <td>
+            <input type="button" style="margin-right: 20px;"
+              class="btn btn-warning btn-sm btn-edit"
+              value="Editar"
+              (click)="editCategoria(producto)"
+            />
+            <input type="button"
+              class="btn btn-danger btn-sm btn-del"
+              value="Eliminar"
+              (click)="DeleteProducto(producto)"
+            />
+        </td>
         </tr>
       </tbody>
     </table>

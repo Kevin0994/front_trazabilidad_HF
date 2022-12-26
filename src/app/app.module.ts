@@ -15,9 +15,12 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
 import { InterceptorService } from './interceptors/interceptor.service';
+import { IconsModule } from './icons/icons.module';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+  ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -26,6 +29,7 @@ import { InterceptorService } from './interceptors/interceptor.service';
     ReactiveFormsModule,
     HttpClientModule,
     NgxDatatableModule,
+    IconsModule
   ],
   providers: [
     { 
