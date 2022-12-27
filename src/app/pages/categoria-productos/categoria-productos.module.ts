@@ -7,12 +7,14 @@ import { IonicModule } from '@ionic/angular';
 import { CategoriaProductosPageRoutingModule } from './categoria-productos-routing.module';
 
 import { CategoriaProductosPage } from './categoria-productos.page';
+import { IconsModule } from 'src/app/icons/icons.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
+    IconsModule,
     CategoriaProductosPageRoutingModule
   ],
   declarations: [CategoriaProductosPage]

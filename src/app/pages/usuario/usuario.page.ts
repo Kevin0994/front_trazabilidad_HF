@@ -87,6 +87,7 @@ export class UsuarioPage implements OnInit {
   async DeleteUsuario(id:any){
     const alert = await this.alertController.create({
       header: 'Eliminar',
+      mode: 'ios',
       message: '¿Seguro que desea elimar?',
       buttons: [
         {
@@ -117,6 +118,7 @@ export class UsuarioPage implements OnInit {
   async MensajeServidor(){
     const alert = await this.alertController.create({
       header: 'Eliminar',
+      mode: 'ios',
       message: 'La eliminacion se completo con exito',
       buttons: ['OK']
     });

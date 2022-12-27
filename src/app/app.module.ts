@@ -11,12 +11,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { ProviderService } from '../provider/ApiRest/provider.service';
 import { ProviderMetodosCrud } from '../provider/methods/providerMetodosCrud.service';
 import { ProviderMensajes } from '../provider/modalMensaje/providerMessege.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
+import { InterceptorService } from './interceptors/interceptor.service';
+import { IconsModule } from './icons/icons.module';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+  ],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -25,9 +29,18 @@ import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
     ReactiveFormsModule,
     HttpClientModule,
     NgxDatatableModule,
+    IconsModule
   ],
   providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { 
+      provide: RouteReuseStrategy, 
+      useClass: IonicRouteStrategy 
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: InterceptorService,
+      multi: true
+    },
     ProviderService,
     ProviderMetodosCrud,
     ProviderMensajes,

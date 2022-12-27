@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { FabricacionPageRoutingModule } from './fabricacion-routing.module';
 
 import { FabricacionPage } from './fabricacion.page';
+import { IconsModule } from 'src/app/icons/icons.module';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { FabricacionPage } from './fabricacion.page';
     CommonModule,
     FormsModule,
     IonicModule,
+    IconsModule,
     FabricacionPageRoutingModule
   ],
   declarations: [FabricacionPage,]

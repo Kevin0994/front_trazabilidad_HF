@@ -3,7 +3,7 @@
     <ion-title>{{ type }}</ion-title>
     <ion-buttons slot="primary" slot="start" >
       <ion-button (click)="closeModal()">
-        <ion-icon name="arrow-back-circle-outline"></ion-icon>
+        <ion-icon name="close-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -12,46 +12,46 @@
 <ion-content>
   <div class="container" >
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="saveProfile()"  id="form">
-      <ion-item>
+      <ion-item class="form-input">
         <ion-label position="floating">Nombres</ion-label>
         <ion-input formControlName="nombres"></ion-input>
       </ion-item>
       <br>
-      <ion-item>
+      <ion-item class="form-input">
         <ion-label position="floating">Apellidos</ion-label>
         <ion-input formControlName="apellidos"></ion-input>
       </ion-item>
       <br>
-      <ion-item>
+      <ion-item class="form-input">
         <ion-label position="floating">Email</ion-label>
         <ion-input formControlName="email"></ion-input>
       </ion-item>
       <br>
-      <ion-item>
+      <ion-item class="form-input">
         <ion-label position="floating">User Name</ion-label>
         <ion-input formControlName="userName"></ion-input>
       </ion-item>
       <br>
-      <ion-item>
+      <ion-item class="form-input">
         <ion-label position="floating">Rol del Usuario</ion-label>
         <ion-select (ionChange)="handleChange($event)" [selectedText]="nombreRol" formControlName="rol" placeholder="Escoja una opcion">
           <ion-select-option  *ngFor="let rol of lista" >{{rol.nombre}}</ion-select-option>
         </ion-select>
       </ion-item>
       <br>
-      <ion-item>
+      <ion-item class="form-input">
         <ion-label position="floating">Password</ion-label>
         <ion-input formControlName="password" ></ion-input>
       </ion-item>
       <br>
-      <ion-button type="submit" expand="block" shape="round" >
+      <ion-button type="submit" expand="block">
         <ion-icon name="save"></ion-icon> Guardar
       </ion-button>
     </form>
-    <div class="content-info">
-      <ion-button type="submit"  expand="block" shape="round"(click)="closeModal()">
+    <!-- <div class="content-info">
+      <ion-button type="submit"  expand="block" (click)="closeModal()">
         <ion-icon name="close"></ion-icon> Cancelar
       </ion-button>
-    </div>
+    </div> -->
   </div>
 </ion-content>

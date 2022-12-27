@@ -8,11 +8,12 @@
 </ion-header>
 
 <ion-content>
-  <div>
+  <div class="container-ingresos">
     <input
       type="text"
+      class="input-filter"
       style="padding:8px;margin:15px auto;width:30%;"
-      placeholder="Type to filter the name column..."
+      placeholder="Buscar..."
       (keyup)="updateFilter($event)"
     />
     <ngx-datatable
@@ -27,7 +28,7 @@
     [rows]="productos"
   >
   </ngx-datatable>
-    <ngx-datatable-column  prop="pesomp" [width]="300">
+    <ngx-datatable-column  prop="pesomp" >
       <ng-template #editTmpl let-value="value" ngx-datatable-cell-template>
         <strong>{{ value }} gr</strong>
       </ng-template>

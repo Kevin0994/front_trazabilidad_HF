@@ -1,15 +1,14 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="home" text="Regresar"></ion-back-button>
+      <ion-back-button defaultHref="home"></ion-back-button>
     </ion-buttons>
     <ion-title>Usuarios</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <br>
-  <div class="container">
+  <div class="user-container">
       <div class="d-flex flex-row-reverse mb-3">
         <ion-button class="btn-add" (click)="openModal()">
           <ion-icon name="add-outline"></ion-icon>
@@ -37,16 +36,22 @@
             <td>{{usuario.userName}}</td>
             <td>{{usuario.rol}}</td>
             <td>
-              <input type="button" 
+              <!-- <input type="button" 
                 class="btn btn-warning btn-sm btn-edit me-2"
                 value="Edit"
                 (click)="EditUsuario(usuario)"
-              />
-              <input type="button"
+              /> -->
+              <!-- <input type="button"
                 class="btn btn-danger btn-sm btn-del"
                 value="Eliminar"
                 (click)="DeleteUsuario(usuario.id)"
-              />
+              /> -->
+              <ion-button size="small" (click)="EditUsuario(usuario)">
+                <ion-icon name="create-outline"></ion-icon>
+              </ion-button>
+              <ion-button size="small" color="danger" (click)="DeleteUsuario(usuario.id)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
             </td>
           </tr>
         </tbody>
