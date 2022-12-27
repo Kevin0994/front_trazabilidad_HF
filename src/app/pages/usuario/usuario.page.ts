@@ -32,8 +32,8 @@ export class UsuarioPage implements OnInit {
     this.loadDatos();
   }
 
-  loadDatos(){
-    this.providerMensajes.showLoading();
+  async loadDatos(){
+    await this.providerMensajes.showLoading();
     this.proveedor.obtenerDocumentos('usuarios/documents').then(data => {
       if (this.proveedor.status) {
         this.usuarios=data;

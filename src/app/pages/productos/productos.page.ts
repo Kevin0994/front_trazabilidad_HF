@@ -40,8 +40,8 @@ export class ProductosPage implements OnInit {
   ionViewWillEnter(){
   }
 
-  ValidarSeleccion(){
-    this.providerMensajes.showLoading();
+  async ValidarSeleccion(){
+    await this.providerMensajes.showLoading();
     if (this.showSemi == true) { //Valida si el usuario ha seleccionado los productos semifinales
       if (this.productoSemi.length != 0) { //Valida si la lista de productos semifinales no esta vacia
         this.productosTabla = this.productoSemi;

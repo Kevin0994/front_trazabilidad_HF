@@ -39,8 +39,8 @@ export class CosechaPage implements OnInit {
   }
 
   async cargarDatos(){
-    this.providerMensajes.showLoading();
-    await this.proveedor.obtenerDocumentos('cosechas/documents').then(data => {
+    await  this.providerMensajes.showLoading();
+    this.proveedor.obtenerDocumentos('cosechas/documents').then(data => {
         if (this.proveedor.status) {
           this.cosechas = data;
           this.temp = data;

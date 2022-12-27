@@ -36,9 +36,9 @@ export class CategoriaProductosPage implements OnInit {
   
   }
 
-  CargarDatos() {
+  async CargarDatos() {
 
-    this.providerMensajes.showLoading();
+    await this.providerMensajes.showLoading();
     console.log(this.providerMensajes.show);
 
     if (this.showSemi == true) {
