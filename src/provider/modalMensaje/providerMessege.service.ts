@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 
 
 @Injectable()
 
 export class ProviderMensajes {
 
-  constructor() { }
+  public show = true;
 
-  async MensajeDeleteServidor(alertController:AlertController){
-    const alert = await alertController.create({
+  constructor(public alertController: AlertController,
+    private loadingCtrl: LoadingController,) { }
+
+  async MensajeDeleteServidor(){
+    const alert = await this.alertController.create({
       header: 'Exito',
       message: 'La eliminacion se completo con exito',
       buttons: ['OK']
@@ -18,8 +21,8 @@ export class ProviderMensajes {
     await alert.present();
   }
 
-  async ErrorMensajeServidor(alertController:AlertController) {
-    const alert = await alertController.create({
+  async ErrorMensajeServidor() {
+    const alert = await this.alertController.create({
       header: 'Error del servidor',
       message: 'error al conectarse con el servidor',
       buttons: ['OK']
@@ -28,8 +31,8 @@ export class ProviderMensajes {
     await alert.present();
   }
 
-  async MensajeModalServidor(modalController:ModalController,alertController:AlertController,Objeto:any) {
-    const alert = await alertController.create({
+  async MensajeModalServidor(modalController:ModalController,Objeto:any) {
+    const alert = await this.alertController.create({
       header: 'Exito',
       message: 'El registro se completo con exito',
       buttons: [
@@ -45,8 +48,8 @@ export class ProviderMensajes {
     await alert.present();
   }
 
-  async ErrorMensajePersonalizado(alertController:AlertController,mensaje:any){
-    const alert = await alertController.create({
+  async ErrorMensajePersonalizado(mensaje:any){
+    const alert = await this.alertController.create({
       header: 'Error del servidor',
       message: mensaje,
       buttons: ['OK']
@@ -55,8 +58,8 @@ export class ProviderMensajes {
     await alert.present();
   }
 
-  async MessegeValiteForm(alertController:AlertController){
-    const alert = await alertController.create({
+  async MessegeValiteForm(){
+    const alert = await this.alertController.create({
       header: 'Datos incompletos',
       message: 'Tienes que llenar todos los datos',
       buttons: ['OK']
@@ -66,8 +69,8 @@ export class ProviderMensajes {
     return;
   }
 
-  async MessegeValiteFormPersonalizado(alertController:AlertController,mensaje:any){
-    const alert = await alertController.create({
+  async MessegeValiteFormPersonalizado(mensaje:any){
+    const alert = await this.alertController.create({
       header: 'Datos incompletos',
       message: mensaje,
       buttons: ['OK']
@@ -75,5 +78,25 @@ export class ProviderMensajes {
 
     await alert.present();
     return;
+  }
+
+  async showLoading() {
+
+    this.show = true;
+
+    const loading = await this.loadingCtrl.create({
+      message: 'Espere por favor...',
+      translucent: true,
+      spinner: 'circles',
+    });
+
+    return await loading.present();
+  }
+
+  dismissLoading(){
+
+    this.show = false;
+
+    this.loadingCtrl.dismiss();
   }
 }

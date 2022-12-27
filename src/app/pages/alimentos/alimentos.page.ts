@@ -30,9 +30,15 @@ export class AlimentosPage implements OnInit {
   }
 
   loadDatos(){
+    this.providerMensajes.showLoading();
     this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
-      this.alimentos=data;
+      if (this.proveedor.status) {
+        this.alimentos=data;
+        this.providerMensajes.dismissLoading();
+      }
     }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     })
   }
@@ -87,6 +93,7 @@ export class AlimentosPage implements OnInit {
           text: 'Si',
           handler: () => {
 
+            this.providerMensajes.showLoading();
             this.deleteDocument('alimentos/delete/',id ,this.alimentos)
 
           }
@@ -127,10 +134,12 @@ export class AlimentosPage implements OnInit {
     this.proveedor.eliminarDocumento(urlDocument,id).subscribe(data => {
       console.log(data);
       tabla = this.providerMetodosCrud.eliminarDatosTabla(id,tabla);
-      this.providerMensajes.MensajeDeleteServidor(this.alertController);
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.MensajeDeleteServidor();
     },error => {
       let messege = error;
-      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,messege.error);
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajePersonalizado(messege.error);
     })
   }
 

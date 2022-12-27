@@ -352,11 +352,13 @@ export class ModalProductoPage implements OnInit {
 
   async saveProfile(){
     this.formulario = this.formRegistro.value;
-    console.log(this.formulario);
+
     if(this.formRegistro.invalid){
-      this.providerMensajes.MessegeValiteForm(this.alertController);
+      this.providerMensajes.MessegeValiteForm();
       return;
     }
+
+    await this.providerMensajes.showLoading();
 
     this.producto = {
       id: this.formulario.codigo,
@@ -370,18 +372,46 @@ export class ModalProductoPage implements OnInit {
     let arrayMateriaPrima;
 
     if(this.tabla === 'Semi'){
-      if(this.materiaPrima[0].id === '' && this.materiaPrima[0].nombre === ''){
-        this.providerMensajes.MessegeValiteFormPersonalizado(this.alertController,'Falta seleccionar la materia prima');
-        return;
-      }
+
       arrayMateriaPrima = this.materiaPrima;
       refMateriaPrima = arrayMateriaPrima.map((doc, index) => ({
         id: doc.id,
         nombre: doc.nombre,
         peso: this.formulario.materiaPrimaForm[index]
       }));
+
       console.log(refMateriaPrima);
       this.producto['materiaPrima']=refMateriaPrima;
+
+      if(!this.validarMpSemiVacio()){
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.MessegeValiteForm();
+        return;
+      }
+
+      if(!this.validarMpSemiRepetidos()){
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajePersonalizado('No se puede repetir la materia prima, revise el formulario');
+        return;
+      }
+
+      if(this.post === true){
+        this.insertarProducto();
+      }
+
+      if(this.post === false){
+
+        if(this.Producto.categoria == this.categoria.nombre &&
+          this.Producto.id == this.producto.id &&
+          this.Producto.img == this.producto.img &&
+          this.Producto.nombre == this.producto.nombre && this.validarMateriaPrimaForm()){
+            this.providerMensajes.dismissLoading();
+            this.closeModal();
+
+        }
+        this.actualizarProductos();
+      }
+
     }
 
     if(this.tabla === 'Final'){
@@ -389,7 +419,7 @@ export class ModalProductoPage implements OnInit {
       let self=this;
       let refReceta;
       let refMp;
-      
+
       this.receta.forEach(function (doc,i,receta){
         refReceta = self.recetaForm.controls[i] as FormGroup;
         receta[i].presentacion = refReceta.controls.presentacion.value;
@@ -398,25 +428,52 @@ export class ModalProductoPage implements OnInit {
           recetaMp[n]['peso'] = refMp.controls[n].value;
         })
       })
-      
+
       this.producto['receta']=this.receta;
       console.log(this.producto);
-    }
 
-    if(this.post === true){
-      this.insertarProducto();
- 
-    }
-    if(this.post === false){
-      this.actualizarProductos();
+      if(!this.validarMpFinalVacio()){
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.MessegeValiteForm();
+        return;
+      }
+
+      if(!this.validarMpFinalRepetidos()){
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajePersonalizado('No se puede repetir la presentacion o la materia prima, revise el formulario');
+        return;
+      }
+
+      if(!this.validarPesoMpFinal()){
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajePersonalizado('La suma de los pesos de la materia prima no es igual al de la presentacion, revise el formulario');
+        return;
+      }
+
+
+
+      if(this.post === true){
+        this.insertarProducto();
+
+      }
+
+      if(this.post === false){
+        if(this.Producto.categoria == this.categoria.nombre &&
+          this.Producto.id == this.producto.id &&
+          this.Producto.img == this.producto.img &&
+          this.Producto.nombre == this.producto.nombre && this.validarRecetaForm()){
+            console.log('no se edito');
+            this.providerMensajes.dismissLoading();
+            this.closeModal();
+
+        }
+        this.actualizarProductos();
+      }
+
     }
   }
 
   insertarProducto(){
-    /* if(!this.validarMateriaPrima()){
-      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,'No se puede repetir la materia prima, revise el formulario');
-      return;
-    } */
 
     console.table(this.producto);
     this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
@@ -437,15 +494,17 @@ export class ModalProductoPage implements OnInit {
         if(this.imgCapture){
           this.producto['img']=response.img;
         }
-
-        this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.MensajeModalServidor(this.modalController,this.producto);
       }else{
-        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,response.error);
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajePersonalizado(response.error);
         return;
       }
     }).catch(data => {
       console.log(data);
-      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,data.error);
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajePersonalizado(data.error);
 
     });
   }
@@ -457,48 +516,36 @@ export class ModalProductoPage implements OnInit {
     if(this.imgCapture){
       this.producto.img['imgOld'] = this.Producto.img;
     }
-
-    /* if(this.Producto.categoria == this.categoria.nombre &&
-      this.Producto.id == this.producto.id &&
-      this.Producto.img == this.producto.img &&
-      this.Producto.nombre == this.producto.nombre){
-
-        this.closeModal();
-
-    }else{ */
-
-      /* if(!this.validarMateriaPrima()){
-        this.providerMensajes.ErrorMensajePersonalizado(this.alertController,'No se puede repetir la materia prima, revise el formulario');
-        return;
-      } */
-
-      console.log(this.producto);
-      this.proveedor.actualizarDocumento(this.url,this.Producto.id,this.producto).then(data => {
-        let response = data as any;
-        console.log(data);
-        if(this.proveedor.status){
-          this.producto['idOld']=this.Producto.id;
-          this.producto['categoria']=this.categoria.nombre;
-          this.producto['status']=response.status;
-          if(this.tabla === 'Semi'){
-            this.producto['materiaPrima']=response.refMateriaPrima;
-          }
-  
-          if(this.tabla === 'Final'){
-            this.producto['receta']=response.refMateriaPrima;
-          }
-
-          this.producto['img']=response.img;
-          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.producto);
-        }else{
-          this.providerMensajes.ErrorMensajeServidor(this.alertController);
-          return;
+    console.log(this.producto);
+    this.proveedor.actualizarDocumento(this.url,this.Producto.id,this.producto).then(data => {
+      let response = data as any;
+      console.log(data);
+      if(this.proveedor.status){
+        this.producto['idOld']=this.Producto.id;
+        this.producto['categoria']=this.categoria.nombre;
+        this.producto['status']=response.status;
+        if(this.tabla === 'Semi'){
+          this.producto['materiaPrima']=response.refMateriaPrima;
         }
-      }).catch(data => {
-        console.log(data);
-      });
+
+        if(this.tabla === 'Final'){
+          this.producto['receta']=response.refMateriaPrima;
+        }
+
+        this.producto['img']=response.img;
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.MensajeModalServidor(this.modalController,this.producto);
+      }else{
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
+        return;
+      }
+    }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
+      console.log(data);
+    });
   }
- //}
 
  validarMateriaPrimaForm(){
   let numOldProduct = this.Producto.materiaPrima.length;
@@ -526,7 +573,21 @@ export class ModalProductoPage implements OnInit {
   return status;
  }
 
- validarMateriaPrima(){
+ validarMpSemiVacio(){
+  let status = true;
+
+  this.producto.materiaPrima.every(function (doc){
+    if(doc.id === '' && doc.nombre === ''){
+      status = false;
+      return false;
+    }
+    return true;
+  })
+  return status;
+
+ }
+
+ validarMpSemiRepetidos(){
   let refProductmp = this.producto.materiaPrima;
   let status = true;
   
@@ -548,6 +609,155 @@ export class ModalProductoPage implements OnInit {
   }
   return status;
  }
+
+
+ validarMpFinalVacio(){
+
+  let status = true;
+  console.log('iniciando validacion');
+  console.log(this.producto.receta);
+
+  this.producto.receta.every(function (rec){
+
+    rec.materiaPrima.forEach(function (mp){
+      if(mp.id === '' && mp.nombre === ''){
+        status = false;
+      }
+    })
+
+    if(!status){
+      console.log('status falso');
+      return false;
+    }
+
+    return true;
+
+  })
+  return status;
+ }
+
+ validarMpFinalRepetidos(){
+
+  let status = true;
+  let self = this;
+
+  for(let a = 0; a < this.producto.receta.length; ++a){
+    this.producto.receta.every(function (rec,i,arrayRe){
+
+      if(a != i && arrayRe[a].presentacion === rec.presentacion){
+        console.log('presentacion igual');
+        status = false;
+        return false;
+      }
+
+      for(let n = 0; n < rec.materiaPrima.length; ++n){
+        rec.materiaPrima.every(function(doc,m,arrayMp){
+          if(n === m){
+            return true;
+          }
+          if(arrayMp[n].id === doc.id){
+            console.log('mp igual');
+            status = false;
+            return false;
+          }
+          return true;
+        })
+    
+        if(!status){
+          n=rec.materiaPrima.length;
+        }
+      }
+
+      if(!status){
+        a = self.producto.receta.length;
+        return false;
+      }else{
+        console.log('receta sin repetir');
+        return true;
+      }
+    })
+  }
+    
+
+  return status;
+
+ }
+
+ validarPesoMpFinal(){
+
+  let status = true;
+  
+  this.producto.receta.every(function (rec){
+
+    let presentacion = rec.presentacion;
+    let pesoFinal = 0;
+    
+    rec.materiaPrima.forEach(function(doc){
+      pesoFinal += doc.peso
+    })
+    console.log(pesoFinal);
+
+
+    if(pesoFinal != presentacion){
+      console.log('no son iguales');
+      status = false;
+      return false;
+    }else{
+      return true;
+    }
+  })
+
+  return status;
+
+ }
+
+ validarRecetaForm(){
+
+  let status = true;
+  let self = this;
+  let numOldRecetas = this.Producto.receta.length;
+  let numRecetas = this.producto.receta.length;
+
+  if(numOldRecetas != numRecetas){
+    status = false;
+    return status;
+  }
+
+  this.producto.receta.every(function (rec,i){
+    if(rec.presentacion != self.Producto.receta[i].presentacion){
+      status = false;
+      return false;
+    }
+    let numOldProduct = rec.materiaPrima.length;
+    let numProduct = self.Producto.receta[i].materiaPrima.length;
+    let refProductmp = self.Producto.receta[i].materiaPrima;
+    if(numOldProduct !=  numProduct){
+      status = false;
+      return false;
+    }
+
+    rec.materiaPrima.every(function(doc,n){
+      let refmp;
+      if(refProductmp[n].id._path.segments.length > 2){
+        refmp = refProductmp[n].id._path.segments[3];
+      }else{
+        refmp = refProductmp[n].id._path.segments[1];
+      }
+
+      if(doc.id != refmp || doc.peso != refProductmp[n].peso){
+        status = false;
+        return false;
+      }
+      return true;
+    })
+
+    return true;
+
+  })
+
+  return status;
+ }
+
 
 
 }

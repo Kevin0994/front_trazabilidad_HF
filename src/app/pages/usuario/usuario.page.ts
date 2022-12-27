@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AlertController, NavController, ModalController } from '@ionic/angular';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
 import { ModalUsuarioPage } from '../../modals/modal-usuario/modal-usuario.page'
 
@@ -15,6 +16,7 @@ export class UsuarioPage implements OnInit {
   usuario:any;
 
   constructor(public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public alertController: AlertController,
     public navCtrl:NavController,
     public modalController:ModalController,
@@ -31,9 +33,15 @@ export class UsuarioPage implements OnInit {
   }
 
   loadDatos(){
+    this.providerMensajes.showLoading();
     this.proveedor.obtenerDocumentos('usuarios/documents').then(data => {
-      this.usuarios=data;
+      if (this.proveedor.status) {
+        this.usuarios=data;
+        this.providerMensajes.dismissLoading();
+      }
     }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     })
   }

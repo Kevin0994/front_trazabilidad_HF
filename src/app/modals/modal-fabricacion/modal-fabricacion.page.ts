@@ -95,14 +95,14 @@ export class ModalFabricacionPage implements OnInit {
             if(this.proveedor.status){
               this.MensajeServidor();
             }else{
-              this.providerMensajes.ErrorMensajeServidor(this.alertController);
+              this.providerMensajes.ErrorMensajeServidor();
               return;
             }
           }).catch(data => {
             console.log(data);
           });
         }else{
-          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.loteMateriaPrima.error.messege);
+          this.providerMensajes.ErrorMensajePersonalizado(this.loteMateriaPrima.error.messege);
           return; 
         }
       }).catch(data => {
@@ -150,14 +150,14 @@ export class ModalFabricacionPage implements OnInit {
             if(this.proveedor.status){
               this.MensajeServidor();
             }else{
-              this.providerMensajes.ErrorMensajeServidor(this.alertController);
+              this.providerMensajes.ErrorMensajeServidor();
               return;
             }
           }).catch(data => {
             console.log(data);
           });
         }else{
-          this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.loteMateriaPrima.error.messege);
+          this.providerMensajes.ErrorMensajePersonalizado(this.loteMateriaPrima.error.messege);
           return;
         } 
       }).catch(data => {

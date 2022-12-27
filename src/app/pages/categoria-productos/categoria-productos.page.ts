@@ -38,6 +38,9 @@ export class CategoriaProductosPage implements OnInit {
 
   CargarDatos() {
 
+    this.providerMensajes.showLoading();
+    console.log(this.providerMensajes.show);
+
     if (this.showSemi == true) {
       if (this.categoriaSemi.length != 0) {
         this.categoriaTabla = this.categoriaSemi;
@@ -47,10 +50,16 @@ export class CategoriaProductosPage implements OnInit {
       this.proveedor
         .obtenerDocumentos('categoriaProductoSemi/documents')
         .then((data) => {
-          this.categoriaSemi = data;
-          this.categoriaTabla = this.categoriaSemi;
+          if(this.proveedor.status){
+            this.categoriaSemi = data;
+            this.categoriaTabla = this.categoriaSemi;
+            this.providerMensajes.dismissLoading();
+
+          }
         })
         .catch((data) => {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(data);
         });
     }
@@ -65,8 +74,13 @@ export class CategoriaProductosPage implements OnInit {
         .then((data) => {
           this.categoriaFinal = data;
           this.categoriaTabla = this.categoriaFinal;
+          this.providerMensajes.dismissLoading();
+
         })
         .catch((data) => {
+
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(data);
         });
     }
@@ -191,6 +205,7 @@ export class CategoriaProductosPage implements OnInit {
         }, {
           text: 'Si',
           handler: () => {
+            this.providerMensajes.showLoading();
             if(this.showSemi == true){
               this.deleteDocument('categoriaProductoSemi/delete/',id ,this.categoriaSemi)
             }else{
@@ -209,10 +224,12 @@ export class CategoriaProductosPage implements OnInit {
       console.log(data);
       tabla = this.providerMetodosCrud.eliminarDatosTabla(id,tabla);
       this.categoriaTabla = tabla;
-      this.providerMensajes.MensajeDeleteServidor(this.alertController);
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.MensajeDeleteServidor();
     },error => {
       this.messege = error;
-      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.messege.error);
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajePersonalizado(this.messege.error);
     })
   }
 

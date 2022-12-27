@@ -32,15 +32,22 @@ export class CosechaHistorialPage implements OnInit {
   }
 
   loadDatos(){
+    this.providerMensajes.showLoading();
     this.proveedor.obtenerDocumentos('cosechasHistorial/documents').then(data => {
-      this.cosechaHistorial=data;
+      if (this.proveedor.status) {
+        this.cosechaHistorial=data;
+        this.providerMensajes.dismissLoading();
+      }
     }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     })
   }
 
 
   async ValidarDelete(historial:any){
+    console.log(historial);
     const alert = await this.alertController.create({
       header: 'Eliminar',
       message: '¿Seguro que desea elimar?',
@@ -53,9 +60,13 @@ export class CosechaHistorialPage implements OnInit {
           text: 'Si',
           handler: () => {
 
+            this.providerMensajes.showLoading();
+
             var ingreso = historial.ingreso;
             var stock = historial.stock;
             var result =  stock - ingreso ;
+            console.log(stock + ' '+ ingreso);
+            console.log(result);
 
             this.cosecha = {
               stock: result,
@@ -70,12 +81,12 @@ export class CosechaHistorialPage implements OnInit {
               console.log(data);
               if (this.proveedor.status) {
                 this.loadDatos();
-                this.providerMensajes.MensajeDeleteServidor(this.alertController);
-              } else {
-                this.providerMensajes.ErrorMensajeServidor(this.alertController);
-                return;
+                this.providerMensajes.dismissLoading();
+                this.providerMensajes.MensajeDeleteServidor();
               }
             }).catch(data => {
+              this.providerMensajes.dismissLoading();
+              this.providerMensajes.ErrorMensajeServidor();
               console.log(data);
             });
           }

@@ -9,10 +9,12 @@ export class ProviderMetodosCrud{
     constructor() { }
 
     actualizarDatosTablaCosecha(data:any,tabla:any){ //verifica si recibe la nueva cosecha al cerrar el modal
+
         if(data.status != true){//Edita la cosecha de la tabla
         let foundIndex = tabla.findIndex(obj =>
-            obj.nombre == data.nombre && obj.lote == data.lote
+            obj.nombre == data.nombre && obj.loteMes == data.loteMes
         );
+
         tabla[foundIndex].stock += data.stock;
         return tabla;
         }else{//Inserta la nueva cosecha en la tabla

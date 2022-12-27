@@ -10,6 +10,7 @@ import { ProviderMetodosCrud } from '../../../provider/methods/providerMetodosCr
 import { ModalCosechaPage } from '../../modals/modal-cosecha/modal-cosecha.page';
 import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
 import Swal from 'sweetalert2';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-cosecha',
@@ -23,6 +24,7 @@ export class CosechaPage implements OnInit {
 
   constructor(
     public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     private providerMetodosCrud: ProviderMetodosCrud,
     public alertController: AlertController,
     public navCtrl: NavController,
@@ -33,16 +35,22 @@ export class CosechaPage implements OnInit {
 
   //Peticion a la base de datos de la lista de cosechas
   ionViewWillEnter() {
-    this.proveedor
-      .obtenerDocumentos('cosechas/documents')
-      .then((data) => {
-        this.cosechas = data;
-        this.temp = data;
-        console.log(this.cosechas);
-      })
-      .catch((data) => {
+    this.cargarDatos();
+  }
+
+  async cargarDatos(){
+    this.providerMensajes.showLoading();
+    await this.proveedor.obtenerDocumentos('cosechas/documents').then(data => {
+        if (this.proveedor.status) {
+          this.cosechas = data;
+          this.temp = data;
+          this.providerMensajes.dismissLoading();
+        }
+    }).catch(data => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
-      });
+    });
   }
 
   // writeNFC() {
@@ -77,6 +85,7 @@ export class CosechaPage implements OnInit {
         codigo: data.data.codigo,
         stock: data.data.stockN / 1000,
         lote: data.data.loteN,
+        loteMes: data.data.loteMes,
         status: data.data.status,
       };
       this.cosechas = this.providerMetodosCrud.actualizarDatosTablaCosecha(

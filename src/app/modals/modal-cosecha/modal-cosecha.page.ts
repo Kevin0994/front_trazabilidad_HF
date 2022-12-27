@@ -43,9 +43,13 @@ export class ModalCosechaPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.providerMensajes.showLoading();
     this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
       this.lista = data;
+      this.providerMensajes.dismissLoading();
     }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     })
   }
@@ -93,9 +97,10 @@ export class ModalCosechaPage implements OnInit {
   }
 
   async saveProfile() {
+    await this.providerMensajes.showLoading();
     this.formulario = this.formRegistro.value;
-
-    let loteCalculado = new Date().getMonth() + 1;
+    let loteMes = new Date().getMonth() + 1;
+    let loteCalculado = this.proveedor.calcularLote();
     //let loteCalculado = 12;
 
     const hist={
@@ -110,21 +115,26 @@ export class ModalCosechaPage implements OnInit {
       nombreN: this.nombreCosecha,
       codigo: this.codigoCosecha,
       loteN: loteCalculado,
+      loteMes: loteMes,
       stockN: this.formulario.peso * 1000,
       historial: this.historial,
     }
 
     console.table(this.cosecha);
 
-    this.proveedor.InsertarCosecha('cosechas/post/',this.nombreCosecha, loteCalculado, this.cosecha).then(data => {
+    this.proveedor.InsertarCosecha('cosechas/post/',this.nombreCosecha, loteMes, this.cosecha).then(data => {
       console.log(data);
-          if (this.proveedor.status) {
-            this.cosecha['status']=data;
-            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.cosecha);
-          } else {
-            this.providerMensajes.ErrorMensajeServidor(this.alertController);
-          }
+        if (this.proveedor.status) {
+          this.cosecha['status']=data;
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.cosecha);
+        } else {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
+        }
     }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     });
   }

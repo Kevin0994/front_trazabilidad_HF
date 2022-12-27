@@ -26,7 +26,8 @@ export class ProductosPage implements OnInit {
   };
 
 
-  constructor(public proveedor: ProviderService,
+  constructor(
+    public proveedor: ProviderService,
     private providerMensajes: ProviderMensajes,
     private providerMetodosCrud: ProviderMetodosCrud,
     public alertController: AlertController,
@@ -40,6 +41,7 @@ export class ProductosPage implements OnInit {
   }
 
   ValidarSeleccion(){
+    this.providerMensajes.showLoading();
     if (this.showSemi == true) { //Valida si el usuario ha seleccionado los productos semifinales
       if (this.productoSemi.length != 0) { //Valida si la lista de productos semifinales no esta vacia
         this.productosTabla = this.productoSemi;
@@ -63,6 +65,7 @@ export class ProductosPage implements OnInit {
     this.proveedor
       .obtenerDocumentos(url)
       .then((data) => {
+        this.providerMensajes.dismissLoading();
         this.productosTabla = data;
         if(this.showSemi){
           this.productoSemi = data;
@@ -74,6 +77,8 @@ export class ProductosPage implements OnInit {
         console.log( this.productosTabla);
       })
       .catch((data) => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
 
@@ -98,6 +103,8 @@ export class ProductosPage implements OnInit {
   }
 
   registroProducto(){
+
+    this.providerMensajes.showLoading();
 
     let producto = this.validateDataPost();
     let listaMateriaPrima;
@@ -135,6 +142,7 @@ export class ProductosPage implements OnInit {
 
 
   async registroProductoModal(url:string,listaMp:any,receta:any ,materiaPrima:any, tabla:any){
+    this.providerMensajes.dismissLoading();
     const modal = await this.modalController.create({
       component: ModalProductoPage,
       cssClass: 'modalCosecha',
@@ -178,6 +186,8 @@ export class ProductosPage implements OnInit {
 
   editProducto(producto:any){
 
+    this.providerMensajes.showLoading();
+
     let datos = this.validateDataPut();
 
     if (this.showSemi == true) {
@@ -208,6 +218,8 @@ export class ProductosPage implements OnInit {
   }
 
   async editOpenModal(url:string,producto:any, receta:any, materiaPrima:any , listaMp ,tabla:any){
+
+    this.providerMensajes.dismissLoading();
 
     const modal = await this.modalController.create({
       component: ModalProductoPage,
@@ -306,6 +318,7 @@ export class ProductosPage implements OnInit {
         }, {
           text: 'Si',
           handler: () => {
+            this.providerMensajes.showLoading();
             if(this.showSemi == true){
               this.deleteDocument('productoSemi/delete/',producto.id, producto.categoriaId, this.productoSemi)
             }else{
@@ -324,10 +337,12 @@ export class ProductosPage implements OnInit {
     this.proveedor.eliminarDocumento(urlDocument,id).subscribe(data => {
       console.log(data);
       this.productosTabla = this.providerMetodosCrud.eliminarDatosTabla(productoId,tabla);
-      this.providerMensajes.MensajeDeleteServidor(this.alertController);
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.MensajeDeleteServidor();
     },error => {
       this.messege = error;
-      this.providerMensajes.ErrorMensajePersonalizado(this.alertController,this.messege.error);
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajePersonalizado(this.messege.error);
     })
   }
 
@@ -372,5 +387,7 @@ export class ProductosPage implements OnInit {
       }
    })
   }
+
+  
 
 }

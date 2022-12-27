@@ -52,6 +52,7 @@ export class ModalAlimentosPage implements OnInit {
   }
 
   async saveProfile(){
+
     this.formulario = this.formRegistro.value;
     if(this.formRegistro.invalid){
       const alert = await this.alertController.create({
@@ -63,6 +64,8 @@ export class ModalAlimentosPage implements OnInit {
       await alert.present();
       return;
     }
+
+    await this.providerMensajes.showLoading();
 
     this.alimento = {
       idOld: this.Alimento.id,
@@ -79,12 +82,16 @@ export class ModalAlimentosPage implements OnInit {
 
         if(this.proveedor.status){
           this.alimento['status']=data;
-          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.alimento);
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.alimento);
         }else{
-          this.providerMensajes.ErrorMensajeServidor(this.alertController);
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           return;
         }
       }).catch(data => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
     }else{
@@ -94,16 +101,21 @@ export class ModalAlimentosPage implements OnInit {
 
         if(this.proveedor.status){
           this.alimento['status']=data;
-          this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.alimento);
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.MensajeModalServidor(this.modalController,this.alimento);
         }else{
-          this.providerMensajes.ErrorMensajeServidor(this.alertController);
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           return;
         }
       }).catch(data => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
     }
     }else{
+      this.providerMensajes.dismissLoading();
       this.modalController.dismiss();
     }
 

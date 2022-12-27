@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { ProviderMensajes } from '../modalMensaje/providerMessege.service';
 
 @Injectable()
 export class ProviderService {
@@ -10,16 +11,21 @@ export class ProviderService {
   private API_URL =
     'http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/';
 
-  constructor(public http: HttpClient) {}
+  constructor(private providerMensajes:ProviderMensajes,
+    public http: HttpClient) {}
 
   obtenerDocumentos(rutaDocumento: string) {
     return new Promise((resolve) => {
       this.http.get(this.API_URL + rutaDocumento).subscribe(
         (data) => {
           resolve(data);
+          return (this.status = true);
         },
         (err) => {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(err);
+          return this.status = false;
         }
       );
     });
@@ -110,8 +116,10 @@ export class ProviderService {
           return (this.status = true);
         },
         (err) => {
-          this.status = false;
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           resolve(err);
+          return this.status = false;
         }
       ).closed;
     });
@@ -130,5 +138,22 @@ export class ProviderService {
           }
         );
     });
+  }
+
+  calcularLote(){
+    let mes= (new Date().getMonth() + 1).toString();
+    let dia= (new Date().getDate()).toString();
+
+    if(mes.length < 2){
+      mes = '0' + mes
+    }
+
+    if(dia.length < 2){
+      dia = '0' + dia
+    }
+
+    let loteCalculado = mes + dia;
+
+    return parseInt(loteCalculado);
   }
 }

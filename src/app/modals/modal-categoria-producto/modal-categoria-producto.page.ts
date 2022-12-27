@@ -81,6 +81,9 @@ export class ModalCategoriaProductoPage implements OnInit {
       await alert.present();
       return;
     }
+
+    await this.providerMensajes.showLoading();
+
     this.categoria = {
       idOld: this.Categoria.id,
       id: this.formulario.codigo,
@@ -106,12 +109,16 @@ export class ModalCategoriaProductoPage implements OnInit {
             if(this.imgCapture){
               this.categoria['img']=this.responseImg.img;
             }
-            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.categoria);
+            this.providerMensajes.dismissLoading();
+            this.providerMensajes.MensajeModalServidor(this.modalController,this.categoria);
           }else{
-            this.providerMensajes.ErrorMensajeServidor(this.alertController);
+            this.providerMensajes.dismissLoading();
+            this.providerMensajes.ErrorMensajeServidor();
             return;
           }
         }).catch(data => {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(data);
         });
       }else{
@@ -125,16 +132,21 @@ export class ModalCategoriaProductoPage implements OnInit {
           if(this.proveedor.status){
             this.categoria['status']=data;
             this.categoria['img']=this.responseImg.img;
-            this.providerMensajes.MensajeModalServidor(this.modalController,this.alertController,this.categoria);
+            this.providerMensajes.dismissLoading();
+            this.providerMensajes.MensajeModalServidor(this.modalController,this.categoria);
           }else{
-            this.providerMensajes.ErrorMensajeServidor(this.alertController);
+            this.providerMensajes.dismissLoading();
+            this.providerMensajes.ErrorMensajeServidor();
             return;
           }
         }).catch(data => {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(data);
         });
       }
     }else{
+      this.providerMensajes.dismissLoading();
       this.modalController.dismiss();
     }
 
