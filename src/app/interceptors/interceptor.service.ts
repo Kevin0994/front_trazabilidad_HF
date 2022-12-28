@@ -31,7 +31,6 @@ export class InterceptorService implements HttpInterceptor {
   }
 
   handleError(err: HttpErrorResponse) {
-    console.log(err);
     return throwError(err);
   }
 }

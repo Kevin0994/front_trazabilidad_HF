@@ -20,12 +20,14 @@
       <thead class="table-header text-light">
         <tr>
           <th scope="col">Nombre</th>
+          <th scope="col">Codigo</th>
           <th scope="col">Acciones</th>
         </tr>
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let alimento of alimentos">
           <td>{{alimento.nombre}}</td>
+          <td>{{alimento.codigo}}</td>
           <td>
             <input type="button" class="btn btn-warning btn-sm btn-edit me-2" value="Edit"
               (click)="ModelPresentEdit(alimento)" />

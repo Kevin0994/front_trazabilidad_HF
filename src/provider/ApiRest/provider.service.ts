@@ -22,8 +22,13 @@ export class ProviderService {
           return (this.status = true);
         },
         (err) => {
+          let response = err as any;
           this.providerMensajes.dismissLoading();
-          this.providerMensajes.ErrorMensajeServidor();
+          if(response.error.msg != undefined){
+            this.providerMensajes.ErrorMensajePersonalizado(response.error.msg);
+          }else{
+            this.providerMensajes.ErrorMensajeServidor();
+          }
           console.log(err);
           return this.status = false;
         }

@@ -50,7 +50,7 @@ export class ProviderMensajes {
 
   async ErrorMensajePersonalizado(mensaje:any){
     const alert = await this.alertController.create({
-      header: 'Error del servidor',
+      header: 'Error',
       message: mensaje,
       buttons: ['OK']
     });

@@ -64,7 +64,6 @@ export class ModalCosechaPage implements OnInit {
     this.formRegistro = this.fb.group({
       'nombre': new FormControl("", Validators.required),
       'codigo': new FormControl("", Validators.required),
-      'fecha': new FormControl("", Validators.required),
       'peso': new FormControl("", Validators.required),
     })
   }
@@ -73,7 +72,7 @@ export class ModalCosechaPage implements OnInit {
   handleChange(ev) {
     this.formulario = this.formRegistro.value;
     this.nombreCosecha = ev.detail.value.nombre;
-    this.codigoCosecha = ev.detail.value.id;
+    this.codigoCosecha = ev.detail.value.codigo;
     this.formRegistro.controls.codigo.setValue(this.codigoCosecha);
     this.formRegistro.controls.codigo.disable();
     console.log(this.formRegistro);

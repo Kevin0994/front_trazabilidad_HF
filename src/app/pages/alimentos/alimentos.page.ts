@@ -105,15 +105,15 @@ export class AlimentosPage implements OnInit {
   }
 
   OrganizarDataModel(data:any){
-    let idOld = data.data.idOld;
     this.alimento={ // reemplazamos el nuevo producto a una varible
       id: data.data.id,
+      codigo: data.data.codigo,
       nombre: data.data.nombre,
       status: data.data.status
     }
     console.table(this.alimento);
 
-    this.alimentos = this.providerMetodosCrud.actualizarDatosTabla(this.alimento,idOld,this.alimentos);
+    this.alimentos = this.providerMetodosCrud.actualizarDatosTabla(this.alimento,this.alimento.id,this.alimentos);
     this.OrdenarTabla();
     console.table(this.alimentos);
   }

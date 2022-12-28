@@ -46,7 +46,7 @@ export class ModalAlimentosPage implements OnInit {
 
   editForm(){
     this.formRegistro =  this.fb.group({
-      'codigo': new FormControl(this.Alimento.id,Validators.required),
+      'codigo': new FormControl(this.Alimento.codigo,Validators.required),
       'nombre': new FormControl(this.Alimento.nombre,Validators.required),
     })
   }
@@ -68,8 +68,7 @@ export class ModalAlimentosPage implements OnInit {
     await this.providerMensajes.showLoading();
 
     this.alimento = {
-      idOld: this.Alimento.id,
-      id: this.formulario.codigo,
+      codigo: this.formulario.codigo,
       nombre: this.formulario.nombre,
     }
 
@@ -79,14 +78,19 @@ export class ModalAlimentosPage implements OnInit {
 
       this.proveedor.InsertarDocumento('alimentos/post',this.alimento).then(data => {
         console.log(data);
-
+        let response = data as any;
         if(this.proveedor.status){
-          this.alimento['status']=data;
+          this.alimento['status']=response.status;
+          this.alimento['id']=response.id;
           this.providerMensajes.dismissLoading();
           this.providerMensajes.MensajeModalServidor(this.modalController,this.alimento);
         }else{
           this.providerMensajes.dismissLoading();
-          this.providerMensajes.ErrorMensajeServidor();
+          if(response.error.message != undefined){
+            this.providerMensajes.ErrorMensajePersonalizado(response.error.message);
+          }else{
+            this.providerMensajes.ErrorMensajeServidor();
+          }
           return;
         }
       }).catch(data => {
@@ -96,16 +100,24 @@ export class ModalAlimentosPage implements OnInit {
       });
     }else{
 
+      this.alimento['oldCodigo'] = this.Alimento.codigo;
       this.proveedor.actualizarDocumento('alimentos/put/',this.Alimento.id,this.alimento).then(data => {
         console.log(data);
+        let response = data as any;
 
         if(this.proveedor.status){
-          this.alimento['status']=data;
+          this.alimento['id']=this.Alimento.id;
+          this.alimento['status']=response.status;
           this.providerMensajes.dismissLoading();
           this.providerMensajes.MensajeModalServidor(this.modalController,this.alimento);
         }else{
           this.providerMensajes.dismissLoading();
-          this.providerMensajes.ErrorMensajeServidor();
+          if(response.error.message != undefined){
+            this.providerMensajes.ErrorMensajePersonalizado(response.error.message);
+          }else{
+            this.providerMensajes.ErrorMensajeServidor();
+          }
+         
           return;
         }
       }).catch(data => {
