@@ -245,7 +245,7 @@ export class ModalProductoPage implements OnInit {
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
       categoria: [this.Producto.categoriaId, [Validators.required]],
-      codigo: [this.Producto.id, [Validators.required]],
+      codigo: [this.Producto.codigo, [Validators.required]],
       nombre : [this.Producto.nombre, [Validators.required]],
       materiaPrimaForm : this.fb.array([]),
     })
@@ -269,7 +269,7 @@ export class ModalProductoPage implements OnInit {
     this.img = this.Producto.img;
     this.formRegistro =  this.fb.group({
       categoria: [this.Producto.categoriaId, [Validators.required]],
-      codigo: [this.Producto.id, [Validators.required]],
+      codigo: [this.Producto.codigo, [Validators.required]],
       nombre : [this.Producto.nombre, [Validators.required]],
       recetaForm: this.fb.array([]),
 
@@ -361,7 +361,7 @@ export class ModalProductoPage implements OnInit {
     await this.providerMensajes.showLoading();
 
     this.producto = {
-      id: this.formulario.codigo,
+      codigo: this.formulario.codigo,
       nombre: this.formulario.nombre,
       img: this.img,
       categoriaId: this.categoria.id,
@@ -401,14 +401,14 @@ export class ModalProductoPage implements OnInit {
 
       if(this.post === false){
 
-        if(this.Producto.categoria == this.categoria.nombre &&
+       /*  if(this.Producto.categoria == this.categoria.nombre &&
           this.Producto.id == this.producto.id &&
           this.Producto.img == this.producto.img &&
           this.Producto.nombre == this.producto.nombre && this.validarMateriaPrimaForm()){
             this.providerMensajes.dismissLoading();
             this.closeModal();
 
-        }
+        } */
         this.actualizarProductos();
       }
 
@@ -458,7 +458,7 @@ export class ModalProductoPage implements OnInit {
       }
 
       if(this.post === false){
-        if(this.Producto.categoria == this.categoria.nombre &&
+        /* if(this.Producto.categoria == this.categoria.nombre &&
           this.Producto.id == this.producto.id &&
           this.Producto.img == this.producto.img &&
           this.Producto.nombre == this.producto.nombre && this.validarRecetaForm()){
@@ -466,7 +466,7 @@ export class ModalProductoPage implements OnInit {
             this.providerMensajes.dismissLoading();
             this.closeModal();
 
-        }
+        } */
         this.actualizarProductos();
       }
 
@@ -477,12 +477,12 @@ export class ModalProductoPage implements OnInit {
 
     console.table(this.producto);
     this.proveedor.InsertarDocumento(this.url,this.producto).then(data => {
-      console.log('termino');
       let response = data as any;
       console.log(response);
       if(this.proveedor.status){
         this.producto['categoria']=this.categoria.nombre;
         this.producto['status']=response.status;
+        this.producto['id']=response.id;
         if(this.tabla === 'Semi'){
           this.producto['materiaPrima']=response.refMateriaPrima;
         }
@@ -498,7 +498,11 @@ export class ModalProductoPage implements OnInit {
         this.providerMensajes.MensajeModalServidor(this.modalController,this.producto);
       }else{
         this.providerMensajes.dismissLoading();
-        this.providerMensajes.ErrorMensajePersonalizado(response.error);
+        if(response.error.message != undefined){
+          this.providerMensajes.ErrorMensajePersonalizado(response.error.message);
+        }else{
+          this.providerMensajes.ErrorMensajeServidor();
+        }
         return;
       }
     }).catch(data => {
@@ -521,7 +525,7 @@ export class ModalProductoPage implements OnInit {
       let response = data as any;
       console.log(data);
       if(this.proveedor.status){
-        this.producto['idOld']=this.Producto.id;
+        this.producto['id']=this.Producto.id;
         this.producto['categoria']=this.categoria.nombre;
         this.producto['status']=response.status;
         if(this.tabla === 'Semi'){
