@@ -256,10 +256,18 @@ export class ProductosPage implements OnInit {
       }else{
         refid = doc.id._path.segments[1];
       }
-      console.log(refid);
-      let documento ={
-        id: refid,
-        nombre: listaMp.filter((alimento) => alimento.id == refid)[0].nombre,
+      let documento;
+      let mpNombre = listaMp.filter((alimento) => alimento.id == refid)
+      if(mpNombre.length != 0){
+        documento ={
+          id: refid,
+          nombre: mpNombre[0].nombre,
+        }
+      }else{
+        documento ={
+          id: '',
+          nombre: '',
+        }
       }
       console.log(documento);
       mp.push(documento)

@@ -53,7 +53,7 @@
             <ion-item>
               <ion-label position="floating">Materia Prima </ion-label>
                <ion-select (ionChange)="handleChangeAlimentoSemi($event,i)" [selectedText]="materiaPrima[i].nombre" placeholder="Seleccione un alimento">
-                  <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
+                  <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.referencia}}</ion-select-option>
                </ion-select>
             </ion-item>
             <ion-item>
@@ -94,7 +94,7 @@
                   <ion-item>
                     <ion-label position="floating">Materia Prima </ion-label>
                       <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="receta[i].materiaPrima[n].nombre" placeholder="Seleccione un alimento">
-                        <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.nombre}}</ion-select-option>
+                        <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.referencia}}</ion-select-option>
                       </ion-select>
                   </ion-item>
                   <ion-item>
