@@ -108,7 +108,7 @@ export class ModalFabricacionPage implements OnInit {
               }
   
               if(response.error.code === 6){
-                this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingreso uno diferente');
+                this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
                 return;
               }
 

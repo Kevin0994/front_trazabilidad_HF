@@ -45,25 +45,11 @@ export class IngresosInventario implements OnInit {
         {
           name: 'Nombre',
           prop: 'nombre'
-        }/* ,
-        {
-          name: 'Materia Prima',
-          prop: 'nombreMp'
-        } */,
+        },
         {
           name: 'Lote',
           prop: 'lote'
         },
-        {
-          cellTemplate: this.editTmpl,
-          headerTemplate: this.hdrTpl,
-          name: 'Peso MP',
-          prop: 'pesoMp'
-        }/* ,
-        {
-          name: 'Lote MP',
-          prop: 'loteMp_st'
-        } */,
         {
   
           name: 'Fecha Entrada',
@@ -82,11 +68,7 @@ export class IngresosInventario implements OnInit {
         {
           name:'N° Fundas',
           prop: 'unidades'
-        }/* ,
-        {
-          name: 'Conversion',
-          prop: 'conversion'
-        } */,
+        },
         {
           name: 'Responsable',
           prop: 'responsable'
@@ -147,7 +129,7 @@ export class IngresosInventario implements OnInit {
 
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.nombreps.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.nombre.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
@@ -158,6 +140,57 @@ export class IngresosInventario implements OnInit {
 
   ionViewWillEnter(){
   }
+
+  ExportAsXLSX(){
+    let data = this.ReordenarProductos();
+    this.proveedor.exportToExcel(data,'reporteHF_');
+  }
+
+  ReordenarProductos(){
+    let array = Array();
+    this.productos.map(function (doc){
+      doc.loteMp.map(function(mp,n){
+        let document;
+        if(n === 0){
+          document = {
+            Codigo : doc.codigo,
+            Nombre: doc.nombre,
+            Stock: doc.stock,
+            Lote: doc.lote,
+            PesoFinal: doc.pesoFinal,
+            FechaEntrada: doc.fechaEntrada,
+            FechaSalida: doc.fechaSalida,
+            PesoMateriaPrima: doc.pesoMp,
+            MateriaPrima: mp.codigo,
+            NombreMp: mp.nombre,
+            coleccion: mp.collection,
+            Retiro: mp.ingreso,
+            LoteMp: mp.lote,
+          }
+        }else{
+          document = {
+            Codigo : '',
+            Nombre: '',
+            Stock: '',
+            Lote: '',
+            PesoFinal: '',
+            FechaEntrada: '',
+            FechaSalida: '',
+            PesoMateriaPrima: '',
+            MateriaPrima: mp.codigo,
+            NombreMp: mp.nombre,
+            coleccion: mp.collection,
+            Retiro: mp.ingreso,
+            LoteMp: mp.lote,
+          }
+        }
+        array.push(document);
+      })
+    })
+    console.log(array);
+    return array;
+  }
+
 
   LoadDatos(url:any){
     this.proveedor.obtenerDocumentos(url).then(data => {

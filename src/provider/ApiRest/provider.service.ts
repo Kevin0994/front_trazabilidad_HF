@@ -3,6 +3,12 @@ import { Injectable } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { ProviderMensajes } from '../modalMensaje/providerMessege.service';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+const EXCEL_TYPE = 
+'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=UTF-8';
+
+const EXCEL_EXT = '.xlsx';
 
 @Injectable()
 export class ProviderService {
@@ -13,6 +19,22 @@ export class ProviderService {
 
   constructor(private providerMensajes:ProviderMensajes,
     public http: HttpClient) {}
+
+  exportToExcel(json:any[], excelFileName: string):void{
+
+    const worksheet  = XLSX.utils.json_to_sheet(json);
+    const workBook = {
+      Sheets: { 'data': worksheet },
+      SheetNames: ['data']
+    }
+    const exelBuffer: any = XLSX.write(workBook, {bookType: 'xlsx', type: 'array'});
+    // call method buffer and filename
+    this.saveAsExcel(exelBuffer, excelFileName);
+  }
+
+  private saveAsExcel(buffer:any, fileName:string): void {
+    const data: Blob = new Blob([buffer], {type: EXCEL_TYPE});
+    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXT);  }
 
   obtenerDocumentos(rutaDocumento: string) {
     return new Promise((resolve) => {
