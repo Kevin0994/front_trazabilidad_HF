@@ -43,14 +43,14 @@
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let producto of productosTabla">
-          <td>{{producto.id}}</td>
+          <td>{{producto.codigo}}</td>
           <td class="text-left">{{producto.nombre}}</td>
           <td>{{producto.categoria}}</td>
           <td>
             <input type="button" style="margin-right: 20px;"
               class="btn btn-warning btn-sm btn-edit"
               value="Editar"
-              (click)="editCategoria(producto)"
+              (click)="editProducto(producto)"
             />
             <input type="button"
               class="btn btn-danger btn-sm btn-del"

@@ -22,7 +22,6 @@ export class ModalCategoriaProductoPage implements OnInit {
   public img: any;
   public imgURL: any = 'https://img.freepik.com/foto-gratis/resumen-superficie-texturas-muro-piedra-hormigon-blanco_74190-8189.jpg?w=2000';
   public imgCapture: any = false;
-  private responseImg:any;
   public base64TrimmedURL:any;
   public base64DefaultURL:any;
 
@@ -55,7 +54,6 @@ export class ModalCategoriaProductoPage implements OnInit {
       name: 'imagenExample',
     }
     this.formRegistro = this.fb.group({
-      'codigo': new FormControl("",Validators.required),
       'nombre': new FormControl("",Validators.required),
     })
   }
@@ -64,7 +62,6 @@ export class ModalCategoriaProductoPage implements OnInit {
     this.imgURL = this.Categoria.img.url;
     this.img = this.Categoria.img;
     this.formRegistro =  this.fb.group({
-      'codigo': new FormControl(this.Categoria.id,Validators.required),
       'nombre': new FormControl(this.Categoria.nombre,Validators.required),
     })
   }
@@ -85,35 +82,37 @@ export class ModalCategoriaProductoPage implements OnInit {
     await this.providerMensajes.showLoading();
 
     this.categoria = {
-      idOld: this.Categoria.id,
-      id: this.formulario.codigo,
       nombre: this.formulario.nombre,
       img: this.img,
-      nProductos: this.Categoria.nProductos,
       status: this.imgCapture,
     }
 
     console.table(this.categoria);
 
-    if(this.categoria.idOld != this.categoria.id || this.Categoria.img != this.categoria.img || this.Categoria.nombre != this.categoria.nombre){
+    if(this.Categoria.img != this.categoria.img || this.Categoria.nombre != this.categoria.nombre){
       if(this.type == 'Nuevo Registro'){
 
         this.proveedor.InsertarDocumento(this.url,this.categoria).then(data => {
           console.table(data);
-          this.responseImg = data;
+          let response = data as any;
           if(this.proveedor.status){
 
             this.categoria['nProductos']=0;
-            this.categoria['status']=this.responseImg.status;
+            this.categoria['status']=response.status;
+            this.categoria['id']=response.id;
 
             if(this.imgCapture){
-              this.categoria['img']=this.responseImg.img;
+              this.categoria['img']=response.img;
             }
             this.providerMensajes.dismissLoading();
             this.providerMensajes.MensajeModalServidor(this.modalController,this.categoria);
           }else{
             this.providerMensajes.dismissLoading();
-            this.providerMensajes.ErrorMensajeServidor();
+            if(response.error.message != undefined){
+              this.providerMensajes.ErrorMensajePersonalizado(response.error.message);
+            }else{
+              this.providerMensajes.ErrorMensajeServidor();
+            }
             return;
           }
         }).catch(data => {
@@ -122,21 +121,30 @@ export class ModalCategoriaProductoPage implements OnInit {
           console.log(data);
         });
       }else{
+
+        this.categoria['oldNombre']=this.Categoria.nombre;
+
         if(this.imgCapture){
           this.categoria.img['imgOld'] = this.Categoria.img;
         }
         this.proveedor.actualizarDocumento(this.url,this.Categoria.id,this.categoria).then(data => {
           console.log(data);
-          this.responseImg = data;
+          let response = data as any;
 
           if(this.proveedor.status){
-            this.categoria['status']=data;
-            this.categoria['img']=this.responseImg.img;
+            this.categoria['status']=response.status;
+            this.categoria['img']=response.img;
+            this.categoria['id']=this.Categoria.id;
+            this.categoria['nProductos']=this.Categoria.nProductos;
             this.providerMensajes.dismissLoading();
             this.providerMensajes.MensajeModalServidor(this.modalController,this.categoria);
           }else{
             this.providerMensajes.dismissLoading();
-            this.providerMensajes.ErrorMensajeServidor();
+            if(response.error.message != undefined){
+              this.providerMensajes.ErrorMensajePersonalizado(response.error.message);
+            }else{
+              this.providerMensajes.ErrorMensajeServidor();
+            }
             return;
           }
         }).catch(data => {

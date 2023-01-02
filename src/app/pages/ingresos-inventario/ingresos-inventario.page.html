@@ -16,6 +16,10 @@
       placeholder="Buscar..."
       (keyup)="updateFilter($event)"
     />
+    <ion-button class="btn-add" (click)="ExportAsXLSX()" >
+      <ion-icon name="document-text-outline"></ion-icon>
+      Exportar XLSX
+    </ion-button>
     <ngx-datatable
     #table
     class="material"
