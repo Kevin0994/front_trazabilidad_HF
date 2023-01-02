@@ -71,14 +71,13 @@ export class NfcPage implements OnInit {
   }
 
   writeNFC(code: string) {
-    if (this.myListener === null) {
-      this.myListener = this.nfc.addNdefListener().subscribe((data) => {
+    this.myListener = this.nfc.addNdefListener().subscribe((data) => {
         let message = [this.ndef.textRecord(code)];
         this.nfc.write(message);
         this.presentAlert('¡Producto guardado!');
         this.myListener.unsubscribe();
       });
-    } else this.myListener.unsubscribe();
+    this.myListener.unsubscribe();
   }
 
   radioGroupChange(event) {

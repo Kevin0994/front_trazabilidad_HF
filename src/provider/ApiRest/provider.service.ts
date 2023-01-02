@@ -9,7 +9,7 @@ export class ProviderService {
   public status: any = false;
   public error: any;
   private API_URL =
-    'http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/';
+    'https://shan.loca.lt/hf-trazabilidad-89c0e/us-central1/app/';
 
   constructor(private providerMensajes:ProviderMensajes,
     public http: HttpClient) {}
