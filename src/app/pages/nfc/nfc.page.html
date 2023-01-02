@@ -34,14 +34,23 @@
         </ion-chip>
       </ion-radio-group>
     </div>
-    <ion-button expand="block" class="w-50 m-auto mt-4 mb-4" (click)="readNFC()">Escanear</ion-button>
+    <ion-button *ngIf="findProduct === false; else againScan" expand="block" class="w-50 m-auto mt-4 mb-4" (click)="readNFC(false)">
+      Escanear
+    </ion-button>
+    <ng-template #againScan>
+      <ion-button expand="block" class="w-50 m-auto mt-4 mb-4" (click)="readNFC(true)">
+        <ion-icon name="refresh-outline"></ion-icon>
+        &nbsp;
+        Volver a escanear
+      </ion-button>
+    </ng-template>
     <div class="nfc-empty" *ngIf="findProduct === false; else notFound">
       <ion-icon name="radio-outline" class="logo-nfc">
       </ion-icon>
       <label>Sin resultados</label>
     </div>
     <ng-template #notFound>
-      <div class="product-information m-auto mt-4 bg-white p-3 border border-1 shadow-sm bg-body rounded">
+      <div class="product-information m-auto mt-4 mb-3 bg-white p-3 border border-1 shadow-sm bg-body rounded">
         <h3 class="text-center fw-bold mt-4">{{product.nombre}}</h3>
         <div class="d-flex flex-row align-items-center container-data mb-3">
           <label class="fw-bold">Id: </label>&nbsp;

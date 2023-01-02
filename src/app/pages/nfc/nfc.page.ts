@@ -44,8 +44,34 @@ export class NfcPage implements OnInit {
       });
   }
 
-  readNFC() {
+  clearForm() {
+    this.product = null;
+    this.product.idProducto = "",
+    this.product.estado = "",
+    this.product.fechaEntrada = "",
+    this.product.fechaSalida = "",
+    this.product.loteMp[0].lote = [],
+    this.product.nombre = "",
+    this.product.pesoFinal = "",
+    this.product.loteMp[0].salida = [];
+    this.product.stock = ""
+  }
+
+  readNFC(againScan) {
+    if(againScan) {
+      this.findProduct = false;
+    }
+
+    if(this.myListener) {
+      this.myListener.unsubscribe();
+    }
+
     this.myListener = this.nfc.addNdefListener().subscribe((data) => {
+      if(!data.tag.ndefMessage) {
+        this.presentAlert('La etiqueta esta vacía');
+        this.myListener.unsubscribe();
+        return
+      }
       let payload = this.nfc
         .bytesToString(data.tag.ndefMessage[0].payload)
         .substring(3);
@@ -71,13 +97,16 @@ export class NfcPage implements OnInit {
   }
 
   writeNFC(code: string) {
+    if(this.myListener) {
+      this.myListener.unsubscribe();
+    }
     this.myListener = this.nfc.addNdefListener().subscribe((data) => {
         let message = [this.ndef.textRecord(code)];
         this.nfc.write(message);
         this.presentAlert('¡Producto guardado!');
         this.myListener.unsubscribe();
       });
-    this.myListener.unsubscribe();
+    // this.myListener.unsubscribe();
   }
 
   radioGroupChange(event) {
