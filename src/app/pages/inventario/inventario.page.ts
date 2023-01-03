@@ -11,6 +11,7 @@ import { ActionSheetController } from '@ionic/angular';
 import { ModalLeerNFCPage } from '../../modals/modal-leer-nfc/modal-leer-nfc.page';
 import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
 import { Router, NavigationExtras } from '@angular/router';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.page.html',
@@ -36,12 +37,9 @@ export class InventarioPage implements OnInit {
   constructor(
     private router: Router,
     private nfc: NFC,
-    private ndef: Ndef,
     private proveedor: ProviderService,
-    private alertController: AlertController,
-    private navCtrl: NavController,
+    private providerMensajes:ProviderMensajes,
     private modalController: ModalController,
-    private actionSheetCtrl: ActionSheetController
   ) {}
 
   ngOnInit() {
@@ -73,6 +71,7 @@ export class InventarioPage implements OnInit {
   }
 
   CargarDatosTabla() {
+    this.providerMensajes.showLoading();
     if (this.showSemi == true) {
       this.queryGetAPI('inventarioProSemi/documents');
     }
@@ -85,11 +84,15 @@ export class InventarioPage implements OnInit {
     this.proveedor
       .obtenerDocumentos(url)
       .then((data) => {
+        this.OrdenarTabla(data);
         this.productos = data;
         this.temp = data;
+        this.providerMensajes.dismissLoading();
         console.log(this.productos);
       })
       .catch((data) => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
   }
@@ -129,19 +132,6 @@ export class InventarioPage implements OnInit {
 
   ionViewWillEnter() {}
 
-  LoadDatos() {
-    this.proveedor
-      .obtenerDocumentos('inventarioProSemi/terminado/documents')
-      .then((data) => {
-        this.productos = data;
-        this.temp = data;
-        console.log('List of products: ', this.productos);
-      })
-      .catch((data) => {
-        console.log(data);
-      });
-  }
-
   readNFC() {
     this.nfc.addNdefListener().subscribe((data) => {
       let payload = this.nfc
@@ -165,4 +155,18 @@ export class InventarioPage implements OnInit {
     modal.present();
     await modal.onWillDismiss();
   }
+
+  OrdenarTabla(productos:any=[]){
+    let fecha = new Date().getMonth();
+    productos.sort(function(a, b){ //Ordena el array de manera Descendente
+      if(a.codigo > b.codigo){
+          return 1
+      } else if (a.codigo < b.codigo) {
+          return -1
+      } else {
+          return 0
+      }
+   })
+  }
+
 }

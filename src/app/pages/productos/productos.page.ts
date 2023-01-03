@@ -110,7 +110,7 @@ export class ProductosPage implements OnInit {
 
     this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
       listaMateriaPrima = data;
-      
+      console.log(listaMateriaPrima);
       if (this.showSemi == true) {
 
         let materiaPrima = Array({

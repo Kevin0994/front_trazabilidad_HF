@@ -58,9 +58,10 @@ export class FabricacionPage implements OnInit {
 
   ngAfterViewInit() {}
 
-  @HostListener('window:resize', ['$event'])
-  
+  //@HostListener('window:resize', ['$event'])
+
   async CargarDatos() {
+    console.log('holi');
     await this.providerMensajes.showLoading();
     if (this.showSemi == true) {
       if (this.categoriaSemi.length != 0) {
@@ -181,25 +182,5 @@ export class FabricacionPage implements OnInit {
     });
 
     return await modal.present();
-  }
-
-  async MensajeServidor() {
-    const alert = await this.alertController.create({
-      header: 'Eliminar',
-      message: 'La eliminacion se completo con exito',
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor() {
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK'],
-    });
-
-    await alert.present();
   }
 }

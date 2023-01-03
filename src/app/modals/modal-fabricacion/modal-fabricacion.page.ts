@@ -61,6 +61,7 @@ export class ModalFabricacionPage implements OnInit {
 
     await this.providerMensajes.showLoading();
 
+    let status;
     let loteMes = new Date().getMonth() + 1;
     let loteCalculado = this.proveedor.calcularLote();
 
@@ -73,7 +74,17 @@ export class ModalFabricacionPage implements OnInit {
 
       console.log(this.MateriaPrima);
 
-      this.proveedor.InsertarDocumento('inventarioProducto/stock/',this.MateriaPrima).then(data => {
+      await this.proveedor.validarIdIngreso('productos/validateId/', 'Semi' , this.formulario.proceso).then(data => {
+        status = data;
+        console.log(status);
+      })
+
+      if(!status){
+        this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
+        return;
+      }
+
+     this.proveedor.InsertarDocumento('inventarioProducto/stock',this.MateriaPrima).then(data => {
         let responseStock = data as any;
         console.log( this.loteMateriaPrima);
         if(this.proveedor.status){
@@ -102,16 +113,6 @@ export class ModalFabricacionPage implements OnInit {
               return;
             }else{
               this.providerMensajes.dismissLoading();
-              if(response.error.code == undefined){
-                this.providerMensajes.ErrorMensajeServidor();
-                return;
-              }
-  
-              if(response.error.code === 6){
-                this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
-                return;
-              }
-
               this.providerMensajes.ErrorMensajeServidor();
               return;
             }
@@ -150,7 +151,17 @@ export class ModalFabricacionPage implements OnInit {
 
       console.log(recetaForm);
 
-      this.proveedor.InsertarDocumento('inventarioProducto/stock/',recetaForm).then(data => {
+      await this.proveedor.validarIdIngreso('productos/validateId/', 'Final' , this.formulario.proceso).then(data => {
+        status = data;
+        console.log(status);
+      })
+
+      if(!status){
+        this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
+        return;
+      }
+
+      this.proveedor.InsertarDocumento('inventarioProducto/stock',recetaForm).then(data => {
         let responseStock = data as any;
         console.table(responseStock);
         if(this.proveedor.status){
@@ -184,16 +195,6 @@ export class ModalFabricacionPage implements OnInit {
               this.MensajeServidor();
             }else{
               this.providerMensajes.dismissLoading();
-              if(response.error.code == undefined){
-                this.providerMensajes.ErrorMensajeServidor();
-                return;
-              }
-  
-              if(response.error.code === 6){
-                this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingreso uno diferente');
-                return;
-              }
-
               this.providerMensajes.ErrorMensajeServidor();
               return;
             }

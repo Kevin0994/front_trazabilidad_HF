@@ -52,7 +52,7 @@
           <ng-container *ngFor="let form  of materiaPrimaForm.controls; let i=index;">
             <ion-item>
               <ion-label position="floating">Materia Prima </ion-label>
-               <ion-select (ionChange)="handleChangeAlimentoSemi($event,i)" [selectedText]="materiaPrima[i].nombre" placeholder="Seleccione un alimento">
+               <ion-select (ionChange)="handleChangeAlimentoSemi($event,i)" [selectedText]="materiaPrima[i].nombre" placeholder="Seleccione un alimento" [interfaceOptions]="customActionSheetOptions" interface="action-sheet">
                   <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.referencia}}</ion-select-option>
                </ion-select>
             </ion-item>
@@ -93,7 +93,7 @@
                 <div *ngFor="let mp of rec.controls.materiaPrimaForm.controls; let n=index;">
                   <ion-item>
                     <ion-label position="floating">Materia Prima </ion-label>
-                      <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="receta[i].materiaPrima[n].nombre" placeholder="Seleccione un alimento">
+                      <ion-select (ionChange)="handleChangeAlimentoFinal($event,i,n)" [selectedText]="receta[i].materiaPrima[n].nombre" placeholder="Seleccione un alimento" [interfaceOptions]="customActionSheetOptions" interface="action-sheet">
                         <ion-select-option  *ngFor="let alimento of listaMateriaPrima" [value]="alimento.id">{{alimento.referencia}}</ion-select-option>
                       </ion-select>
                   </ion-item>

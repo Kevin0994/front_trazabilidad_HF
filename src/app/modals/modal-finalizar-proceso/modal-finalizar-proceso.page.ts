@@ -65,6 +65,7 @@ export class ModalFinalizarProcesoPage implements OnInit {
               stock:this.Proceso.stock + this.formulario.peso, //numero de fundas
               pesoFinal: this.formulario.peso, //peso producto semifinal
               conversion: this.Proceso.pesoMp/this.formulario.peso,
+              loteMp: this.Proceso.loteMp,
             }
 
             console.table(this.producto);

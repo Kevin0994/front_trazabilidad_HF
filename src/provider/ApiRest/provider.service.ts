@@ -14,8 +14,9 @@ const EXCEL_EXT = '.xlsx';
 export class ProviderService {
   public status: any = false;
   public error: any;
-  private API_URL =
-    'https://us-central1-hf-trazabilidad-89c0e.cloudfunctions.net/app/';
+  private API_URL = 'http://localhost:5000/hf-trazabilidad-89c0e/us-central1/app/'
+    //'https://us-central1-hf-trazabilidad-89c0e.cloudfunctions.net/app/';
+
 
   constructor(private providerMensajes:ProviderMensajes,
     public http: HttpClient) {}
@@ -182,5 +183,19 @@ export class ProviderService {
     let loteCalculado = mes + dia;
 
     return parseInt(loteCalculado);
+  }
+
+  validarIdIngreso(rutaDocumento: string, tabla:string, id: string) {
+    console.log(this.API_URL + rutaDocumento + tabla + '/' +id );
+    return new Promise((resolve) => {
+      this.http.get(this.API_URL + rutaDocumento + tabla + '/' +id ).subscribe(
+        (data) => {
+          resolve(data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    });
   }
 }

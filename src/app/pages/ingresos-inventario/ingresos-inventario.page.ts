@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, ModalController, NavController, NavParams, } from '@ionic/angular';
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-ingresos-inventario',
@@ -24,6 +25,7 @@ export class IngresosInventario implements OnInit {
 
   constructor(private router:Router,
     private proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     private alertController: AlertController,
     private navCtrl:NavController,
     private modalController:ModalController) {
@@ -36,6 +38,7 @@ export class IngresosInventario implements OnInit {
     }
   
   loadColumnasTabla(){
+    this.providerMensajes.showLoading();
     if(this.response == true){
       this.cols = [
         {
@@ -166,6 +169,7 @@ export class IngresosInventario implements OnInit {
             coleccion: mp.collection,
             Retiro: mp.ingreso,
             LoteMp: mp.lote,
+            Responsable: doc.responsable,
           }
         }else{
           document = {
@@ -182,6 +186,7 @@ export class IngresosInventario implements OnInit {
             coleccion: mp.collection,
             Retiro: mp.ingreso,
             LoteMp: mp.lote,
+            Responsable: '',
           }
         }
         array.push(document);
@@ -194,12 +199,29 @@ export class IngresosInventario implements OnInit {
 
   LoadDatos(url:any){
     this.proveedor.obtenerDocumentos(url).then(data => {
+      this.OrdenarTabla(data);
       this.productos=data;
       this.temp=data;
+      this.providerMensajes.dismissLoading();
       console.log(this.productos);
     }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     })
   }
+
+  OrdenarTabla(ingresos:any=[]){
+    ingresos.sort(function(a, b){ //Ordena el array de manera Descendente
+      if(a.fechaSalida > b.fechaSalida){
+          return 1
+      } else if (a.fechaSalida < b.fechaSalida) {
+          return -1
+      } else {
+          return 0
+      }
+   })
+  }
+
 
 }

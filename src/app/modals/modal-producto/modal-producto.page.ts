@@ -40,6 +40,11 @@ export class ModalProductoPage implements OnInit {
   public base64TrimmedURL:any;
   public base64DefaultURL:any;
 
+  customActionSheetOptions = {
+    header: 'Alimentos',
+    subHeader: 'Seleccione un alimento',
+  };
+
   constructor(public proveedor: ProviderService,
     private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,

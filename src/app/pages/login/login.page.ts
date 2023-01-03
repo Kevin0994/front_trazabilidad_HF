@@ -10,6 +10,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { MenuController } from '@ionic/angular';
 import { CookieService } from 'ngx-cookie-service';
 import Swal from 'sweetalert2';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,
     public navCtrl: NavController,
     public alertController: AlertController,
@@ -69,7 +71,7 @@ export class LoginPage implements OnInit {
       });
       return;
     } else {
-      console.log(form);
+      await this.providerMensajes.showLoading();
       this.proveedor.InsertarDocumento('usuario/login', form)
         .then((data) => {
           let userAuth:any = data;
@@ -77,9 +79,11 @@ export class LoginPage implements OnInit {
           this.Usuario = userAuth.user;
           // console.log(this.Usuario);
           // console.log(data);
+          this.providerMensajes.dismissLoading();
           this.ingresar(userAuth.token);
         })
         .catch((data) => {
+          this.providerMensajes.dismissLoading();
           Swal.fire({
             icon: 'error',
             title: 'Usuario no encontrado',
