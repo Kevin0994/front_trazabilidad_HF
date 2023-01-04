@@ -78,11 +78,11 @@ export class NfcPage implements OnInit {
       let productFound;
       if (this.radioGroupValue === 'semifinal')
         productFound = this.inventorySemiFinalAll.find(
-          (product) => product.codigo === payload
+          (product) => product.id === payload
         );
       else
         productFound = this.inventoryFinalAll.find(
-          (product) => product.codigo === payload
+          (product) => product.id === payload
         );
 
       if (productFound === undefined)
@@ -96,12 +96,12 @@ export class NfcPage implements OnInit {
     });
   }
 
-  writeNFC(code: string) {
+  writeNFC(id: string) {
     if(this.myListener) {
       this.myListener.unsubscribe();
     }
     this.myListener = this.nfc.addNdefListener().subscribe((data) => {
-        let message = [this.ndef.textRecord(code)];
+        let message = [this.ndef.textRecord(id)];
         this.nfc.write(message);
         this.presentAlert('¡Producto guardado!');
         this.myListener.unsubscribe();

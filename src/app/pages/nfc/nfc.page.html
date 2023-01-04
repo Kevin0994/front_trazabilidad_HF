@@ -107,7 +107,7 @@
           <h2>{{product.nombre}}</h2>
           <p>{{product.fechaEntrada}}</p>
         </ion-label>
-        <ion-button slot="end" size="default" (click)="writeNFC(product.codigo)">
+        <ion-button slot="end" size="default" (click)="writeNFC(product.id)">
           Escribir
         </ion-button>
       </ion-item>
@@ -122,7 +122,7 @@
           </h2>
           <p>{{product.fechaEntrada}}</p>
         </ion-label>
-        <ion-button slot="end" size="default" (click)="writeNFC(product.codigo)">
+        <ion-button slot="end" size="default" (click)="writeNFC(product.id)">
           Escribir
         </ion-button>
       </ion-item>

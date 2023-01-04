@@ -12,21 +12,21 @@
 <ion-content>
   <div class="container">
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="actualizarProducto()" id="formFa">
-      <ion-item>
+      <ion-item class="input-name">
         <ion-label position="floating">Numero de unidades</ion-label>
         <ion-input formControlName="fundas" type="number"></ion-input>
       </ion-item>
-      <ion-item>
+      <ion-item class="input-name">
         <ion-label position="floating">Peso final</ion-label>
         <ion-input formControlName="peso" type="number"></ion-input>
       </ion-item>
       <br>
-      <ion-button type="submit" expand="block" shape="round">
-        <ion-icon name="save"></ion-icon> Guardar
+      <ion-button type="submit" expand="block" class="mb-3">
+        <ion-icon name="save"></ion-icon>  &nbsp;Guardar
       </ion-button>
     </form>
-    <ion-button type="submit" expand="block" shape="round" (click)="closeModal()">
-      <ion-icon name="close"></ion-icon> Cancelar
+    <ion-button type="submit" expand="block" (click)="closeModal()">
+      <ion-icon name="close"></ion-icon>  &nbsp;Cancelar
     </ion-button>
   </div>
 </ion-content>

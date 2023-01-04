@@ -12,6 +12,13 @@ ion-content {
   border: none;
 }
 
+.input-name {
+  border-radius: 1.5rem;
+  padding: 0;
+  --background: white;
+  color: black;
+}
+
 label {
   color: black;
 }
