@@ -9,10 +9,12 @@ export class ProviderService {
   public status: any = false;
   public error: any;
   private API_URL =
-    'http://127.0.0.1:5000/hf-trazabilidad-89c0e/us-central1/app/';
+    'https://us-central1-hf-trazabilidad-89c0e.cloudfunctions.net/app/';
 
-  constructor(private providerMensajes:ProviderMensajes,
-    public http: HttpClient) {}
+  constructor(
+    private providerMensajes: ProviderMensajes,
+    public http: HttpClient
+  ) {}
 
   obtenerDocumentos(rutaDocumento: string) {
     return new Promise((resolve) => {
@@ -24,13 +26,13 @@ export class ProviderService {
         (err) => {
           let response = err as any;
           this.providerMensajes.dismissLoading();
-          if(response.error.msg != undefined){
+          if (response.error.msg != undefined) {
             this.providerMensajes.ErrorMensajePersonalizado(response.error.msg);
-          }else{
+          } else {
             this.providerMensajes.ErrorMensajeServidor();
           }
           console.log(err);
-          return this.status = false;
+          return (this.status = false);
         }
       );
     });
@@ -124,7 +126,7 @@ export class ProviderService {
           this.providerMensajes.dismissLoading();
           this.providerMensajes.ErrorMensajeServidor();
           resolve(err);
-          return this.status = false;
+          return (this.status = false);
         }
       ).closed;
     });
@@ -145,16 +147,16 @@ export class ProviderService {
     });
   }
 
-  calcularLote(){
-    let mes= (new Date().getMonth() + 1).toString();
-    let dia= (new Date().getDate()).toString();
+  calcularLote() {
+    let mes = (new Date().getMonth() + 1).toString();
+    let dia = new Date().getDate().toString();
 
-    if(mes.length < 2){
-      mes = '0' + mes
+    if (mes.length < 2) {
+      mes = '0' + mes;
     }
 
-    if(dia.length < 2){
-      dia = '0' + dia
+    if (dia.length < 2) {
+      dia = '0' + dia;
     }
 
     let loteCalculado = mes + dia;
