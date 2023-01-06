@@ -23,14 +23,18 @@
     </ion-button>
   </div>
   <div class="container mt-4" *ngIf="!showButtons">
-    <div class="d-flex flex-row-reverse mb-3">
-      <ion-button color="primary" (click)="showButtons=true; showSemi=false; showFinal=false;  title='Productos';">
-        Regresar
-      </ion-button>
-      <ion-button class="btn-add" (click)="registroProducto()">
-        <ion-icon name="add-outline"></ion-icon>
-        Nuevo Registro
-      </ion-button>
+    <div class="header-inventory">
+      <input type="text" placeholder="Buscar" class="input-filter"
+        (keyup)="updateFilter($event)"/>
+      <div class="buttons-actions">
+        <ion-button class="btn-add" (click)="registroProducto()">
+          <ion-icon name="add-outline"></ion-icon>
+          Nuevo Registro
+        </ion-button>
+        <ion-button color="primary" (click)="showButtons=true; showSemi=false; showFinal=false;  title='Productos';">
+          Regresar
+        </ion-button>
+      </div>
     </div>
     <table class="table table-white">
       <thead class="table-header text-light">

@@ -4,7 +4,7 @@ import {
   ModalController,
   NavController,
 } from '@ionic/angular';
-import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
+import { DatatableComponent, ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 //import { IngresosInventarioSemiPage } from 'src/app/pages/ingresos-inventario/ingresos-inventario.page';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 import { ActionSheetController } from '@ionic/angular';
@@ -31,13 +31,16 @@ export class InventarioPage implements OnInit {
   temp: any = [];
   result: string;
   cols: any = [];
+  selected = [];
 
   ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
   constructor(
     private router: Router,
     private nfc: NFC,
     private proveedor: ProviderService,
+    public alertController: AlertController,
     private providerMensajes:ProviderMensajes,
     private modalController: ModalController,
   ) {}
@@ -48,6 +51,49 @@ export class InventarioPage implements OnInit {
       .obtenerDocumentos('inventarioProSemi/terminado/documents')
       .then((data) => (this.inventorySemiFinalAll = data));
   }
+
+  async onSelect({ selected }) {
+    console.log('Select Event', selected[0].codigo, this.selected);
+    let reporte;
+
+   const alert = await this.alertController.create({
+      header: 'Atencion',
+      message: '¿Desea generar un reporte de este lote de producto?',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => {
+          }
+        }, {
+          text: 'Si',
+          handler: () => {
+            if(this.showSemi){
+              this.proveedor.obtenerDocumentosPorId('inventarioProSemi/documents/',selected[0].id).then(data =>{
+                console.log(data);
+                reporte = data;
+                let productos =  this.ReordenarProductosporLote(selected[0],reporte);
+                this.exportAsXLSX(productos);
+              })
+              return;
+            }
+
+            if(this.showFinal){
+              this.proveedor.obtenerDocumentosPorId('inventarioProductoFinal/documents/',selected[0].id).then(data =>{
+                console.log(data);
+                reporte = data;
+                let productos =  this.ReordenarProductosporLote(selected[0],reporte);
+                this.exportAsXLSX(productos);
+              })
+              return;
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
 
   initTableSemi() {
     this.cols = [
@@ -95,6 +141,103 @@ export class InventarioPage implements OnInit {
         this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
+  }
+
+  exportAsXLSX(reporte){
+    this.proveedor.exportToExcel(reporte,'reporteHF_');
+  }
+
+  ReordenarProductosporLote(infoLote,productos){
+    console.log(infoLote);
+    let reporte = Array();
+    productos.map(function (doc){
+      doc.loteMp.map(function(mp,n){
+        let document;
+        if(n === 0){
+          if(doc.pesoMp != undefined && doc.fechaSalida != undefined){
+            document = {
+              Codigo : infoLote.codigo,
+              Nombre: infoLote.nombre,
+              Lote: infoLote.lote,
+              PesoFinal: doc.pesoFinal,
+              FechaEntrada: doc.fechaEntrada,
+              FechaSalida: doc.fechaSalida,
+              PesoMateriaPrima: doc.pesoMp,
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: doc.responsable,
+            }
+          }else{
+            document = {
+              Codigo : infoLote.codigo,
+              Nombre: infoLote.nombre,
+              Lote: infoLote.lote,
+              PesoFinal: doc.pesoFinal,
+              FechaEntrada: doc.fechaEntrada,
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: doc.responsable,
+            }
+          }
+        
+        }else{
+          document = {
+            Codigo : '',
+            Nombre: '',
+            Lote: '',
+            PesoFinal: '',
+            FechaEntrada: '',
+            MateriaPrima: mp.codigo,
+            NombreMp: mp.nombre,
+            coleccion: mp.collection,
+            Retiro: mp.ingreso,
+            LoteMp: mp.lote,
+            Responsable: '',
+          }
+          if(doc.pesoMp != undefined && doc.fechaSalida != undefined){
+            document = {
+              Codigo : '',
+              Nombre: '',
+              Lote: '',
+              PesoFinal: '',
+              FechaEntrada: '',
+              FechaSalida: '',
+              PesoMateriaPrima: '',
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: '',
+            }
+          }else{
+            document = {
+              Codigo : '',
+              Nombre: '',
+              Stock: '',
+              Lote: '',
+              PesoFinal: '',
+              FechaEntrada: '',
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: '',
+            }
+          }
+        }
+        reporte.push(document);
+      })
+    })
+    console.log(reporte);
+    return reporte;
   }
 
   ingresosGet() {
