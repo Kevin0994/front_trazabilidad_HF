@@ -64,6 +64,12 @@ export class ModalFabricacionPage implements OnInit {
     let status;
     let loteMes = new Date().getMonth() + 1;
     let loteCalculado = this.proveedor.calcularLote();
+    let docRef = {
+      productName : this.Producto.nombre,
+      loteMes: loteMes,
+      idProceso: this.formulario.proceso,
+
+    }
 
     if(this.showSemi == true){
       let form = this.formulario;
@@ -74,12 +80,17 @@ export class ModalFabricacionPage implements OnInit {
 
       console.log(this.MateriaPrima);
 
-      await this.proveedor.validarIdIngreso('productos/validateId/', 'Semi' , this.formulario.proceso).then(data => {
+      await this.proveedor.validarIdIngreso('productos/validateId/', 'Semi' , docRef).then(data => {
         status = data;
         console.log(status);
-      })
+      }).catch(data => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
+        console.log(data);
+      });
 
       if(!status){
+        this.providerMensajes.dismissLoading();
         this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
         return;
       }
@@ -151,12 +162,17 @@ export class ModalFabricacionPage implements OnInit {
 
       console.log(recetaForm);
 
-      await this.proveedor.validarIdIngreso('productos/validateId/', 'Final' , this.formulario.proceso).then(data => {
+      await this.proveedor.validarIdIngreso('productos/validateId/', 'Final' , docRef).then(data => {
         status = data;
         console.log(status);
-      })
+      }).catch(data => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
+        console.log(data);
+      });
 
       if(!status){
+        this.providerMensajes.dismissLoading();
         this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
         return;
       }
@@ -182,14 +198,13 @@ export class ModalFabricacionPage implements OnInit {
             responsable: localStorage.getItem('Usuario'),
             conversion: pesoMp/this.formulario.pesoFinal,
             estado: 'Terminado',
-          } 
+          }
 
           console.table(this.inventario); 
           console.table(responseStock);
 
           this.proveedor.InsertarDocumento('inventarioProductoFinal/post',this.inventario).then(data => {
             console.log(data);
-            let response = data as any;
             if(this.proveedor.status){
               this.providerMensajes.dismissLoading();
               this.MensajeServidor();
