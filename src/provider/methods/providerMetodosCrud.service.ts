@@ -38,6 +38,14 @@ export class ProviderMetodosCrud{
         }
     }
 
+    actualizarDatosInventario(producto:any,tabla:any){ //verifica si recibe la nueva cosecha al cerrar el modal
+        let foundIndex = tabla.findIndex(obj =>
+            obj.id == producto.id
+        );
+        tabla[foundIndex]['stock'] = producto.stock;
+        return tabla;
+    }
+
     eliminarDatosTabla(id:any,tabla:any){
         let foundIndex = tabla.findIndex(obj =>
             obj.id == id

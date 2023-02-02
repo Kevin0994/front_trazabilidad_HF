@@ -1,6 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, NavController, NavParams, } from '@ionic/angular';
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
@@ -26,9 +25,7 @@ export class IngresosInventario implements OnInit {
   constructor(private router:Router,
     private proveedor: ProviderService,
     private providerMensajes:ProviderMensajes,
-    private alertController: AlertController,
-    private navCtrl:NavController,
-    private modalController:ModalController) {
+    ) {
       this.response = this.router.getCurrentNavigation().extras.state.tabla;
       console.log(this.response);
     }
