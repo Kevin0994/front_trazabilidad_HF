@@ -154,6 +154,12 @@ ion-item.select-interface-option.ion-activatable {
   font-size: 1.1rem
 }
 
+.loading-wrapper {
+  --background: white;
+  color: #000;
+  font-weight: 500;
+}
+
 input[type=file]::file-selector-button {
   margin-right: 20px;
   border: none;

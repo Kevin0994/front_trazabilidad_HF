@@ -20,10 +20,6 @@
     <br>
     <form class="content-info" [formGroup]="formRegistro" (ngSubmit)="saveProfile()"  id="form">
       <ion-input class="input-file" (change)="capturarFile($event)" type="file"  accept=".jpg, .png"></ion-input>
-      <ion-item class="form-input">
-        <ion-label position="floating">Codigo</ion-label>
-        <ion-input formControlName="codigo" placeholder="inserte un codigo"></ion-input>
-      </ion-item>
       <ion-item class="form-input mt-3">
         <ion-label position="floating">Nombre</ion-label>
         <ion-input formControlName="nombre" placeholder="Inserte un nombre"></ion-input>

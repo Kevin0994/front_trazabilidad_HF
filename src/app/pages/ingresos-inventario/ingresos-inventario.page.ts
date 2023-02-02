@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, ModalController, NavController, NavParams, } from '@ionic/angular';
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-ingresos-inventario',
@@ -24,6 +25,7 @@ export class IngresosInventario implements OnInit {
 
   constructor(private router:Router,
     private proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     private alertController: AlertController,
     private navCtrl:NavController,
     private modalController:ModalController) {
@@ -36,6 +38,7 @@ export class IngresosInventario implements OnInit {
     }
   
   loadColumnasTabla(){
+    this.providerMensajes.showLoading();
     if(this.response == true){
       this.cols = [
         {
@@ -45,25 +48,11 @@ export class IngresosInventario implements OnInit {
         {
           name: 'Nombre',
           prop: 'nombre'
-        }/* ,
-        {
-          name: 'Materia Prima',
-          prop: 'nombreMp'
-        } */,
+        },
         {
           name: 'Lote',
           prop: 'lote'
         },
-        {
-          cellTemplate: this.editTmpl,
-          headerTemplate: this.hdrTpl,
-          name: 'Peso MP',
-          prop: 'pesoMp'
-        }/* ,
-        {
-          name: 'Lote MP',
-          prop: 'loteMp_st'
-        } */,
         {
   
           name: 'Fecha Entrada',
@@ -82,11 +71,7 @@ export class IngresosInventario implements OnInit {
         {
           name:'N° Fundas',
           prop: 'unidades'
-        }/* ,
-        {
-          name: 'Conversion',
-          prop: 'conversion'
-        } */,
+        },
         {
           name: 'Responsable',
           prop: 'responsable'
@@ -147,7 +132,7 @@ export class IngresosInventario implements OnInit {
 
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.nombreps.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.nombre.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
@@ -159,14 +144,84 @@ export class IngresosInventario implements OnInit {
   ionViewWillEnter(){
   }
 
+  ExportAsXLSX(){
+    let data = this.ReordenarProductos();
+    this.proveedor.exportToExcel(data,'reporteHF_');
+  }
+
+  ReordenarProductos(){
+    let array = Array();
+    this.productos.map(function (doc){
+      doc.loteMp.map(function(mp,n){
+        let document;
+        if(n === 0){
+          document = {
+            Codigo : doc.codigo,
+            Nombre: doc.nombre,
+            Stock: doc.stock,
+            Lote: doc.lote,
+            PesoFinal: doc.pesoFinal,
+            FechaEntrada: doc.fechaEntrada,
+            FechaSalida: doc.fechaSalida,
+            PesoMateriaPrima: doc.pesoMp,
+            MateriaPrima: mp.codigo,
+            NombreMp: mp.nombre,
+            coleccion: mp.collection,
+            Retiro: mp.ingreso,
+            LoteMp: mp.lote,
+            Responsable: doc.responsable,
+          }
+        }else{
+          document = {
+            Codigo : '',
+            Nombre: '',
+            Stock: '',
+            Lote: '',
+            PesoFinal: '',
+            FechaEntrada: '',
+            FechaSalida: '',
+            PesoMateriaPrima: '',
+            MateriaPrima: mp.codigo,
+            NombreMp: mp.nombre,
+            coleccion: mp.collection,
+            Retiro: mp.ingreso,
+            LoteMp: mp.lote,
+            Responsable: '',
+          }
+        }
+        array.push(document);
+      })
+    })
+    console.log(array);
+    return array;
+  }
+
+
   LoadDatos(url:any){
     this.proveedor.obtenerDocumentos(url).then(data => {
+      this.OrdenarTabla(data);
       this.productos=data;
       this.temp=data;
+      this.providerMensajes.dismissLoading();
       console.log(this.productos);
     }).catch(data => {
+      this.providerMensajes.dismissLoading();
+      this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     })
   }
+
+  OrdenarTabla(ingresos:any=[]){
+    ingresos.sort(function(a, b){ //Ordena el array de manera Descendente
+      if(a.fechaSalida > b.fechaSalida){
+          return 1
+      } else if (a.fechaSalida < b.fechaSalida) {
+          return -1
+      } else {
+          return 0
+      }
+   })
+  }
+
 
 }

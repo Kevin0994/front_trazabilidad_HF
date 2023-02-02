@@ -39,8 +39,6 @@ export class CategoriaProductosPage implements OnInit {
   async CargarDatos() {
 
     await this.providerMensajes.showLoading();
-    console.log(this.providerMensajes.show);
-
     if (this.showSemi == true) {
       if (this.categoriaSemi.length != 0) {
         this.categoriaTabla = this.categoriaSemi;
@@ -234,7 +232,6 @@ export class CategoriaProductosPage implements OnInit {
   }
 
   OrganizarDataModel(data:any,tabla:any){
-    let idOld = data.data.idOld;
     let categoria={ // reemplazamos el nuevo producto a una varible
       id: data.data.id,
       nombre: data.data.nombre,
@@ -244,12 +241,12 @@ export class CategoriaProductosPage implements OnInit {
     }
 
     if (tabla === 'Semi'){
-      this.categoriaSemi = this.providerMetodosCrud.actualizarDatosTabla(categoria,idOld,this.categoriaSemi);
+      this.categoriaSemi = this.providerMetodosCrud.actualizarDatosTabla(categoria,categoria.id,this.categoriaSemi);
       this.categoriaTabla = this.categoriaSemi;
       this.OrdenarTabla(this.categoriaTabla);
       console.table(this.categoriaTabla);
     }else{
-      this.categoriaFinal = this.providerMetodosCrud.actualizarDatosTabla(categoria,idOld,this.categoriaFinal);
+      this.categoriaFinal = this.providerMetodosCrud.actualizarDatosTabla(categoria,categoria.id,this.categoriaFinal);
       this.categoriaTabla = this.categoriaFinal;
       this.OrdenarTabla(this.categoriaTabla);
       console.table(this.categoriaTabla);

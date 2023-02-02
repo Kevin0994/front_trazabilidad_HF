@@ -59,6 +59,11 @@ export class ModalFabricacionPage implements OnInit {
       return;
     }
 
+    await this.providerMensajes.showLoading();
+
+    let status;
+    let loteMes = new Date().getMonth() + 1;
+    let loteCalculado = this.proveedor.calcularLote();
 
     if(this.showSemi == true){
       let form = this.formulario;
@@ -69,43 +74,63 @@ export class ModalFabricacionPage implements OnInit {
 
       console.log(this.MateriaPrima);
 
-      this.proveedor.InsertarDocumento('inventarioProducto/stock/',this.MateriaPrima).then(data => {
-        console.log('entroo');
-        this.loteMateriaPrima = data;
+      await this.proveedor.validarIdIngreso('productos/validateId/', 'Semi' , this.formulario.proceso).then(data => {
+        status = data;
+        console.log(status);
+      })
+
+      if(!status){
+        this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
+        return;
+      }
+
+     this.proveedor.InsertarDocumento('inventarioProducto/stock',this.MateriaPrima).then(data => {
+        let responseStock = data as any;
         console.log( this.loteMateriaPrima);
         if(this.proveedor.status){
 
           this.inventario = {
-            codigo: this.Producto.id,
+            codigo: this.Producto.codigo,
             n_proceso: this.formulario.proceso,
-            materiaPrima: this.MateriaPrima.map(doc=>(doc.id)), //Array con los productos usados como materia prima
             nombre: this.Producto.nombre, //nombre producto semifinal
-            lote_mp: this.loteMateriaPrima, //lote materia prima
-            lote: new Date().getMonth() + 1, //lote producto semifinal
+            lote_mp: responseStock, //lote materia prima
+            loteMes: loteMes, //lote del mes
+            lote: loteCalculado, //lote con mes y dia
             fechaEntrada: new Date(),
             responsable: localStorage.getItem('Usuario'),
             estado: 'En proceso',
           }
 
           console.table(this.inventario);
-          console.table(this.loteMateriaPrima);
+          console.table(responseStock);
 
          this.proveedor.InsertarDocumento('inventarioProductoSemifinal/post',this.inventario).then(data => {
             console.log(data);
+            let response = data as any;
             if(this.proveedor.status){
+              this.providerMensajes.dismissLoading();
               this.MensajeServidor();
+              return;
             }else{
+              this.providerMensajes.dismissLoading();
               this.providerMensajes.ErrorMensajeServidor();
               return;
             }
           }).catch(data => {
+
             console.log(data);
+            this.providerMensajes.ErrorMensajeServidor();
+            return;
+
           });
         }else{
-          this.providerMensajes.ErrorMensajePersonalizado(this.loteMateriaPrima.error.messege);
-          return; 
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajePersonalizado(responseStock.error.messege);
+          return;
         }
       }).catch(data => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
     }
@@ -113,27 +138,44 @@ export class ModalFabricacionPage implements OnInit {
 
     if(this.showFinal == true){
 
-      this.recetaProducto.map(function(doc,index,array){
-        array[index]['peso'] = parseFloat((<HTMLInputElement>document.getElementById(index)).value);
-      })
+      let recetaForm;
+      let unidades = this.formulario.unidades
 
       console.log(this.recetaProducto);
 
-      this.proveedor.InsertarDocumento('inventarioProducto/stock/',this.recetaProducto).then(data => {
-        this.loteMateriaPrima = data;
-        console.table(this.loteMateriaPrima);
+      recetaForm = this.recetaProducto.map((doc,index) => ({
+        id: doc.id,
+        nombre: doc.nombre,
+        peso : parseFloat((<HTMLInputElement>document.getElementById(index)).value) * unidades,
+      }));
+
+      console.log(recetaForm);
+
+      await this.proveedor.validarIdIngreso('productos/validateId/', 'Final' , this.formulario.proceso).then(data => {
+        status = data;
+        console.log(status);
+      })
+
+      if(!status){
+        this.providerMensajes.ErrorMensajePersonalizado('Ya existe un producto con este ingreso, ingrese uno diferente');
+        return;
+      }
+
+      this.proveedor.InsertarDocumento('inventarioProducto/stock',recetaForm).then(data => {
+        let responseStock = data as any;
+        console.table(responseStock);
         if(this.proveedor.status){
           let pesoMp = 0;
-          this.recetaProducto.forEach(function(doc){
+          recetaForm.forEach(function(doc){
             pesoMp += doc.peso;
           })
           this.inventario = {
-            codigo: this.Producto.id,
+            codigo: this.Producto.codigo,
             n_proceso: this.formulario.proceso,
-            materiaPrima: this.recetaProducto.map(doc=>(doc.id)), //nombre matria prima
             nombre: this.Producto.nombre, //nombre producto semifinal
-            lote_mp: this.loteMateriaPrima, //lote materia prima
-            lote: new Date().getMonth() + 1, //lote producto semifinal
+            lote_mp: responseStock, //lote materia prima
+            loteMes: loteMes,
+            lote: loteCalculado, //lote producto semifinal
             unidades:this.formulario.unidades,
             pesoFinal: this.formulario.pesoFinal,
             fechaEntrada: new Date(),
@@ -143,24 +185,30 @@ export class ModalFabricacionPage implements OnInit {
           } 
 
           console.table(this.inventario); 
-          console.table(this.loteMateriaPrima);
+          console.table(responseStock);
 
           this.proveedor.InsertarDocumento('inventarioProductoFinal/post',this.inventario).then(data => {
             console.log(data);
+            let response = data as any;
             if(this.proveedor.status){
+              this.providerMensajes.dismissLoading();
               this.MensajeServidor();
             }else{
+              this.providerMensajes.dismissLoading();
               this.providerMensajes.ErrorMensajeServidor();
               return;
             }
           }).catch(data => {
+            this.providerMensajes.dismissLoading();
             console.log(data);
           });
         }else{
-          this.providerMensajes.ErrorMensajePersonalizado(this.loteMateriaPrima.error.messege);
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajePersonalizado(responseStock.error.messege);
           return;
         } 
       }).catch(data => {
+        this.providerMensajes.dismissLoading();
         console.log(data);
       });
     }

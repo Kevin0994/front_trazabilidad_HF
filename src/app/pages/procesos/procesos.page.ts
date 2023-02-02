@@ -26,6 +26,7 @@ export class ProcesosPage implements OnInit {
 
   loadData(){
     this.proveedor.obtenerDocumentos('inventarioProductoSemifinal/proceso/documents').then(data => {
+      this.OrdenarTabla(data);
       this.productos=data;
       console.table(this.productos);
     }).catch(data => {
@@ -57,13 +58,15 @@ export class ProcesosPage implements OnInit {
     await alert.present();
   }
 
-  async ErrorMensajeServidor(){
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK']
-    });
-
-    await alert.present();
+  OrdenarTabla(ingresos:any=[]){
+    ingresos.sort(function(a, b){ //Ordena el array de manera Descendente
+      if(a.fechaEntrada > b.fechaEntrada){
+          return 1
+      } else if (a.fechaEntrada < b.fechaEntrada) {
+          return -1
+      } else {
+          return 0
+      }
+   })
   }
 }

@@ -48,6 +48,16 @@ export class ProviderMensajes {
     await alert.present();
   }
 
+  async MensajePersonalizado(mensaje:any){
+    const alert = await this.alertController.create({
+      header: 'Atencion',
+      message: mensaje,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
   async ErrorMensajePersonalizado(mensaje:any){
     const alert = await this.alertController.create({
       header: 'Error',

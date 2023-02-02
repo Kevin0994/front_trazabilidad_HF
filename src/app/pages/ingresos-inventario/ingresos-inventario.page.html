@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/inventario" text="Regresar"></ion-back-button>
+      <ion-back-button defaultHref="/inventario"></ion-back-button>
     </ion-buttons>
     <ion-title>inventario</ion-title>
   </ion-toolbar>
@@ -16,6 +16,10 @@
       placeholder="Buscar..."
       (keyup)="updateFilter($event)"
     />
+    <ion-button class="btn-add" (click)="ExportAsXLSX()" >
+      <ion-icon name="document-text-outline"></ion-icon>
+      Exportar XLSX
+    </ion-button>
     <ngx-datatable
     #table
     class="material"

@@ -12,6 +12,7 @@ import {
   ModalController,
 } from '@ionic/angular';
 import { ModalFabricacionPage } from '../../modals/modal-fabricacion/modal-fabricacion.page';
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-fabricacion',
@@ -39,6 +40,7 @@ export class FabricacionPage implements OnInit {
 
   constructor(
     public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public alertController: AlertController,
     public navCtrl: NavController,
     public modalController: ModalController
@@ -56,9 +58,11 @@ export class FabricacionPage implements OnInit {
 
   ngAfterViewInit() {}
 
-  @HostListener('window:resize', ['$event'])
-  CargarDatos() {
-    console.log(this.showSemi);
+  //@HostListener('window:resize', ['$event'])
+
+  async CargarDatos() {
+    console.log('holi');
+    await this.providerMensajes.showLoading();
     if (this.showSemi == true) {
       if (this.categoriaSemi.length != 0) {
         this.categorias = this.categoriaSemi;
@@ -68,8 +72,11 @@ export class FabricacionPage implements OnInit {
         .then((data) => {
           this.categoriaSemi = data;
           this.categorias = this.categoriaSemi;
+          this.providerMensajes.dismissLoading();
         })
         .catch((data) => {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(data);
         });
     }
@@ -82,14 +89,18 @@ export class FabricacionPage implements OnInit {
         .then((data) => {
           this.categoriaFinal = data;
           this.categorias = this.categoriaFinal;
+          this.providerMensajes.dismissLoading();
         })
         .catch((data) => {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(data);
         });
     }
   }
 
-  openProduct(categoria: any) {
+  async openProduct(categoria: any) {
+    await this.providerMensajes.showLoading();
     if (this.showSemi == true) {
       this.cargarProductos(categoria, 'productoSemi/documents/');
     }
@@ -104,14 +115,22 @@ export class FabricacionPage implements OnInit {
       .then((data) => {
         this.productos = data;
         this.categoriaProducto = categoria;
+        this.providerMensajes.dismissLoading();
+        if(this.productos.length == 0){
+          this.providerMensajes.MensajePersonalizado('no se encontraron productos asocidos');
+        }
         console.log(this.productos);
       })
       .catch((data) => {
+        this.providerMensajes.dismissLoading();
+        this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
   }
 
-  fabricarProducto(producto: any) {
+  async fabricarProducto(producto: any) {
+
+    await this.providerMensajes.showLoading();
     let refMateriaPrima;
 
     if(producto.materiaPrima != undefined){
@@ -125,11 +144,26 @@ export class FabricacionPage implements OnInit {
     //Busca los documentos vinculados con l amateria prima del producto 
     this.proveedor.InsertarDocumento('alimentos/validate/get',refMateriaPrima)
         .then((data) => {
-          let response = data;
-          console.log(response);
-          this.openModal(producto, response);
+          let response = data as any;
+          if(this.proveedor.status){
+            
+            console.log(response);
+            this.providerMensajes.dismissLoading();
+            this.openModal(producto, response);
+          }else{
+            this.providerMensajes.dismissLoading();
+            if(response.error.message != undefined){
+              this.providerMensajes.ErrorMensajePersonalizado(response.error.message);
+            }else{
+              this.providerMensajes.ErrorMensajeServidor();
+            }
+            
+          }
+          
         })
         .catch((data) => {
+          this.providerMensajes.dismissLoading();
+          this.providerMensajes.ErrorMensajeServidor();
           console.log(data);
         });
   }
@@ -148,25 +182,5 @@ export class FabricacionPage implements OnInit {
     });
 
     return await modal.present();
-  }
-
-  async MensajeServidor() {
-    const alert = await this.alertController.create({
-      header: 'Eliminar',
-      message: 'La eliminacion se completo con exito',
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
-
-  async ErrorMensajeServidor() {
-    const alert = await this.alertController.create({
-      header: 'Error del servidor',
-      message: 'error al conectarse con el servidor',
-      buttons: ['OK'],
-    });
-
-    await alert.present();
   }
 }

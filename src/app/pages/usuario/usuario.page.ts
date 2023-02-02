@@ -97,13 +97,16 @@ export class UsuarioPage implements OnInit {
         }, {
           text: 'Si',
           handler: () => {
+            this.providerMensajes.showLoading();
             this.proveedor.eliminarDocumento('usuario/documents/',id).subscribe(data => {
               this.ionViewWillEnter();
               if(this.proveedor.status){
+                this.providerMensajes.dismissLoading();
                 this.loadDatos();
-                this.ErrorMensajeServidor();
-              }else{
                 this.MensajeServidor();
+              }else{
+                this.providerMensajes.dismissLoading();
+                this.ErrorMensajeServidor();
               }
             })
           }

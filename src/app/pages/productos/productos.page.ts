@@ -110,7 +110,7 @@ export class ProductosPage implements OnInit {
 
     this.proveedor.obtenerDocumentos('productos/alldocuments').then(data => {
       listaMateriaPrima = data;
-      
+      console.log(listaMateriaPrima);
       if (this.showSemi == true) {
 
         let materiaPrima = Array({
@@ -183,9 +183,9 @@ export class ProductosPage implements OnInit {
     }
   }
 
-  editProducto(producto:any){
+  async editProducto(producto:any){
 
-    this.providerMensajes.showLoading();
+    await this.providerMensajes.showLoading();
 
     let datos = this.validateDataPut();
 
@@ -210,6 +210,7 @@ export class ProductosPage implements OnInit {
         this.editOpenModal(datos['url'] ,producto ,receta, '',listaMateriaPrima, datos['tabla']);
 
       }).catch(data => {
+        this.providerMensajes.dismissLoading();
         console.log(data);
       })
 
@@ -255,10 +256,18 @@ export class ProductosPage implements OnInit {
       }else{
         refid = doc.id._path.segments[1];
       }
-      console.log(refid);
-      let documento ={
-        id: refid,
-        nombre: listaMp.filter((alimento) => alimento.id == refid)[0].nombre,
+      let documento;
+      let mpNombre = listaMp.filter((alimento) => alimento.id == refid)
+      if(mpNombre.length != 0){
+        documento ={
+          id: refid,
+          nombre: mpNombre[0].nombre,
+        }
+      }else{
+        documento ={
+          id: '',
+          nombre: '',
+        }
       }
       console.log(documento);
       mp.push(documento)
@@ -291,12 +300,20 @@ export class ProductosPage implements OnInit {
         }else{
           refid = doc.id._path.segments[1];
         }
-
-        let documento ={
-          id: refid,
-          nombre: listaMp.filter((alimento) => alimento.id == refid)[0].nombre,
+        console.log(listaMp);
+        let documento;
+        let mpNombre = listaMp.filter((alimento) => alimento.id == refid)
+        if(mpNombre.length != 0){
+          documento ={
+            id: refid,
+            nombre: mpNombre[0].nombre,
+          }
+        }else{
+          documento ={
+            id: '',
+            nombre: '',
+          }
         }
-        
         receta[i].materiaPrima.push(documento)
       })
     })
@@ -346,9 +363,9 @@ export class ProductosPage implements OnInit {
   }
 
   OrganizarDataModel(data:any,tabla:any){
-    let idOld = data.data.idOld;
     let producto={ // reemplazamos el nuevo producto a una varible
       id: data.data.id,
+      codigo:data.data.codigo,
       nombre: data.data.nombre,
       img: data.data.img,
       categoriaId: data.data.categoriaId,
@@ -359,14 +376,14 @@ export class ProductosPage implements OnInit {
 
     if (tabla === 'Semi'){
       producto['materiaPrima']=data.data.materiaPrima;
-      this.productoSemi = this.providerMetodosCrud.actualizarDatosTabla(producto,idOld,this.productoSemi);
+      this.productoSemi = this.providerMetodosCrud.actualizarDatosTabla(producto,producto.id,this.productoSemi);
       this.productosTabla = this.productoSemi;
       this.OrdenarTabla(this.productosTabla);
       console.log('tabla producto');
       console.table(this.productosTabla);
     }else{
       producto['receta']=data.data.receta;
-      this.productoFinal = this.providerMetodosCrud.actualizarDatosTabla(producto,idOld,this.productoFinal);
+      this.productoFinal = this.providerMetodosCrud.actualizarDatosTabla(producto,producto.id,this.productoFinal);
       this.productosTabla = this.productoFinal;
       this.OrdenarTabla(this.productoFinal);
       console.log('tabla productoFinal');

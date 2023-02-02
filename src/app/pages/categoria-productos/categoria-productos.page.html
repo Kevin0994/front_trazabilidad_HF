@@ -35,7 +35,6 @@
     <table class="table table-white">
       <thead class="table-header text-light">
         <tr>
-          <th scope="col">Codigo</th>
           <th scope="col">Nombre</th>
           <th scope="col">Productos Asociados</th>
           <th scope="col">Acciones</th>
@@ -43,7 +42,6 @@
       </thead>
       <tbody class="bg-white">
         <tr *ngFor="let categoria of categoriaTabla">
-          <td>{{categoria.id}}</td>
           <td>{{categoria.nombre}}</td>
           <td>{{categoria.nProductos}}</td>
           <td> <input type="button" style="margin-right: 20px;"
