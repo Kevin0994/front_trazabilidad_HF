@@ -46,6 +46,7 @@ export class ModalCosechaPage implements OnInit {
     this.providerMensajes.showLoading();
     this.proveedor.obtenerDocumentos('alimentos/documents').then(data => {
       this.lista = data;
+      this.OrdenarTabla(this.lista);
       this.providerMensajes.dismissLoading();
     }).catch(data => {
       this.providerMensajes.dismissLoading();
@@ -137,6 +138,20 @@ export class ModalCosechaPage implements OnInit {
       this.providerMensajes.ErrorMensajeServidor();
       console.log(data);
     });
+  }
+
+  OrdenarTabla(lista:any=[]){
+
+    lista.sort(function(a, b){ //Ordena el array de manera Descendente
+      
+      if(a.nombre > b.nombre){
+          return 1
+      } else if (a.nombre < b.nombre) {
+          return -1
+      } else {
+          return 0
+      }
+    })
   }
 
 }

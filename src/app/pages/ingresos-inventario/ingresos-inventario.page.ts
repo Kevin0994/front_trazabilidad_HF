@@ -1,6 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, NavController, NavParams, } from '@ionic/angular';
 import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
 import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
@@ -26,9 +25,7 @@ export class IngresosInventario implements OnInit {
   constructor(private router:Router,
     private proveedor: ProviderService,
     private providerMensajes:ProviderMensajes,
-    private alertController: AlertController,
-    private navCtrl:NavController,
-    private modalController:ModalController) {
+    ) {
       this.response = this.router.getCurrentNavigation().extras.state.tabla;
       console.log(this.response);
     }
@@ -77,7 +74,7 @@ export class IngresosInventario implements OnInit {
           prop: 'responsable'
         }
       ]
-      this.LoadDatos('inventarioProSemi/terminado/documents');
+      this.LoadDatos('inventarioProSemi/terminado/documents',true);
     }
 
     if(this.response == false){
@@ -95,11 +92,6 @@ export class IngresosInventario implements OnInit {
           prop: 'lote'
         },
         {
-          name: 'Lote MP',
-          prop: 'loteMp_st'
-        },
-        {
-  
           name: 'Fecha Entrada',
           prop: 'fechaEntrada'
         },
@@ -122,7 +114,7 @@ export class IngresosInventario implements OnInit {
           prop: 'responsable'
         }
       ]
-      this.LoadDatos('inventarioProductoFinal/all/documents');
+      this.LoadDatos('inventarioProductoFinal/all/documents',false);
     }
   }
 
@@ -155,38 +147,82 @@ export class IngresosInventario implements OnInit {
       doc.loteMp.map(function(mp,n){
         let document;
         if(n === 0){
-          document = {
-            Codigo : doc.codigo,
-            Nombre: doc.nombre,
-            Stock: doc.stock,
-            Lote: doc.lote,
-            PesoFinal: doc.pesoFinal,
-            FechaEntrada: doc.fechaEntrada,
-            FechaSalida: doc.fechaSalida,
-            PesoMateriaPrima: doc.pesoMp,
-            MateriaPrima: mp.codigo,
-            NombreMp: mp.nombre,
-            coleccion: mp.collection,
-            Retiro: mp.ingreso,
-            LoteMp: mp.lote,
-            Responsable: doc.responsable,
+          if(doc.pesoMp != undefined && doc.fechaSalida != undefined){
+            document = {
+              Codigo : doc.codigo,
+              Nombre: doc.nombre,
+              Lote: doc.lote,
+              PesoFinal: doc.pesoFinal,
+              FechaEntrada: doc.fechaEntrada,
+              FechaSalida: doc.fechaSalida,
+              PesoMateriaPrima: doc.pesoMp,
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: doc.responsable,
+            }
+          }else{
+            document = {
+              Codigo : doc.codigo,
+              Nombre: doc.nombre,
+              Lote: doc.lote,
+              PesoFinal: doc.pesoFinal,
+              FechaEntrada: doc.fechaEntrada,
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: doc.responsable,
+            }
           }
+        
         }else{
           document = {
             Codigo : '',
             Nombre: '',
-            Stock: '',
             Lote: '',
             PesoFinal: '',
             FechaEntrada: '',
-            FechaSalida: '',
-            PesoMateriaPrima: '',
             MateriaPrima: mp.codigo,
             NombreMp: mp.nombre,
             coleccion: mp.collection,
             Retiro: mp.ingreso,
             LoteMp: mp.lote,
             Responsable: '',
+          }
+          if(doc.pesoMp != undefined && doc.fechaSalida != undefined){
+            document = {
+              Codigo : '',
+              Nombre: '',
+              Lote: '',
+              PesoFinal: '',
+              FechaEntrada: '',
+              FechaSalida: '',
+              PesoMateriaPrima: '',
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: '',
+            }
+          }else{
+            document = {
+              Codigo : '',
+              Nombre: '',
+              Lote: '',
+              PesoFinal: '',
+              FechaEntrada: '',
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: '',
+            }
           }
         }
         array.push(document);
@@ -197,9 +233,9 @@ export class IngresosInventario implements OnInit {
   }
 
 
-  LoadDatos(url:any){
+  LoadDatos(url:any,type:boolean){
     this.proveedor.obtenerDocumentos(url).then(data => {
-      this.OrdenarTabla(data);
+      this.OrdenarTabla(data,type);
       this.productos=data;
       this.temp=data;
       this.providerMensajes.dismissLoading();
@@ -211,17 +247,33 @@ export class IngresosInventario implements OnInit {
     })
   }
 
-  OrdenarTabla(ingresos:any=[]){
-    ingresos.sort(function(a, b){ //Ordena el array de manera Descendente
-      if(a.fechaSalida > b.fechaSalida){
-          return 1
-      } else if (a.fechaSalida < b.fechaSalida) {
-          return -1
-      } else {
-          return 0
-      }
-   })
+  OrdenarTabla(ingresos:any=[],type:boolean){
+    if(type){
+      ingresos.sort(function(a, b){ //Ordena el array de manera Descendente
+        if(new Date(a.fechaSalida) < new Date(b.fechaSalida)){
+            return 1
+        } else if (new Date(a.fechaSalida) > new Date(b.fechaSalida)) {
+            return -1
+        } else {
+            return 0
+        }
+     })
+    }else{
+      ingresos.sort(function(a, b){ //Ordena el array de manera Descendente
+        if(new Date(a.fechaEntrada) < new Date(b.fechaEntrada)){
+            return 1
+        } else if (new Date(a.fechaEntrada) > new Date(b.fechaEntrada)) {
+            return -1
+        } else {
+            return 0
+        }
+     })
+    }
+    
   }
+
+
+  
 
 
 }

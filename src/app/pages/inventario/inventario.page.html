@@ -42,14 +42,20 @@
         </ion-button>
       </div>
     </div>
-
-    <ngx-datatable #table class="material" [columns]="cols" [columnMode]="ColumnMode.force" [headerHeight]="50"
-      [footerHeight]="50" rowHeight="auto" [limit]="10" [rows]="productos">
+      <ngx-datatable
+      #tableMain
+      class="material"
+      [columns]="cols"
+      [columnMode]="ColumnMode.force"
+      [headerHeight]="50"
+      [footerHeight]="50"
+      rowHeight="auto"
+      [limit]="10"
+      [rows]="productos"[selected]="selected"
+      [selectionType]="SelectionType.single"
+      (select)="onSelect($event)"
+      [rows]="productos"
+      >
     </ngx-datatable>
-    <ngx-datatable-column prop="pesomp" [width]="300">
-      <ng-template #editTmpl let-value="value" ngx-datatable-cell-template>
-        <strong>{{ value }} gr</strong>
-      </ng-template>
-    </ngx-datatable-column>
   </div>
 </ion-content>

@@ -58,6 +58,23 @@ export class ProviderMensajes {
     await alert.present();
   }
 
+  async MensajePersonalizadoCrud(modalController:ModalController,mensaje:any,Objeto:any){
+    const alert = await this.alertController.create({
+      header: 'Atencion',
+      message: mensaje,
+      buttons: [
+        {
+          text: 'OK',
+          handler: () => {
+            console.log('cerrado');
+            modalController.dismiss(Objeto);
+          }
+        }]
+    });
+
+    await alert.present();
+  }
+
   async ErrorMensajePersonalizado(mensaje:any){
     const alert = await this.alertController.create({
       header: 'Error',

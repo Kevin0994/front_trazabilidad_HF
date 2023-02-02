@@ -185,17 +185,19 @@ export class ProviderService {
     return parseInt(loteCalculado);
   }
 
-  validarIdIngreso(rutaDocumento: string, tabla:string, id: string) {
-    console.log(this.API_URL + rutaDocumento + tabla + '/' +id );
+  validarIdIngreso(rutaDocumento: string, tabla:string, document: any) {
+    console.log(this.API_URL + rutaDocumento );
     return new Promise((resolve) => {
-      this.http.get(this.API_URL + rutaDocumento + tabla + '/' +id ).subscribe(
+      this.http.post(this.API_URL + rutaDocumento + tabla, document).subscribe(
         (data) => {
           resolve(data);
+          return (this.status = true);
         },
         (err) => {
-          console.log(err);
+          this.status = false;
+          resolve(err);
         }
-      );
+      ).closed;
     });
   }
 }
