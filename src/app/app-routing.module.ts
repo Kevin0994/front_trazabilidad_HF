@@ -170,6 +170,10 @@ const routes: Routes = [
     path: 'modal-actividades',
     loadChildren: () => import('./modals/modal-actividades/modal-actividades.module').then( m => m.ModalActividadesPageModule)
   },
+  {
+    path: 'modal-descontar-stock',
+    loadChildren: () => import('./modals/modal-descontar-stock/modal-descontar-stock.module').then( m => m.ModalDescontarStockPageModule)
+  },
 
 ];
 

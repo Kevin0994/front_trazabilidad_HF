@@ -1,55 +1,59 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import {
-  AlertController,
-  ModalController,
-  NavController,
+  AlertController, ModalController,
 } from '@ionic/angular';
-import { DatatableComponent, ColumnMode } from '@swimlane/ngx-datatable';
-//import { IngresosInventarioSemiPage } from 'src/app/pages/ingresos-inventario/ingresos-inventario.page';
+import { DatatableComponent, ColumnMode, SelectionType } from '@swimlane/ngx-datatable';
 import { ProviderService } from 'src/provider/ApiRest/provider.service';
-import { ActionSheetController } from '@ionic/angular';
-import { ModalLeerNFCPage } from '../../modals/modal-leer-nfc/modal-leer-nfc.page';
-import { NFC, Ndef } from '@awesome-cordova-plugins/nfc/ngx';
 import { Router, NavigationExtras } from '@angular/router';
 import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
+import { ModalDescontarStockPage } from '../../modals/modal-descontar-stock/modal-descontar-stock.page'
+import { ProviderMetodosCrud } from 'src/provider/methods/providerMetodosCrud.service';
+
 @Component({
   selector: 'app-inventario',
   templateUrl: './inventario.page.html',
   styleUrls: ['./inventario.page.scss'],
 })
 export class InventarioPage implements OnInit {
-  @ViewChild(DatatableComponent) table: DatatableComponent;
-  @ViewChild('editTmpl', { static: true }) editTmpl: TemplateRef<any>;
-  @ViewChild('hdrTpl', { static: true }) hdrTpl: TemplateRef<any>;
+
+  @ViewChild(DatatableComponent) tableMain: DatatableComponent;
+  @ViewChild('editTmpl' , { static: true }) editTmpl: TemplateRef<any>;
+  @ViewChild('hdrTpl' , { static: true }) hdrTpl: TemplateRef<any>;
 
   public title: any = 'Productos';
   public showSemi: boolean = false;
   public showFinal: boolean = false;
   public showButtons: boolean = true;
-  inventorySemiFinalAll: any = [];
-  productos: any = [];
+  public datosTable: any = [];
+  public productos: any = [];
   temp: any = [];
   result: string;
   cols: any = [];
+  selected = [];
 
   ColumnMode = ColumnMode;
+  SelectionType = SelectionType;
 
   constructor(
     private router: Router,
-    private nfc: NFC,
     private proveedor: ProviderService,
+    public alertController: AlertController,
     private providerMensajes:ProviderMensajes,
-    private modalController: ModalController,
-  ) {}
-
-  ngOnInit() {
-    this.initTableSemi();
-    this.proveedor
-      .obtenerDocumentos('inventarioProSemi/terminado/documents')
-      .then((data) => (this.inventorySemiFinalAll = data));
+    public modalController:ModalController,
+    private providerMetodosCrud: ProviderMetodosCrud,
+  ) {
+    
   }
 
-  initTableSemi() {
+  ionViewWillEnter() {
+
+  }
+
+  ngOnInit() {
+    this.initTable();
+  }
+
+  initTable() {
     this.cols = [
       {
         name: 'N°',
@@ -60,14 +64,15 @@ export class InventarioPage implements OnInit {
         prop: 'nombre',
       },
       {
+
         name: 'Lote',
         prop: 'lote',
       },
       {
         name: 'Stock',
         prop: 'stock',
-      },
-    ];
+      }
+    ]
   }
 
   CargarDatosTabla() {
@@ -86,6 +91,10 @@ export class InventarioPage implements OnInit {
       .then((data) => {
         this.OrdenarTabla(data);
         this.productos = data;
+        this.productos.map((doc, index, array) =>{
+          array[index]['stock']= doc.stock + " gr";
+          return array[index];
+        });
         this.temp = data;
         this.providerMensajes.dismissLoading();
         console.log(this.productos);
@@ -95,6 +104,185 @@ export class InventarioPage implements OnInit {
         this.providerMensajes.ErrorMensajeServidor();
         console.log(data);
       });
+  }
+
+  
+  async onSelect({ selected }) {
+    console.log(selected[0].codigo, this.selected);
+    let reporte;
+
+   const alert = await this.alertController.create({
+      header: 'Atencion',
+      message: 'Elija una de las opciones',
+      buttons: [
+        {
+          text: 'Retirar Stock',
+          handler: () => {
+            if (this.showSemi) {
+              this.DescontarStockModal(selected[0].id,'inventarioProductoSemifinales/put/stock/');
+            }
+            if (this.showFinal) {
+              this.DescontarStockModal(selected[0].id,'inventarioProductoFinales/put/stock/');
+            }
+          }
+        }, {
+          text: 'Generar Reporte',
+          handler: () => {
+            if(this.showSemi){
+              this.proveedor.obtenerDocumentosPorId('inventarioProSemi/documents/',selected[0].id).then(data =>{
+                console.log(data);
+                reporte = data;
+                let productos =  this.ReordenarProductosporLote(selected[0],reporte);
+                this.exportAsXLSX(productos);
+              })
+              return;
+            }
+
+            if(this.showFinal){
+              this.proveedor.obtenerDocumentosPorId('inventarioProductoFinal/documents/',selected[0].id).then(data =>{
+                console.log(data);
+                reporte = data;
+                let productos =  this.ReordenarProductosporLote(selected[0],reporte);
+                this.exportAsXLSX(productos);
+              })
+              return;
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async DescontarStockModal(productoId:any,Url:string){
+    const modal = await this.modalController.create({
+      component: ModalDescontarStockPage,
+      cssClass: 'modalStock',
+      componentProps:{
+        'ProductoId':productoId,
+        'Url': Url,
+      }
+    });
+
+    modal.onDidDismiss().then(data => {
+      if(data.data != undefined){ //verifica si recibe el nuevo producto al cerrar el modal
+        this.OrganizarDataModel(data);
+      }
+    })
+
+    return await modal.present();
+  }
+
+  OrganizarDataModel(data:any){
+    let producto={ // reemplazamos el nuevo producto a una varible
+      id: data.data.id,
+      stock: data.data.stock,
+    }
+    console.log(producto);
+
+    this.productos = this.providerMetodosCrud.actualizarDatosInventario(producto,this.productos);
+    this.OrdenarTabla(this.productos);
+    console.log('tabla producto');
+  }
+
+
+
+  exportAsXLSX(reporte){
+    this.proveedor.exportToExcel(reporte,'reporteHF_');
+  }
+
+  ReordenarProductosporLote(infoLote,productos){
+    console.log(infoLote);
+    let reporte = Array();
+    productos.map(function (doc){
+      doc.loteMp.map(function(mp,n){
+        let document;
+        if(n === 0){
+          if(doc.pesoMp != undefined && doc.fechaSalida != undefined){
+            document = {
+              Codigo : infoLote.codigo,
+              Nombre: infoLote.nombre,
+              Lote: infoLote.lote,
+              PesoFinal: doc.pesoFinal,
+              FechaEntrada: doc.fechaEntrada,
+              FechaSalida: doc.fechaSalida,
+              PesoMateriaPrima: doc.pesoMp,
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: doc.responsable,
+            }
+          }else{
+            document = {
+              Codigo : infoLote.codigo,
+              Nombre: infoLote.nombre,
+              Lote: infoLote.lote,
+              PesoFinal: doc.pesoFinal,
+              FechaEntrada: doc.fechaEntrada,
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: doc.responsable,
+            }
+          }
+        
+        }else{
+          document = {
+            Codigo : '',
+            Nombre: '',
+            Lote: '',
+            PesoFinal: '',
+            FechaEntrada: '',
+            MateriaPrima: mp.codigo,
+            NombreMp: mp.nombre,
+            coleccion: mp.collection,
+            Retiro: mp.ingreso,
+            LoteMp: mp.lote,
+            Responsable: '',
+          }
+          if(doc.pesoMp != undefined && doc.fechaSalida != undefined){
+            document = {
+              Codigo : '',
+              Nombre: '',
+              Lote: '',
+              PesoFinal: '',
+              FechaEntrada: '',
+              FechaSalida: '',
+              PesoMateriaPrima: '',
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: '',
+            }
+          }else{
+            document = {
+              Codigo : '',
+              Nombre: '',
+              Stock: '',
+              Lote: '',
+              PesoFinal: '',
+              FechaEntrada: '',
+              MateriaPrima: mp.codigo,
+              NombreMp: mp.nombre,
+              coleccion: mp.collection,
+              Retiro: mp.ingreso,
+              LoteMp: mp.lote,
+              Responsable: '',
+            }
+          }
+        }
+        reporte.push(document);
+      })
+    })
+    console.log(reporte);
+    return reporte;
   }
 
   ingresosGet() {
@@ -127,34 +315,9 @@ export class InventarioPage implements OnInit {
     // update the rows
     this.productos = temp;
     // Whenever the filter changes, always go back to the first page
-    this.table.offset = 0;
+    this.tableMain.offset = 0;
   }
 
-  ionViewWillEnter() {}
-
-  readNFC() {
-    this.nfc.addNdefListener().subscribe((data) => {
-      let payload = this.nfc
-        .bytesToString(data.tag.ndefMessage[0].payload)
-        .substring(3);
-      this.abrirModalLeerNFC(payload);
-    });
-    this.nfc.close();
-  }
-
-  async abrirModalLeerNFC(codeProduct: any) {
-    const modal = await this.modalController.create({
-      component: ModalLeerNFCPage,
-      cssClass: 'my-custom-class',
-      componentProps: {
-        listInventory: this.inventorySemiFinalAll,
-        code: codeProduct,
-      },
-    });
-
-    modal.present();
-    await modal.onWillDismiss();
-  }
 
   OrdenarTabla(productos:any=[]){
     let fecha = new Date().getMonth();

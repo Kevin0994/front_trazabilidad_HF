@@ -20,6 +20,7 @@ export class ProductosPage implements OnInit {
   public showFinal: boolean = false; //variable que representa a los productos finales
   public showButtons: boolean = true; //variable que representa la activacion de los botones de seleccion del tipo de productos
   private messege:any; //variable que guarda los mensajes del servidor 
+  temp: any = [];
 
   categoriaSlides = {
     slidesPerView: 4,
@@ -67,6 +68,7 @@ export class ProductosPage implements OnInit {
       .then((data) => {
         this.providerMensajes.dismissLoading();
         this.productosTabla = data;
+        this.temp = data;
         if(this.showSemi){
           this.productoSemi = data;
         }
@@ -404,6 +406,17 @@ export class ProductosPage implements OnInit {
    })
   }
 
-  
+  updateFilter(event) {
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.nombre.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+    console.log(temp);
+    // update the rows
+    this.productosTabla = temp;
+  }
+
 
 }
