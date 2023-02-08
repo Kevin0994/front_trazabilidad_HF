@@ -14,8 +14,11 @@ export class ProviderMetodosCrud{
         let foundIndex = tabla.findIndex(obj =>
             obj.nombre == data.nombre && obj.loteMes == data.loteMes
         );
-
-        tabla[foundIndex].stock += data.stock;
+        let stockTabla = tabla[foundIndex].stock += data.stock;
+        data.stock = stockTabla;
+        tabla.splice(foundIndex,1);
+        tabla.splice(0,0,data);
+        
         return tabla;
         }else{//Inserta la nueva cosecha en la tabla
         tabla.push(data);

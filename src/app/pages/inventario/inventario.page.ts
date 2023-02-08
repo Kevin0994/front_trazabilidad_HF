@@ -1,4 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import {
   AlertController, ModalController,
 } from '@ionic/angular';
@@ -41,6 +42,7 @@ export class InventarioPage implements OnInit {
     private providerMensajes:ProviderMensajes,
     public modalController:ModalController,
     private providerMetodosCrud: ProviderMetodosCrud,
+    private androidPermissions: AndroidPermissions,
   ) {
     
   }
@@ -128,6 +130,17 @@ export class InventarioPage implements OnInit {
         }, {
           text: 'Generar Reporte',
           handler: () => {
+            this.providerMensajes.showLoading();
+            this.androidPermissions.checkPermission(
+              this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then((result)=> {
+                if(!result.hasPermission){
+                  this.providerMensajes.dismissLoading();
+                  this.checkPermissions();
+                }
+              }),(err)=>{
+                this.providerMensajes.dismissLoading();
+                this.providerMensajes.ErrorMensajePersonalizado('Error al acceder a los permisos del telefono')
+              }
             if(this.showSemi){
               this.proveedor.obtenerDocumentosPorId('inventarioProSemi/documents/',selected[0].id).then(data =>{
                 console.log(data);
@@ -135,7 +148,6 @@ export class InventarioPage implements OnInit {
                 let productos =  this.ReordenarProductosporLote(selected[0],reporte);
                 this.exportAsXLSX(productos);
               })
-              return;
             }
 
             if(this.showFinal){
@@ -145,8 +157,9 @@ export class InventarioPage implements OnInit {
                 let productos =  this.ReordenarProductosporLote(selected[0],reporte);
                 this.exportAsXLSX(productos);
               })
-              return;
             }
+            this.providerMensajes.dismissLoading();
+            return;
           }
         }
       ]
@@ -331,5 +344,11 @@ export class InventarioPage implements OnInit {
       }
    })
   }
+
+  checkPermissions(){
+    this.androidPermissions.requestPermissions(
+            this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+    );
+}
 
 }

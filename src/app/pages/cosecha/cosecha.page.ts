@@ -42,6 +42,7 @@ export class CosechaPage implements OnInit {
         if (this.proveedor.status) {
           this.cosechas = data;
           this.temp = data;
+          this.OrdenarTabla();
           this.providerMensajes.dismissLoading();
         }
     }).catch(data => {
@@ -90,7 +91,6 @@ export class CosechaPage implements OnInit {
         this.cosecha,
         this.cosechas
       );
-      this.OrdenarTabla();
     }
   }
 
