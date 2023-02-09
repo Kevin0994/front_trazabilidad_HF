@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 import { Observable } from 'rxjs';
 import { ProviderMensajes } from '../modalMensaje/providerMessege.service';
 import * as FileSaver from 'file-saver';
@@ -19,6 +20,7 @@ export class ProviderService {
   //'https://us-central1-hf-trazabilidad-89c0e.cloudfunctions.net/app/';
 
   constructor(
+    private androidPermissions: AndroidPermissions,
     private providerMensajes: ProviderMensajes,
     public http: HttpClient
   ) {}
@@ -208,4 +210,22 @@ export class ProviderService {
       ).closed;
     });
   }
+
+  validarPermisos(){
+    this.androidPermissions.checkPermission(
+      this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then((result)=> {
+        if(!result.hasPermission){
+          this.checkPermissions();
+        }
+      }),(err)=>{
+        this.providerMensajes.ErrorMensajePersonalizado('Error al acceder a los permisos del telefono')
+      }
+  }
+
+  checkPermissions(){
+    this.androidPermissions.requestPermissions(
+      this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE
+    );
+  }
+
 }

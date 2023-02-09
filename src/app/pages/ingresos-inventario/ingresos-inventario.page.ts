@@ -137,6 +137,7 @@ export class IngresosInventario implements OnInit {
   }
 
   ExportAsXLSX(){
+    this.proveedor.validarPermisos();
     let data = this.ReordenarProductos();
     this.proveedor.exportToExcel(data,'reporteHF_');
   }

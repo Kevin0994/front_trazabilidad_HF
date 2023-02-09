@@ -5,6 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -45,6 +46,7 @@ import { IconsModule } from './icons/icons.module';
     ProviderMetodosCrud,
     ProviderMensajes,
     CookieService,
+    AndroidPermissions,
     NFC,
     Ndef,
   ],

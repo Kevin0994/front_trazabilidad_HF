@@ -3,6 +3,7 @@ import { Component, Input ,OnInit } from '@angular/core';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProviderService } from '../../../provider/ApiRest/provider.service'
+import { ProviderMensajes } from 'src/provider/modalMensaje/providerMessege.service';
 
 @Component({
   selector: 'app-modal-usuario',
@@ -20,6 +21,7 @@ export class ModalUsuarioPage implements OnInit {
   public lista: any;
 
   constructor(public proveedor: ProviderService,
+    private providerMensajes:ProviderMensajes,
     public fb: FormBuilder,
     public navCtrl:NavController,
     public alertController: AlertController,
@@ -80,6 +82,7 @@ export class ModalUsuarioPage implements OnInit {
   }
 
   async saveProfile(){
+    this.providerMensajes.showLoading();
     this.formulario = this.formRegistro.value;
     if(this.formRegistro.invalid){
       const alert = await this.alertController.create({
@@ -103,17 +106,19 @@ export class ModalUsuarioPage implements OnInit {
 
     if(this.type == 'Nuevo Registro'){
 
-
       this.proveedor.InsertarDocumento('usuario/post',this.usuario).then(data => {
         console.log(data);
 
         if(this.proveedor.status){
+          this.providerMensajes.dismissLoading();
           this.MensajeServidor();
         }else{
+          this.providerMensajes.dismissLoading();
           this.ErrorMensajeServidor();
           return;
         }
       }).catch(data => {
+        this.providerMensajes.dismissLoading();
         console.log(data);
       });
     }else{
@@ -123,12 +128,15 @@ export class ModalUsuarioPage implements OnInit {
         console.log(data);
 
         if(this.proveedor.status){
+          this.providerMensajes.dismissLoading();
           this.MensajeServidor();
         }else{
+          this.providerMensajes.dismissLoading();
           this.ErrorMensajeServidor();
           return;
         }
       }).catch(data => {
+        this.providerMensajes.dismissLoading();
         console.log(data);
       });
     }
